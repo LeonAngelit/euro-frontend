@@ -54,7 +54,6 @@ yarn-error.log*
 *.webp
 
 # Portable Network Graphics
-*.png
 
 # Animated Portable Network Graphics
 *.apng
@@ -67,7 +66,6 @@ yarn-error.log*
 *.tif
 
 # Scalable Vector Graphics
-*.svg
 *.svgz
 
 # Portable Document Format
