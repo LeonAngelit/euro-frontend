@@ -79,7 +79,7 @@ yarn-error.log*
 *.dib
 
 # ICO
-*.ico
+
 
 # 3D Images
 *.3dm
