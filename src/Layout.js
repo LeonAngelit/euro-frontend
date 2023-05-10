@@ -68,7 +68,7 @@ function Layout({ children }) {
     } else {
       clearInterval(interval);
     }
-  }, [context.user_logged]);
+  }, [context.user_logged.username]);
 
   return (
     <>
