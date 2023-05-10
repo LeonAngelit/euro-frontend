@@ -1,0 +1,86 @@
+.user-form {
+  display: flex;
+  justify-content: space-around;
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.input-container > div {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.input-container > select {
+  width: 30%;
+  margin-top: 1rem;
+}
+
+.action-btn {
+  border: none;
+  background-color: var(--primary-color);
+  color: whitesmoke;
+  width: 30%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.action-delete-btn {
+  border: none;
+  background-color: var(--error-color);
+  color: whitesmoke;
+  width: 30%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  border: 1px solid var(--primary-color);
+  background-color: whitesmoke;
+  color: var(--primary-color);
+}
+
+.submit-usuario-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.submit-usuario-container input {
+  width: 30%;
+  padding: 0.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.submit-usuario-container input:hover {
+  background-color: white;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .submit-usuario-container input,
+  .submit-usuario-container .action-btn {
+    width: 100%;
+  }
+
+  .submit-usuario-container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  .user-form {
+    flex-direction: column;
+    align-items: center;
+  }
+}

@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: rgb(2, 2, 94);
+  --primary-color-background: rgb(0, 67, 255, 0.4);
+  --error-color: rgb(164, 8, 8);
+  --error-background: rgb(164, 8, 8, 0.3);
+  --success-color: rgb(75, 181, 67);
+  --euro-pink: rgb(255, 0, 135);
+  --euro-pink-background: rgb(255, 0, 135, 0.5);
+  --euro-yellow: rgb(255, 248, 0);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1rem;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  min-height: 82vh;
+  padding: 1rem;
+}
+
+.subtitle {
+  display: flex;
+  justify-content: center;
+}
+
+.subtitle a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.error-span {
+  background-color: var(--error-background);
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--error-color);
+  text-align: center;
+  color: var(--error-color);
+  min-width: 50%;
+}
+
+#root {
+  max-width: 100vw;
+}
+
+#root > div {
+  z-index: -2;
+}

@@ -1,0 +1,18 @@
+.container-blue {
+  background-color: var(--primary-color-background);
+}
+
+.rooms-options {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.rooms-options > p {
+  margin-top: 1rem;
+}
+
+.subtitle {
+  margin-bottom: 0.5rem;
+}

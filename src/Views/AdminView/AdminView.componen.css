@@ -1,0 +1,22 @@
+.buttons-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.admin-button {
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  color: whitesmoke;
+  border-radius: 0.3rem;
+}
+
+.button-green {
+  background-color: var(--success-color);
+}
+
+.button-red {
+  background-color: var(--error-color);
+}

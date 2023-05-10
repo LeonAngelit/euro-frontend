@@ -1,0 +1,46 @@
+.room-container {
+  margin-top: 1rem;
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  background-color: whitesmoke;
+}
+
+.room-icon-container {
+  display: flex;
+  background-color: whitesmoke;
+  border: none;
+  text-decoration: none;
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.room-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.room-actions > button {
+  width: 40%;
+  margin-top: 0.2rem;
+  border: none;
+  background-color: var(--primary-color);
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+  color: whitesmoke;
+}
+
+.room-actions .delete-button {
+  background-color: var(--error-color);
+}
