@@ -24,7 +24,7 @@ const RoomPicker = (props) => {
   async function forgetRoom(id) {
     const data = {
       userId: parseInt(context.user_logged.id),
-      roomId: parseInt(event.currentTarget.id),
+      roomId: parseInt(id),
     };
     axios
       .post(
