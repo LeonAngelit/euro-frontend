@@ -58,7 +58,10 @@ function Layout({ children }) {
 
   useEffect(() => {
     let interval;
-    if (context.x_token && context.user_logged?.username == "Leoangelitg") {
+    if (
+      context.x_token &&
+      context.user_logged?.username == process.env.REACT_APP_ADMIN
+    ) {
       interval = setInterval(() => {
         updatePointRequest();
       }, 90000);
