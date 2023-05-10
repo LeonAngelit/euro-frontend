@@ -21,7 +21,7 @@ const RoomPicker = (props) => {
     );
   }
 
-  async function forgetRoom(event) {
+  async function forgetRoom(id) {
     const data = {
       userId: parseInt(context.user_logged.id),
       roomId: parseInt(event.currentTarget.id),
@@ -86,7 +86,23 @@ const RoomPicker = (props) => {
                 </button>
               </article>
               <div className="room-actions">
-                <button id={room.id} onClick={forgetRoom}>
+                <button
+                  id={room.id}
+                  onClick={(event) => {
+                    let element = event.currentTarget;
+                    setModal({
+                      visible: true,
+                      message:
+                        "¿Deseas olvidar la sala? Podrás volver a unirte introduciendo id y contraseña en el formulario",
+                      confirm: true,
+                      onaccept: () => {
+                        forgetRoom(element.id);
+                        setModal({});
+                      },
+                      onclick: () => setModal({}),
+                    });
+                  }}
+                >
                   Olvidar
                 </button>
                 {room.adminId == context.user_logged.id && (
