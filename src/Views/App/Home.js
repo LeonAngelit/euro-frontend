@@ -49,6 +49,34 @@ const Home = () => {
     context.setSongs(songs);
   }, [songs]);
 
+  function updateRoomData(roomId) {
+    axios
+      .get(`${process.env.REACT_APP_BASEURL}/api/eurocontest/rooms/${roomId}`, {
+        headers: {
+          Accept: "application/json",
+          Bearer: context.x_token,
+        },
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          context.setCurrentRoom(response.data);
+        }
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          return {
+            status: true,
+            message: "Sala no encontrada",
+          };
+        } else {
+          return {
+            status: true,
+            message: error.response.data.message,
+          };
+        }
+      });
+  }
+
   async function joinRoom(event) {
     event.preventDefault();
     axios
@@ -144,7 +172,10 @@ const Home = () => {
           <div className="container">
             <div className="rooms-options">
               <p>Selecciona una sala de tu lista:</p>
-              <RoomPicker rooms={context.user_logged?.rooms} />
+              <RoomPicker
+                rooms={context.user_logged?.rooms}
+                updateRoomData={updateRoomData}
+              />
               <Collapsible title={"Unirte a una sala: "}>
                 <Form
                   action={joinRoom}
@@ -180,7 +211,10 @@ const Home = () => {
       {context.user_logged.countries?.length == 5 &&
         context.current_room != undefined && (
           <div className="container">
-            <Classification room={context.current_room} />
+            <Classification
+              room={context.current_room}
+              updateRoomData={updateRoomData}
+            />
           </div>
         )}
     </>

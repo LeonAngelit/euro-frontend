@@ -3,7 +3,6 @@ import "./Classification.Component.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import AppContext from "../../Storage/AppContext";
-import axios from "axios";
 
 const Classification = (props) => {
   const context = useContext(AppContext);
@@ -11,15 +10,10 @@ const Classification = (props) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    if (context.x_token && context.current_room != undefined) {
-      updateRoomData(context.current_room.id);
-    }
-  }, []);
-
-  useEffect(() => {
     setTimeout(() => {
       if (context.x_token && context.current_room != undefined) {
-        updateRoomData(context.current_room.id);
+        props.updateRoomData(context.current_room.id);
+        setAnimate(!animate);
       }
     }, 60000);
   }, [context.current_room]);
@@ -41,35 +35,6 @@ const Classification = (props) => {
     setUsers(usersTemp);
     setAnimate(true);
   }, [context.current_room]);
-
-  function updateRoomData(roomId) {
-    axios
-      .get(`${process.env.REACT_APP_BASEURL}/api/eurocontest/rooms/${roomId}`, {
-        headers: {
-          Accept: "application/json",
-          Bearer: context.x_token,
-        },
-      })
-      .then((response) => {
-        if (response.status == 200) {
-          context.setCurrentRoom(response.data);
-          setAnimate(!animate);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status == 404) {
-          return {
-            status: true,
-            message: "Sala no encontrada",
-          };
-        } else {
-          return {
-            status: true,
-            message: error.response.data.message,
-          };
-        }
-      });
-  }
 
   return (
     <>

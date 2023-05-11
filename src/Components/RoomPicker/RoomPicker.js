@@ -13,12 +13,9 @@ const RoomPicker = (props) => {
   const context = useContext(AppContext);
   const [modal, setModal] = useState({});
   const navigate = useNavigate();
-  function selectRoom(event) {
-    context.setCurrentRoom(
-      context.user_logged.rooms.find(
-        (element) => element.id == event.currentTarget.id
-      )
-    );
+
+  async function selectRoom(event) {
+    props.updateRoomData(event.currentTarget.id);
   }
 
   async function forgetRoom(id) {

@@ -63,6 +63,16 @@ const CountryPicker = (props) => {
 
           return error;
         });
+    } else {
+      setModal({
+        visible: true,
+        message: "Tienes que elegir 5 países",
+        status: "error",
+        confirm: setModal({}),
+      });
+      setTimeout(() => {
+        setModal({});
+      }, 3000);
     }
   }
 
