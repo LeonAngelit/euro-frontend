@@ -18,7 +18,9 @@
   display: flex;
   background-color: whitesmoke;
   border: none;
+  justify-content: flex-end;
   text-decoration: none;
+  width: 90%;
 }
 
 .room-card {
