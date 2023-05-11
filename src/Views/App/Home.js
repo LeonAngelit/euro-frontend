@@ -48,6 +48,11 @@ const Home = () => {
   useEffect(() => {
     context.setSongs(songs);
   }, [songs]);
+  useEffect(() => {
+    if (context.user_logged.countries.length < 5) {
+      context.setCurrentRoom(undefined);
+    }
+  }, [context.user_logged]);
 
   function updateRoomData(roomId) {
     axios
@@ -59,9 +64,19 @@ const Home = () => {
       })
       .then((response) => {
         if (response.status == 200) {
+          const userToUpdate = response.data.users.find(
+            (element) => element.id == context.user_logged.id
+          );
+          context.setUserLogged((user) => {
+            return {
+              ...user,
+              countries: userToUpdate.countries,
+            };
+          });
           context.setCurrentRoom(response.data);
         }
       })
+
       .catch((error) => {
         if (error.response.status == 404) {
           return {

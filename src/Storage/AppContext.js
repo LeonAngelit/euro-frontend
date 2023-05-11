@@ -89,18 +89,7 @@ export function AppContextProvider({ children }) {
     setUpdatable: setUpdatableHandler,
     closeSession: closeSessionHandler,
   };
-  /* let data = {
-    songs: context.songs,
-    selection: context.selection,
-    countries: context.countries,
-    user_logged: {
-      id: context.user_logged?.id,
-      username: context.user_logged?.username,
-      countries: context.user_logged?.countries,
-      rooms: context.user_logged?.rooms,
-      token: context.user_logged?.token ,
-    },
-  };*/
+
   window.sessionStorage.setItem("app-context", JSON.stringify(context));
   if (context.remember_user) {
     window.localStorage.setItem("app-context", JSON.stringify(context));
