@@ -19,7 +19,9 @@ const Classification = (props) => {
   }, [context.current_room]);
 
   useEffect(() => {
-    let usersTemp = props.room.users;
+    let usersTemp = props.room.users.find(
+      (element) => element.countries.length == 5
+    );
     usersTemp.map((user) => {
       let total = 0;
       user.countries.map((country) => {
