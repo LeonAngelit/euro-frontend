@@ -6,7 +6,7 @@
   z-index: 99;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
 }
 
 .background {
@@ -19,4 +19,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
   backdrop-filter: blur(10px);
+}
+
+.close-panel-button {
+  display: block;
+  width: 10%;
+  margin: 0.5rem auto;
+  background-color: var(--euro-pink);
+  border: none;
+  padding: 0.2rem;
+  border-radius: 50%;
 }

@@ -5,6 +5,8 @@
   background-color: var(--primary-color);
   justify-content: center;
   align-items: center;
+  position: sticky;
+  bottom: 0;
 }
 
 .footer p {

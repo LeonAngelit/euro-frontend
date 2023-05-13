@@ -15,7 +15,36 @@ const RoomPicker = (props) => {
   const navigate = useNavigate();
 
   async function selectRoom(event) {
-    props.updateRoomData(event.currentTarget.id);
+    let button = event.currentTarget;
+    initializeRoom(button.id);
+  }
+
+  async function initializeRoom(roomId) {
+    axios
+      .get(`${process.env.REACT_APP_BASEURL}/api/eurocontest/rooms/${roomId}`, {
+        headers: {
+          Accept: "application/json",
+          Bearer: context.x_token,
+        },
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          const userToUpdate = response.data.users.find(
+            (element) => element.id == context.user_logged.id
+          );
+          context.setUserLogged((user) => {
+            return {
+              ...user,
+              countries: userToUpdate.countries,
+            };
+          });
+          context.setCurrentRoom((old) => ({
+            ...old,
+            current: response.data,
+            exit: false,
+          }));
+        }
+      });
   }
 
   async function forgetRoom(id) {
@@ -64,7 +93,7 @@ const RoomPicker = (props) => {
 
   return (
     <>
-      {props.rooms != 0 ? (
+      {props.rooms?.length > 0 ? (
         props.rooms.map((room) => {
           return (
             <div className="room-card" key={props.rooms.indexOf(room)}>

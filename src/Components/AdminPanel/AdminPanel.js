@@ -7,6 +7,9 @@ const AdminPanel = (props) => {
     <>
       <div className="background"></div>
       <div className="admin-panel">
+        <button className="close-panel-button" onClick={props.close}>
+          X
+        </button>
         <Form
           action={props.action}
           error={props.error}

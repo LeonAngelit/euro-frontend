@@ -11,11 +11,21 @@ const Classification = (props) => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (context.x_token && context.current_room != undefined) {
-        props.updateRoomData(context.current_room.id);
+      if (
+        context.x_token &&
+        context.current_room != undefined &&
+        context.current_room.exit != true
+      ) {
+        props.updateRoomData(context.current_room.current.id);
         setAnimate(!animate);
       }
     }, 60000);
+    if (context.current_room.exit) {
+      context.setCurrentRoom((old) => ({
+        ...old,
+        current: undefined,
+      }));
+    }
   }, [context.current_room]);
 
   useEffect(() => {

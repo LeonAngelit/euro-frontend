@@ -49,8 +49,12 @@ const Home = () => {
     context.setSongs(songs);
   }, [songs]);
   useEffect(() => {
-    if (context.user_logged.countries.length < 5) {
-      context.setCurrentRoom(undefined);
+    if (context.user_logged?.countries?.length < 5) {
+      context.setCurrentRoom((old) => ({
+        ...old,
+        current: undefined,
+        exit: true,
+      }));
     }
   }, [context.user_logged]);
 
@@ -64,19 +68,23 @@ const Home = () => {
       })
       .then((response) => {
         if (response.status == 200) {
-          const userToUpdate = response.data.users.find(
-            (element) => element.id == context.user_logged.id
-          );
-          context.setUserLogged((user) => {
-            return {
-              ...user,
-              countries: userToUpdate.countries,
-            };
-          });
-          context.setCurrentRoom(response.data);
+          if (context.current_room.exit != true) {
+            const userToUpdate = response.data.users.find(
+              (element) => element.id == context.user_logged.id
+            );
+            context.setUserLogged((user) => {
+              return {
+                ...user,
+                countries: userToUpdate.countries,
+              };
+            });
+            context.setCurrentRoom((old) => ({
+              ...old,
+              current: response.data,
+            }));
+          }
         }
       })
-
       .catch((error) => {
         if (error.response.status == 404) {
           return {
@@ -123,6 +131,7 @@ const Home = () => {
             });
           }
         }
+        setError(false);
         event.target.reset();
       })
       .catch((error) => {
@@ -137,7 +146,6 @@ const Home = () => {
             message: error.response.data.message,
           });
         }
-        event.target.reset();
       });
   }
 
@@ -183,14 +191,11 @@ const Home = () => {
           </div>
         )}
       {context.user_logged.countries?.length == 5 &&
-        context.current_room == undefined && (
+        !context.current_room?.current && (
           <div className="container">
             <div className="rooms-options">
               <p>Selecciona una sala de tu lista:</p>
-              <RoomPicker
-                rooms={context.user_logged?.rooms}
-                updateRoomData={updateRoomData}
-              />
+              <RoomPicker rooms={context.user_logged?.rooms} />
               <Collapsible title={"Unirte a una sala: "}>
                 <Form
                   action={joinRoom}
@@ -224,10 +229,11 @@ const Home = () => {
         )}
 
       {context.user_logged.countries?.length == 5 &&
-        context.current_room != undefined && (
+        context.current_room != undefined &&
+        context.current_room?.current != undefined && (
           <div className="container">
             <Classification
-              room={context.current_room}
+              room={context.current_room.current}
               updateRoomData={updateRoomData}
             />
           </div>

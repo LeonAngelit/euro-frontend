@@ -79,9 +79,12 @@ const Navigation = () => {
   }
 
   function handleLeaveRoom() {
-    context.setCurrentRoom(undefined);
+    context.setCurrentRoom((old) => ({
+      ...old,
+      current: undefined,
+      exit: true,
+    }));
     setUserMenu(!userMenu);
-    window.location.reload();
   }
   return (
     <header className="header-container">
@@ -124,7 +127,7 @@ const Navigation = () => {
               </Link>
             </li>
           )}
-          {context.current_room != undefined && (
+          {context.current_room?.current != undefined && (
             <li>
               <Link to={"/app"} onClick={handleLeaveRoom}>
                 Salir de la sala
@@ -139,7 +142,12 @@ const Navigation = () => {
         </ul>
       </div>
       {adminPanel && (
-        <AdminPanel action={loginAdmin} refer={passwordRef} error={error} />
+        <AdminPanel
+          action={loginAdmin}
+          refer={passwordRef}
+          error={error}
+          close={() => setAdminPanel(false)}
+        />
       )}
     </header>
   );
