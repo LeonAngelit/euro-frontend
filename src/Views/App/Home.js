@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import useValidateToken from "../../utils/useValidateToken";
 import useGetSongs from "../../utils/useGetSongs";
+import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
 import bcrypt from "bcrypt-nodejs";
 import axios from "axios";
@@ -102,6 +103,28 @@ const Home = () => {
 
   async function joinRoom(event) {
     event.preventDefault();
+    if (
+      !validateUserNameRegex(roomNameRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+        })
+      )
+    ) {
+      return false;
+    }
+    if (
+      !validateRegex(passwordRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula",
+        })
+      )
+    ) {
+      return false;
+    }
     axios
       .get(
         `${process.env.REACT_APP_BASEURL}/api/eurocontest/rooms/name/${roomNameRef.current.value}`,

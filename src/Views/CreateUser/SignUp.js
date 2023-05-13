@@ -3,7 +3,7 @@ import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Form from "../../Components/Form/Form";
-import { validateRegex } from "../../utils/regexUtils";
+import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcrypt-nodejs";
 import useUpdateToken from "../../utils/useUpdateToken";
 window.Buffer = window.Buffer || require("buffer").Buffer;
@@ -28,6 +28,17 @@ const SignUp = () => {
 
   async function getUsuario(event) {
     event.preventDefault();
+    if (
+      !validateUserNameRegex(userNameRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+        })
+      )
+    ) {
+      return false;
+    }
 
     if (passwordRef.current.value != passwordTwodRef.current.value) {
       setError({ status: true, message: "Las contraseñas no coinciden" });

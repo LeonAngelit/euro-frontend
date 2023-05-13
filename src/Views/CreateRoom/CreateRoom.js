@@ -6,7 +6,7 @@ import useValidateToken from "../../utils/useValidateToken";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import updateUserData from "../../utils/useUpdateUserData";
 import { useNavigate } from "react-router-dom";
-import { validateRegex } from "../../utils/regexUtils";
+import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcrypt-nodejs";
 import Form from "../../Components/Form/Form";
 
@@ -34,6 +34,17 @@ const CreateRoom = () => {
 
   async function crearSala(event) {
     event.preventDefault();
+    if (
+      !validateUserNameRegex(roomNameRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+        })
+      )
+    ) {
+      return false;
+    }
 
     if (passwordRef.current.value != passwordTwodRef.current.value) {
       setError({ status: true, message: "Las contraseñas no coinciden" });

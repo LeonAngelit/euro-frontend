@@ -83,7 +83,7 @@ const UserDetails = () => {
         setError({
           status: true,
           message:
-            "Nombre de usuario no válida, debe contener 5 a 8 caracteres, evita caracteres especiales",
+            "Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
         })
       )
     ) {

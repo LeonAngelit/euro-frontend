@@ -2,6 +2,7 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import Form from "../../Components/Form/Form";
 import useUpdateToken from "../../utils/useUpdateToken";
 import bcrypt from "bcrypt-nodejs";
@@ -14,12 +15,6 @@ const Login = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (context.x_token) {
-      console.log(context.x_token);
-    }
-  }, []);
-
-  useEffect(() => {
     if (context.user_logged?.token) {
       navigate("/app");
     }
@@ -27,6 +22,28 @@ const Login = () => {
 
   function login(event) {
     event.preventDefault();
+    if (
+      !validateUserNameRegex(userNameRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+        })
+      )
+    ) {
+      return false;
+    }
+    if (
+      !validateRegex(passwordRef.current.value, () =>
+        setError({
+          status: true,
+          message:
+            "Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula",
+        })
+      )
+    ) {
+      return false;
+    }
     axios
       .get(
         `${process.env.REACT_APP_BASEURL}/api/eurocontest/users/name/${userNameRef.current.value}`,
