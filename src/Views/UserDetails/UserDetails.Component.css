@@ -69,6 +69,10 @@
   cursor: pointer;
 }
 
+.delete-user-button {
+  display: none;
+}
+
 @media (max-width: 420px) {
   .submit-usuario-container input,
   .submit-usuario-container .action-btn {
