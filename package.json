@@ -28,12 +28,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "reset": "rm ./node_modules/react-scripts/config/webpack.config.js",
     "mover": "cp ./webpack.config.js ./node_modules/react-scripts/config/webpack.config.js",
-    "start": "npm run mover && react-scripts start",
+    "start": "react-scripts start",
     "dev": "nodemon index.js",
     "lint": "eslint src --ext .js",
     "lint:fix": "npm run lint -- --fix",
-    "build": "npm run mover && react-scripts build",
+    "build": "npm run reset && npm run mover && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
