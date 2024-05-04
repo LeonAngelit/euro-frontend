@@ -34,7 +34,9 @@ function Layout({ children }) {
 	async function updatePointRequest() {
 		await axios
 			.get(
-				`${process.env.REACT_APP_BASEURL}/api/eurocontest/countries/refresh/${d.getFullYear}`,
+				`${
+					process.env.REACT_APP_BASEURL
+				}/api/eurocontest/countries/refresh/${d.getFullYear()}`,
 				{
 					headers: {
 						Accept: "application/json",
@@ -65,7 +67,7 @@ function Layout({ children }) {
 		) {
 			interval = setInterval(() => {
 				updatePointRequest();
-			}, 90000);
+			}, 40000);
 		} else {
 			clearInterval(interval);
 		}
