@@ -15,7 +15,7 @@ function Layout({ children }) {
 		const salt = bcrypt.genSaltSync(12);
 		const token = bcrypt.hashSync(process.env.REACT_APP_AUTH_P, salt, null);
 		await axios
-			.get(`${process.env.REACT_APP_BASEURL}/api/eurocontest/getAuthToken`, {
+			.get(`${process.env.REACT_APP_BASEURL}getAuthToken`, {
 				headers: {
 					Accept: "application/json",
 					Authorization: `${token}`,
@@ -34,9 +34,7 @@ function Layout({ children }) {
 	async function updatePointRequest() {
 		await axios
 			.get(
-				`${
-					process.env.REACT_APP_BASEURL
-				}/api/eurocontest/countries/refresh/${d.getFullYear()}`,
+				`${process.env.REACT_APP_BASEURL}countries/refresh/${d.getFullYear()}`,
 				{
 					headers: {
 						Accept: "application/json",
