@@ -34,7 +34,9 @@ function Layout({ children }) {
 	async function updatePointRequest() {
 		await axios
 			.get(
-				`${process.env.REACT_APP_BASEURL}countries/refresh/${d.getFullYear()}`,
+				`${
+					process.env.REACT_APP_BASEURL
+				}countries/getUpdate/${d.getFullYear()}`,
 				{
 					headers: {
 						Accept: "application/json",
