@@ -6,7 +6,7 @@ function useUpdateToken(user, context) {
 		token: token,
 	};
 	axios
-		.put(`${process.env.REACT_APP_BASEURL}users/${user.id}`, data, {
+		.put(`${config.baseUrl}users/${user.id}`, data, {
 			headers: {
 				Accept: "application/json",
 				Authorization: `Bearer ${context.x_token}`,

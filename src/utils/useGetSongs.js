@@ -3,7 +3,7 @@ import axios from "axios";
 async function useGetSongs(context) {
 	try {
 		const response = await axios.get(
-			`${process.env.REACT_APP_BASEURL}countries`,
+			`${config.baseUrl}countries`,
 			{
 				headers: {
 					Accept: "application/json",

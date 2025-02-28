@@ -7,6 +7,7 @@ import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcrypt-nodejs";
 import useUpdateToken from "../../utils/useUpdateToken";
 window.Buffer = window.Buffer || require("buffer").Buffer;
+const config = require("../../config/config");
 
 const SignUp = () => {
 	const context = useContext(AppContext);
@@ -62,7 +63,7 @@ const SignUp = () => {
 			password: pass,
 		};
 		axios
-			.post(`${process.env.REACT_APP_BASEURL}users`, data, {
+			.post(`${config.baseUrl}users`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -95,7 +96,7 @@ const SignUp = () => {
 
 	async function updateUsuario(id) {
 		axios
-			.get(`${process.env.REACT_APP_BASEURL}users/${id}`, {
+			.get(`${config.baseUrl}users/${id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,

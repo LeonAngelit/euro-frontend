@@ -23,7 +23,7 @@ const CountryPicker = (props) => {
 				selection: context.selection.current,
 			};
 			axios
-				.post(`${process.env.REACT_APP_BASEURL}users/bulk/add-country`, data, {
+				.post(`${config.baseUrl}users/bulk/add-country`, data, {
 					headers: {
 						Accept: "application/json",
 						Bearer: context.x_token,

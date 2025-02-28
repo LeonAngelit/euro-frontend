@@ -2,7 +2,7 @@ import axios from "axios";
 
 async function updateUserData(context, navigate) {
 	axios
-		.get(`${process.env.REACT_APP_BASEURL}users/${context.user_logged.id}`, {
+		.get(`${config.baseUrl}users/${context.user_logged.id}`, {
 			headers: {
 				Accept: "application/json",
 				Bearer: context.x_token,

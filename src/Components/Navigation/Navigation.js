@@ -22,7 +22,7 @@ const Navigation = () => {
 		event.preventDefault();
 		const pass = passwordRef.current.value;
 		axios
-			.get(`${process.env.REACT_APP_BASEURL}updatable`, {
+			.get(`${config.baseUrl}updatable`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -120,7 +120,7 @@ const Navigation = () => {
 							Perfil
 						</Link>
 					</li>
-					{context.user_logged.username == process.env.REACT_APP_ADMIN && (
+					{context.user_logged.username == config.appAdmin && (
 						<li>
 							<Link to={"/"} onClick={handleAdmin}>
 								Admin

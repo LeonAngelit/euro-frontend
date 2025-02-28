@@ -39,7 +39,7 @@ const UserDetails = () => {
 	function updateUserData(event, data) {
 		axios
 			.put(
-				`${process.env.REACT_APP_BASEURL}users/${context.user_logged.id}`,
+				`${config.baseUrl}users/${context.user_logged.id}`,
 				data,
 				{
 					headers: {

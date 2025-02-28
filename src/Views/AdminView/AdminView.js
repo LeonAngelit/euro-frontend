@@ -26,7 +26,7 @@ const Login = () => {
 		axios
 			.get(
 				`${
-					process.env.REACT_APP_BASEURL
+					config.baseUrl
 				}countries/updateLinks/${d.getFullYear()}`,
 				{
 					headers: {
@@ -91,7 +91,7 @@ const Login = () => {
 		}
 
 		axios
-			.put(`${process.env.REACT_APP_BASEURL}updatable`, data, {
+			.put(`${config.baseUrl}updatable`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,

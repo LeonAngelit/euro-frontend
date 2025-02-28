@@ -69,7 +69,7 @@ const CreateRoom = () => {
 			adminId: context.user_logged.id,
 		};
 		axios
-			.post(`${process.env.REACT_APP_BASEURL}rooms`, data, {
+			.post(`${config.baseUrl}rooms`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,

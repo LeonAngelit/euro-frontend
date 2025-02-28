@@ -46,7 +46,7 @@ const Login = () => {
 		}
 		axios
 			.get(
-				`${process.env.REACT_APP_BASEURL}users/name/${userNameRef.current.value}`,
+				`${config.baseUrl}users/name/${userNameRef.current.value}`,
 				{
 					headers: {
 						Accept: "application/json",

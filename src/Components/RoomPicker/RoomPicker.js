@@ -21,7 +21,7 @@ const RoomPicker = (props) => {
 
 	async function initializeRoom(roomId) {
 		axios
-			.get(`${process.env.REACT_APP_BASEURL}rooms/${roomId}`, {
+			.get(`${config.baseUrl}rooms/${roomId}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -53,7 +53,7 @@ const RoomPicker = (props) => {
 			roomId: parseInt(id),
 		};
 		axios
-			.post(`${process.env.REACT_APP_BASEURL}rooms/remove-user`, data, {
+			.post(`${config.baseUrl}rooms/remove-user`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -71,7 +71,7 @@ const RoomPicker = (props) => {
 
 	async function deleteRoom(id) {
 		axios
-			.delete(`${process.env.REACT_APP_BASEURL}rooms/${id}`, {
+			.delete(`${config.baseUrl}rooms/${id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,

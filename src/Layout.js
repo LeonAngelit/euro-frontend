@@ -13,9 +13,9 @@ function Layout({ children }) {
 
 	async function sendTokenRequest() {
 		const salt = bcrypt.genSaltSync(12);
-		const token = bcrypt.hashSync(process.env.REACT_APP_AUTH_P, salt, null);
+		const token = bcrypt.hashSync(config.authP, salt, null);
 		await axios
-			.get(`${process.env.REACT_APP_BASEURL}getAuthToken`, {
+			.get(`${config.baseUrl}getAuthToken`, {
 				headers: {
 					Accept: "application/json",
 					Authorization: `${token}`,
@@ -34,7 +34,7 @@ function Layout({ children }) {
 	async function updatePointRequest() {
 		await axios
 			.get(
-				`${process.env.REACT_APP_BASEURL}countries/refresh/${d.getFullYear()}`,
+				`${config.baseUrl}countries/refresh/${d.getFullYear()}`,
 				{
 					headers: {
 						Accept: "application/json",
@@ -61,7 +61,7 @@ function Layout({ children }) {
 		let interval;
 		if (
 			context.x_token &&
-			context.user_logged?.username == process.env.REACT_APP_ADMIN
+			context.user_logged?.username == config.appAdmin
 		) {
 			interval = setInterval(() => {
 				updatePointRequest();

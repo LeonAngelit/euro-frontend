@@ -61,7 +61,7 @@ const Home = () => {
 
 	function updateRoomData(roomId) {
 		axios
-			.get(`${process.env.REACT_APP_BASEURL}rooms/${roomId}`, {
+			.get(`${config.baseUrl}rooms/${roomId}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -127,7 +127,7 @@ const Home = () => {
 		}
 		axios
 			.get(
-				`${process.env.REACT_APP_BASEURL}rooms/name/${roomNameRef.current.value}`,
+				`${config.baseUrl}rooms/name/${roomNameRef.current.value}`,
 				{
 					headers: {
 						Accept: "application/json",
@@ -174,7 +174,7 @@ const Home = () => {
 
 	async function addUserRoom(data) {
 		axios
-			.post(`${process.env.REACT_APP_BASEURL}rooms/add-user`, data, {
+			.post(`${config.baseUrl}rooms/add-user`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
