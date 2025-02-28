@@ -6,7 +6,7 @@ import AppContext from "../../Storage/AppContext";
 
 const Classification = (props) => {
   const context = useContext(AppContext);
-  const [users, setUsers] = useState(props.room.users);
+  const [users, setUsers] = useState(props.room.users ?? props.room.room.users);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,8 @@ const Classification = (props) => {
   }, [context.current_room]);
 
   useEffect(() => {
-    let usersTemp = props.room.users.filter(
+    let users = props.room.users??props.room.room.users;
+    let usersTemp = users.filter(
       (element) => element.countries.length == 5
     );
     usersTemp.map((user) => {
