@@ -7,8 +7,9 @@ import AppContext from "../../Storage/AppContext";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import AdminPanel from "../AdminPanel/AdminPanel";
 import axios from "axios";
-import bcrypt from "bcrypt-nodejs";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import bcrypt from "bcryptjs";
+import config from "../../config/config";
+
 
 const Navigation = () => {
 	const [userMenu, setUserMenu] = useState(false);
@@ -134,6 +135,11 @@ const Navigation = () => {
 							</Link>
 						</li>
 					)}
+					<li>
+						<Link to={"/archive"} onClick={handleClickProfile}>
+							Resultados anteriores
+						</Link>
+					</li>
 					<li>
 						<Link to={"/login"} onClick={handleCloseSession}>
 							Cerrar sesión

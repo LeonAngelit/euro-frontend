@@ -1,4 +1,5 @@
 import axios from "axios";
+import config from "../config/config";
 
 function useUpdateToken(user, context) {
 	const token = `${Date.now()}`;

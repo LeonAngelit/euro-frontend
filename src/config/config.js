@@ -1,12 +1,14 @@
-require('dotenv').config();
+import { config as dotenvConfig } from 'dotenv';
+
+dotenvConfig();
 
 const config = {
-  env: process.env.NODE_ENV || 'dev',
-  isProd: process.env.NODE_ENV === 'production',
-  baseUrl: process.env.REACT_APP_BASEURL,
-  appAdmin: process.env.REACT_APP_ADMIN,
-  authP: process.env.REACT_APP_AUTH_P,
-  key: process.env.REACT_APP_P_KEY
+  env: import.meta.env.NODE_ENV || 'dev',
+  isProd: import.meta.env.NODE_ENV === 'production',
+  baseUrl: import.meta.env.VITE_REACT_APP_BASEURL,
+  appAdmin: import.meta.env.VITE_REACT_APP_ADMIN,
+  authP: import.meta.env.VITE_REACT_APP_AUTH_P,
+  key: import.meta.env.VITE_REACT_APP_P_KEY
 };
 
-module.exports = config;
+export default config;

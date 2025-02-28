@@ -4,10 +4,11 @@ import axios from "axios";
 import Form from "../../Components/Form/Form";
 import "./AdminView.componen.css";
 import { validateRegex } from "../../utils/regexUtils";
-import bcrypt from "bcrypt-nodejs";
+import bcrypt from "bcryptjs";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import Collapsible from "../../Components/Collapsible/Collapsible";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import config from "../../config/config";
+ 
 
 const Login = () => {
 	const context = useContext(AppContext);

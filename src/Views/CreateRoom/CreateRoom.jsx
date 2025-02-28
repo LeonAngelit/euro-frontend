@@ -1,40 +1,46 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
+import "./CreateRoom.Component.css";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
+import useValidateToken from "../../utils/useValidateToken";
+import useHandleCloseSession from "../../utils/useHandleCloseSession";
+import updateUserData from "../../utils/useUpdateUserData";
 import { useNavigate } from "react-router-dom";
-import Form from "../../Components/Form/Form";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
-import bcrypt from "bcrypt-nodejs";
-import useUpdateToken from "../../utils/useUpdateToken";
-window.Buffer = window.Buffer || require("buffer").Buffer;
-const config = require("../../config/config");
+import bcrypt from "bcryptjs";
+import Form from "../../Components/Form/Form";
+import config from "../../config/config";
 
-const SignUp = () => {
+ 
+
+const CreateRoom = () => {
 	const context = useContext(AppContext);
 	const passwordRef = useRef(null);
 	const passwordTwodRef = useRef(null);
-	const userNameRef = useRef(null);
-	const navigate = useNavigate();
+	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (context.user_logged?.token != undefined) {
-			navigate("/app");
+		if (!context.user_logged) {
+			navigate("/login");
 		}
-	}, [context.user_logged]);
-
+		if (!useValidateToken(context.user_logged?.token)) {
+			useHandleCloseSession(context);
+		}
+	}, []);
 	useEffect(() => {
-		useUpdateToken(context.user_logged, context);
-	}, [context.user_logged]);
+		useValidateToken(context.user_logged?.token);
+	}, [context]);
 
-	async function getUsuario(event) {
+	async function crearSala(event) {
 		event.preventDefault();
 		if (
-			!validateUserNameRegex(userNameRef.current.value, () =>
+			!validateUserNameRegex(roomNameRef.current.value, () =>
 				setError({
 					status: true,
 					message:
-						"Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+						"Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
 				})
 			)
 		) {
@@ -59,11 +65,12 @@ const SignUp = () => {
 		const salt = bcrypt.genSaltSync(12);
 		const pass = bcrypt.hashSync(passwordRef.current.value, salt, null);
 		const data = {
-			username: userNameRef.current.value,
+			name: roomNameRef.current.value,
 			password: pass,
+			adminId: context.user_logged.id,
 		};
 		axios
-			.post(`${config.baseUrl}users`, data, {
+			.post(`${config.baseUrl}rooms`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -71,7 +78,7 @@ const SignUp = () => {
 			})
 			.then((response) => {
 				if (response.status == 201) {
-					updateUsuario(response.data.id);
+					updateUserData(context, navigate);
 				} else {
 					setError({
 						status: true,
@@ -80,10 +87,10 @@ const SignUp = () => {
 				}
 			})
 			.catch((error) => {
-				if (error.status == 409) {
+				if (error.response.status == 409) {
 					setError({
 						status: true,
-						message: "Este nombre de usuario ya está registrado",
+						message: "Este nombre de sala ya está registrado",
 					});
 				} else {
 					setError({
@@ -94,39 +101,19 @@ const SignUp = () => {
 			});
 	}
 
-	async function updateUsuario(id) {
-		axios
-			.get(`${config.baseUrl}users/${id}`, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 200) {
-					{
-						context.setUserLogged(response.data);
-					}
-				}
-			})
-			.catch((error) => {
-				return error.response.data.message;
-			});
-	}
-
 	return (
 		<div className="container">
 			<Form
-				action={getUsuario}
+				action={crearSala}
 				error={error}
 				showPassword={true}
-				submitValue="Registrarse"
+				submitValue="Crear Sala"
 				fields={[
 					{
 						name: "username",
-						placeholder: "Nombre de usuario",
+						placeholder: "Nombre de sala",
 						type: "text",
-						ref: userNameRef,
+						ref: roomNameRef,
 					},
 					{
 						name: "password",
@@ -148,4 +135,4 @@ const SignUp = () => {
 	);
 };
 
-export default SignUp;
+export default CreateRoom;

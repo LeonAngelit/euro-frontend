@@ -5,8 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import Form from "../../Components/Form/Form";
 import useUpdateToken from "../../utils/useUpdateToken";
-import bcrypt from "bcrypt-nodejs";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import bcrypt from "bcryptjs";
+import config from "../../config/config";
+ 
+
 const Login = () => {
 	const context = useContext(AppContext);
 	const passwordRef = useRef(null);
@@ -15,6 +17,7 @@ const Login = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
+		console.log(config)
 		if (context.user_logged?.token) {
 			navigate("/app");
 		}

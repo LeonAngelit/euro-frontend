@@ -7,6 +7,7 @@ import { GiPlayButton } from "react-icons/gi";
 import { IconContext } from "react-icons";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
+import config from "../../config/config";
 
 const CountryPicker = (props) => {
 	const [modal, setModal] = useState({});

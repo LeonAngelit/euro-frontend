@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./Home.Component.css";
+import "../App/Home.Component.css";
 import AppContext from "../../Storage/AppContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Classification from "../../Components/ClassificationView/Classification";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import config from "../../config/config";
+
 
 const Archive = () => {
 	const context = useContext(AppContext);
@@ -51,45 +52,62 @@ const Archive = () => {
 			});
 	}
 
-	function fetchRooms(){
+	function fetchRooms() {
 		axios
-		.get(`${config.baseUrl}archive/${context.user_logged?.username}`, {
-			headers: {
-				Accept: "application/json",
-				Bearer: context.x_token,
-			},
-		})
-		.then((response) => {
-			if (response.status == 200) {
-				setHistoricalRooms(response.data);
-			}
-		})
-		.catch((error) => {
-			if (error.response.status == 404) {
-				return {
-					status: true,
-					message: "No se han encontrado datos",
-				};
-			} else {
-				return {
-					status: true,
-					message: error.response.data.message,
-				};
-			}
-		});
+			.get(`${config.baseUrl}archive/users/${context.user_logged?.username}`, {
+				headers: {
+					Accept: "application/json",
+					Bearer: context.x_token,
+				},
+			})
+			.then((response) => {
+				if (response.status == 200) {
+					setHistoricalRooms(response.data);
+				}
+			})
+			.catch((error) => {
+				if (error.response.status == 404) {
+					return {
+						status: true,
+						message: "No se han encontrado datos",
+					};
+				} else {
+					return {
+						status: true,
+						message: error.response.data.message,
+					};
+				}
+			});
 	}
 
 	return (
 		<>
-			
+			<div className="container">
+			{historicalRooms && (
+				//A select element with all the rooms in the array
+				<select
+					onChange={(e) => setSelectedRoom(e.target.value)}
+					className="select-css"
+				>
+					<option value="">Seleccione una sala</option>
+					{historicalRooms.map((room) => (
+						console.log(room),
+						<option key={room._id} value={room._id} id={room._id}>
+							{room.room.name} - {room.year}
+						</option>
+					))}
+				</select>
+			)
+			}
+	
+				{selectedHistoricalRoom && (
 
-			{selectedHistoricalRoom && (
-					<div className="container">
-						<Classification
-							room={selectedHistoricalRoom}
-						/>
-					</div>
+					<Classification
+						room={selectedHistoricalRoom}
+					/>
+
 				)}
+			</div>
 		</>
 	);
 };

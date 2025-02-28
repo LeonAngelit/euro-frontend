@@ -7,7 +7,8 @@ import axios from "axios";
 import updateUserData from "../../utils/useUpdateUserData";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
-import Modal from "../../Components/Modal/Modal";
+import Modal from "../Modal/Modal";
+import config from "../../config/config";
 
 const RoomPicker = (props) => {
 	const context = useContext(AppContext);

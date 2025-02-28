@@ -7,14 +7,15 @@ import useValidateToken from "../../utils/useValidateToken";
 import useGetSongs from "../../utils/useGetSongs";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
-import bcrypt from "bcrypt-nodejs";
+import bcrypt from "bcryptjs";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
 import RoomPicker from "../../Components/RoomPicker/RoomPicker";
 import Classification from "../../Components/ClassificationView/Classification";
 import updateUserData from "../../utils/useUpdateUserData";
 import Collapsible from "../../Components/Collapsible/Collapsible";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import config from "../../config/config";
+ 
 
 const Home = () => {
 	const context = useContext(AppContext);

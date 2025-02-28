@@ -1,11 +1,13 @@
-import { React, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Footer from "./Components/Footer/Footer";
 import Navigation from "./Components/Navigation/Navigation";
 import PropTypes from "prop-types";
 import axios from "axios";
-import bcrypt from "bcrypt-nodejs";
+import bcrypt from "bcryptjs";
 import AppContext from "./Storage/AppContext";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import config from "./config/config"
+
+ 
 
 function Layout({ children }) {
 	const d = new Date();

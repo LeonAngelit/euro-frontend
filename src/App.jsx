@@ -7,6 +7,7 @@ const Login = lazy(() => import("./Views/Login/Login"));
 const SignUp = lazy(() => import("./Views/CreateUser/SignUp"));
 const CreateRoom = lazy(() => import("./Views/CreateRoom/CreateRoom"));
 const AdminView = lazy(() => import("./Views/AdminView/AdminView"));
+const Archive = lazy(() => import("./Views/Archive/Archive"));
 function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -18,6 +19,7 @@ function App() {
           <Route path={"/profile"} exact={true} element={<UserDetails />} />
           <Route path={"/createroom"} exact={true} element={<CreateRoom />} />
           <Route path={"/admin"} exact={true} element={<AdminView />} />
+          <Route path={"/archive"} element={<Archive />} />
           <Route path={"*"} element={<NotFound />} />
         </Routes>
       </div>

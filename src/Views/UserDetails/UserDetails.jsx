@@ -10,8 +10,9 @@ import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import Form from "../../Components/Form/Form";
 import axios from "axios";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
-import bcrypt from "bcrypt-nodejs";
-window.Buffer = window.Buffer || require("buffer").Buffer;
+import bcrypt from "bcryptjs";
+import config from "../../config/config";
+ 
 
 const UserDetails = () => {
 	const context = useContext(AppContext);
