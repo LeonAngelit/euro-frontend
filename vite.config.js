@@ -12,7 +12,8 @@ export default defineConfig({
     esbuildOptions: {
       // Node.js global to browser global polyfills
       define: {
-        global: 'globalThis'
+        global: 'globalThis',
+        'process.env': {}
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
