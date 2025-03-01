@@ -8,7 +8,8 @@ const config = {
   baseUrl: import.meta.env.VITE_REACT_APP_BASEURL,
   appAdmin: import.meta.env.VITE_REACT_APP_ADMIN,
   authP: import.meta.env.VITE_REACT_APP_AUTH_P,
-  key: import.meta.env.VITE_REACT_APP_P_KEY
+  key: import.meta.env.VITE_REACT_APP_P_KEY,
+  defProfilePicUrl: 'https://ui-avatars.com/api/',
 };
 
 export default config;

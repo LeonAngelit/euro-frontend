@@ -24,10 +24,7 @@ const Home = () => {
 	const passwordRef = useRef(null);
 	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
-	async function initializeSongs() {
-		const songs = await useGetSongs(context);
-		setSongs(songs);
-	}
+
 	useEffect(() => {
 		if (!context.user_logged?.token) {
 			navigate("/login");
@@ -199,6 +196,11 @@ const Home = () => {
 					});
 				}
 			});
+	}
+
+	async function initializeSongs() {
+		const songs = await useGetSongs(context);
+		setSongs(songs);
 	}
 
 	return (

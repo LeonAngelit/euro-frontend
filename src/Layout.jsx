@@ -25,7 +25,7 @@ function Layout({ children }) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					context.setXtoken(response.data);
+					context.setXtoken(`${response.data}`);
 				}
 			})
 			.catch((error) => {

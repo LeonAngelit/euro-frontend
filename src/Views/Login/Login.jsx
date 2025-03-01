@@ -17,7 +17,6 @@ const Login = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		console.log(config)
 		if (context.user_logged?.token) {
 			navigate("/app");
 		}

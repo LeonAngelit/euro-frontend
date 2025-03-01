@@ -25,7 +25,8 @@ const Archive = () => {
 
 
 	function setSelectedRoom(roomId) {
-		axios
+		if(roomId){
+			axios
 			.get(`${config.baseUrl}archive/${roomId}`, {
 				headers: {
 					Accept: "application/json",
@@ -50,6 +51,10 @@ const Archive = () => {
 					};
 				}
 			});
+		} else{
+			setSelectedHistoricalRoom(false)
+		}
+		
 	}
 
 	function fetchRooms() {
@@ -91,7 +96,6 @@ const Archive = () => {
 				>
 					<option value="">Seleccione una sala</option>
 					{historicalRooms.map((room) => (
-						console.log(room),
 						<option key={room._id} value={room._id} id={room._id}>
 							{room.room.name} - {room.year}
 						</option>
@@ -104,6 +108,7 @@ const Archive = () => {
 
 					<Classification
 						room={selectedHistoricalRoom}
+						updateRoomData={false}
 					/>
 
 				)}

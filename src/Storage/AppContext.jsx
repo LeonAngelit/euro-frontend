@@ -41,22 +41,25 @@ export function AppContextProvider({ children }) {
 
   function setRememberUserHandler(remember) {
     setRememberUser(remember);
+    if(!remember){
+      window.localStorage.clear();
+    }
   }
 
   function setUpdatableHandler(remember) {
-    setUpdatable(remember);
+    setUpdatable(remember);    
   }
   function setXtokenHandler(xToken) {
-    setXtoken(xToken);
+    setXtoken(xToken);       
   }
   function setUserHandler(user) {
-    setUserLogged(user);
+    setUserLogged(user);   
   }
   function setSelectionHandler(selection) {
-    setSelection(selection);
+    setSelection(selection);   
   }
   function setCurrentRoomHandler(room) {
-    setCurrentRoom(room);
+    setCurrentRoom(room);   
   }
 
   function setSongsHandler(songs) {
@@ -90,9 +93,10 @@ export function AppContextProvider({ children }) {
     closeSession: closeSessionHandler,
   };
 
-  window.sessionStorage.setItem("app-context", JSON.stringify(context));
   if (context.remember_user) {
     window.localStorage.setItem("app-context", JSON.stringify(context));
+  } else {
+    window.sessionStorage.setItem("app-context", JSON.stringify(context));
   }
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
 }

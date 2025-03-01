@@ -3,24 +3,25 @@ import "./Classification.Component.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import AppContext from "../../Storage/AppContext";
+import config from "../../config/config";
 
 const Classification = (props) => {
   const context = useContext(AppContext);
-  const [users, setUsers] = useState(props.room.users ?? props.room.room.users);
+  const [users, setUsers] = useState(props.room.users ?? props.room?.room?.users);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    props.updateRoomData && setTimeout(() => {
       if (
         context.x_token &&
         context.current_room != undefined &&
-        context.current_room.exit != true
+        context.current_room?.exit != true
       ) {
-        props.updateRoomData(context.current_room.current.id);
+        props.updateRoomData(context.current_room?.current?.id);
         setAnimate(!animate);
       }
     }, 60000);
-    if (context.current_room.exit) {
+    if (context.current_room?.exit) {
       context.setCurrentRoom((old) => ({
         ...old,
         current: undefined,
@@ -29,14 +30,15 @@ const Classification = (props) => {
   }, [context.current_room]);
 
   useEffect(() => {
-    let users = props.room.users??props.room.room.users;
+    let users = props.room.users ?? props.room.room.users;
     let usersTemp = users.filter(
       (element) => element.countries.length == 5
     );
     usersTemp.map((user) => {
       let total = 0;
       user.countries.map((country) => {
-        if (country.UserCountry.winnerOption && country.position == 1) {
+        let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
+        if ((winnerOption===true || winnerOption === country.id) && country.position == 1) {
           total += parseInt(country.points + country.points * 0.1);
         } else {
           total += parseInt(country.points);
@@ -46,7 +48,7 @@ const Classification = (props) => {
     });
     usersTemp.sort((a, b) => b.total - a.total);
     setUsers(usersTemp);
-    setAnimate(true);
+    setAnimate(props.animate);
   }, [context.current_room]);
 
   return (
@@ -72,7 +74,7 @@ const Classification = (props) => {
                 <div className="user-card-data">
                   <div className="user-card-info">
                     <img
-                      src={`https://ui-avatars.com/api/${user.username}`}
+                      src={`${config.defProfilePicUrl}${user.username}`}
                       alt="imagen de usuario"
                     />
                     <p
@@ -83,6 +85,7 @@ const Classification = (props) => {
                   </div>
                   <div className="user-card-countries">
                     {user.countries.map((country) => {
+                       let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
                       return (
                         <div
                           key={user.countries.indexOf(country)}
@@ -91,7 +94,7 @@ const Classification = (props) => {
                           <p
                             style={{
                               fontWeight:
-                                country.UserCountry.winnerOption == 1
+                                (winnerOption===true || winnerOption === country.id)
                                   ? "bold"
                                   : "100",
                             }}
@@ -101,12 +104,11 @@ const Classification = (props) => {
                               style={{
                                 outline:
                                   country.position == 1
-                                    ? "2px solid var(--euro-pink)"
+                                    ? "2px solid var(--euro-gold)"
                                     : "none",
                               }}
                             ></span>
-                            {country.UserCountry.winnerOption &&
-                            country.position == 1
+                            {(winnerOption===true || winnerOption === country.id)
                               ? parseInt(country.points + country.points * 0.1)
                               : country.points}
                           </p>
