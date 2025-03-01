@@ -13,7 +13,7 @@ export default defineConfig({
       // Node.js global to browser global polyfills
       define: {
         global: 'globalThis',
-        'process.env': {}
+        'process': {}
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
