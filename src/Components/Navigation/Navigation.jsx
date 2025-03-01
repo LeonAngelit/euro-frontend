@@ -137,7 +137,7 @@ const Navigation = () => {
 					)}
 					<li>
 						<Link to={"/archive"} onClick={handleClickProfile}>
-							Resultados anteriores
+							Histórico de resultados
 						</Link>
 					</li>
 					<li>
