@@ -9,17 +9,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
-  /*define: {
+  define: {
     'process.env': {}
-  },*/
-  plugins: [react()],
-  //plugins: [react(), envCompatible(), nodePolyfills()],
+  },
+  plugins: [react(), envCompatible(), nodePolyfills()],
   optimizeDeps: {
     esbuildOptions: {
-      // Node.js global to browser global polyfills
+      
       define: {
         global: 'globalThis',
-       // 'process.env': '{}', 
+        'process.env': '{}', 
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
