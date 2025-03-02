@@ -106,7 +106,8 @@ const Navigation = () => {
 						<div className="profile-button-container">
 							<button className="profile-button" onClick={handleMenu}>
 								<img
-									src={`${config.defProfilePicUrl}${context.user_logged.username}`}
+									  src={context.user_logged?.image !== '' ?  `${context.user_logged?.image}` :
+									  `${config.defProfilePicUrl}${context.user_logged?.username}`}
 									alt="imagen de usuario"
 								/>
 							</button>

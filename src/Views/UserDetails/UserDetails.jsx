@@ -35,6 +35,7 @@ const UserDetails = () => {
 	const pass2Ref = useRef(null);
 	const userNameRef = useRef(null);
 	const colorRef = useRef(null);
+	const imageRef = useRef(null);
 	let data;
 
 	function updateUserData(event, data) {
@@ -136,6 +137,13 @@ const UserDetails = () => {
 		updateUserData(event, data);
 	}
 
+	function updateImage(event) {
+		event.preventDefault();
+		const formData = new FormData();
+		formData.append("image", imageRef.current.files[0]);
+		updateUserData(event, formData);
+	}
+
 	return (
 		<div className="container details-container">
 			<div className="section-one">
@@ -180,6 +188,25 @@ const UserDetails = () => {
 						]}
 					/>
 				</Collapsible>
+
+				<Collapsible title={"Actualizar avatar: "}>
+					<Form
+						action={updateImage}
+						error={error}
+						submitValue="Enviar"
+						fields={[
+							{
+								name: "profileImage",
+								placeholder: "avatar",
+								id: "profileImage",
+								type: "file",
+								ref: imageRef,
+							},
+							
+						]}
+					/>
+				</Collapsible>
+
 
 				<Collapsible title={"Cambiar color de tarjeta"}>
 					<Form

@@ -74,7 +74,8 @@ const Classification = (props) => {
                 <div className="user-card-data">
                   <div className="user-card-info">
                     <img
-                      src={`${config.defProfilePicUrl}${user.username}`}
+                      src={user.image !== '' ?  `${user.image}` :
+                        `${config.defProfilePicUrl}${user.username}`}
                       alt="imagen de usuario"
                     />
                     <p
@@ -85,6 +86,7 @@ const Classification = (props) => {
                   </div>
                   <div className="user-card-countries">
                     {user.countries.map((country) => {
+                      
                        let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
                       return (
                         <div
