@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../../Storage/AppContext";
 import { useNavigate } from "react-router-dom";
-import useGetSongs from "../../utils/useGetSongs";
+
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
 
 const CountrySelect = () => {
 	const context = useContext(AppContext);
 	const navigate = useNavigate();
-	const [songs, setSongs] = useState(false);
+
 
 	useEffect(() => {
 		if (!context.user_logged?.token) {
@@ -28,21 +28,7 @@ const CountrySelect = () => {
 	}, []);
 
 	
-	useEffect(() => {
-		if (context.x_token) {
-			initializeSongs();
-		}
-	}, []);
 
-	useEffect(() => {
-		context.setSongs(songs);
-	}, [songs]);
-	
-
-	async function initializeSongs() {
-		const songs = await useGetSongs(context);
-		setSongs(songs);
-	}
 
 	return (
 		<>
@@ -50,7 +36,7 @@ const CountrySelect = () => {
 				context.user_logged.countries == undefined) &&
 				context.songs && (
 					<div className="container">
-						<CountryPicker countries={context.songs} modal />
+						<CountryPicker  modal />
 					</div>
 				)}
 		</>

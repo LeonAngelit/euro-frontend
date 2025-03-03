@@ -8,10 +8,12 @@ import { IconContext } from "react-icons";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import config from "../../config/config";
-
-const CountryPicker = (props) => {
+import useGetSongs from "../../utils/useGetSongs";
+const CountryPicker = () => {
 	const [modal, setModal] = useState({});
 	const [continuar, setContinuar] = useState(false);
+	const [songs, setSongs] = useState(false);
+
 	const context = useContext(AppContext);
 	useEffect(() => {
 		setContinuar(context.selection.current.length == 5);
@@ -122,6 +124,22 @@ const CountryPicker = (props) => {
 		}));
 		validateSelection();
 	}
+
+		useEffect(() => {
+			if (context.x_token) {
+				initializeSongs();
+			}
+		}, []);
+	
+		useEffect(() => {
+			context.setSongs(songs);
+		}, [songs]);
+		
+	
+		async function initializeSongs() {
+			const songs = await useGetSongs(context);
+			setSongs(songs);
+		}
 	return (
 		<>
 			<div className="countries-container">
@@ -156,7 +174,7 @@ const CountryPicker = (props) => {
 						</button>
 					</div>
 				)}
-				{props.countries.map((country) => {
+				{context.songs && context.songs?.map((country) => {
 					return (
 						<article
 							className={
@@ -164,7 +182,7 @@ const CountryPicker = (props) => {
 									? "country-container country-selected-card"
 									: "country-container"
 							}
-							key={props.countries.indexOf(country)}
+							key={context.songs?.indexOf(country)}
 						>
 							<label htmlFor={country.id}>
 								<div className="country-info-container">
@@ -174,7 +192,7 @@ const CountryPicker = (props) => {
 										></span>
 										{country.name}
 									</p>
-									<div className="song-link-container">
+									{country.link && <div className="song-link-container">
 										<p className="song-container">
 											{country.song.replace("amp;", "")}
 										</p>
@@ -187,7 +205,7 @@ const CountryPicker = (props) => {
 												</div>
 											</IconContext.Provider>
 										</Link>
-									</div>
+									</div>}
 								</div>
 								<input
 									type="checkbox"

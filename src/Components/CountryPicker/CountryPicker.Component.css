@@ -19,7 +19,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: var(--euro-pink-background);
+  border: 1px solid var(--euro-pink-background);
   padding: 0.5rem;
   border-radius: 0.5rem;
   margin-top: 1rem;
@@ -27,7 +27,7 @@
 
 .country-selected-card {
   border: 2px solid var(--euro-yellow);
-  background-color: var(--euro-pink);
+  background-color: var(--euro-pink-background);
 }
 
 .country-container.disabled {
