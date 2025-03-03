@@ -45,7 +45,6 @@ const Home = () => {
 		context.setSongs(songs);
 	}, [songs]);
 	useEffect(() => {
-		console.log(context.current_room);
 		if (context.user_logged?.countries?.length < 5) {
 			context.setCurrentRoom(() => ({
 				
@@ -53,7 +52,7 @@ const Home = () => {
 			navigate("/country-select");
 		}
 
-		if(context.current_room.current){
+		if(context.current_room?.current){
 			navigate("/room");
 		}
 	}, []);
