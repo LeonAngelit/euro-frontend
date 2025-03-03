@@ -15,7 +15,7 @@ const Room = () => {
 		if (!context.user_logged?.token) {
 			navigate("/login");
 		}
-		if(!context.current_room.current){
+		if(!context.current_room?.current){
 			navigate("/app");
 		}
 	}, [context]);
@@ -81,7 +81,7 @@ const Room = () => {
 				context.current_room?.current != undefined && (
 					<div className="container">
 						<Classification
-							room={context.current_room.current}
+							room={context.current_room?.current}
 							updateRoomData={updateRoomData}
 						/>
 					</div>
