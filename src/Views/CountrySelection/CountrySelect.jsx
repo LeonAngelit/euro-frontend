@@ -13,7 +13,7 @@ const CountrySelect = () => {
 		if (!context.user_logged?.token) {
 			navigate("/login");
 		}
-		if(context.user_logged?.countries?.length >= 5){
+		if (context.user_logged?.countries?.length >= 5) {
 			navigate("/home");
 		}
 	}, [context]);
@@ -27,18 +27,18 @@ const CountrySelect = () => {
 		}, 3600000);
 	}, []);
 
-	
+
 
 
 	return (
 		<>
-			{(context.user_logged.countries?.length < 5 ||
-				context.user_logged.countries == undefined) &&
-				context.songs && (
-					<div className="container">
-						<CountryPicker  modal />
-					</div>
-				)}
+			<div className="container">
+				{(context.user_logged.countries?.length < 5 ||
+					context.user_logged.countries == undefined) &&
+					 (
+						<CountryPicker modal />
+					)}
+			</div>
 		</>
 	);
 };
