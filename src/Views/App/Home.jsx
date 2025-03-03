@@ -6,16 +6,14 @@ import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import useValidateToken from "../../utils/useValidateToken";
 import useGetSongs from "../../utils/useGetSongs";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
-import CountryPicker from "../../Components/CountryPicker/CountryPicker";
 import bcrypt from "bcryptjs";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
 import RoomPicker from "../../Components/RoomPicker/RoomPicker";
-import Classification from "../../Components/ClassificationView/Classification";
 import updateUserData from "../../utils/useUpdateUserData";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import config from "../../config/config";
- 
+
 
 const Home = () => {
 	const context = useContext(AppContext);
@@ -43,61 +41,22 @@ const Home = () => {
 			initializeSongs();
 		}
 	}, []);
-
 	useEffect(() => {
 		context.setSongs(songs);
 	}, [songs]);
 	useEffect(() => {
+		console.log(context.current_room);
 		if (context.user_logged?.countries?.length < 5) {
-			context.setCurrentRoom((old) => ({
-				...old,
-				current: undefined,
-				exit: true,
+			context.setCurrentRoom(() => ({
+				
 			}));
+			navigate("/country-select");
 		}
-	}, [context.user_logged]);
 
-	function updateRoomData(roomId) {
-		axios
-			.get(`${config.baseUrl}rooms/${roomId}`, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 200) {
-					if (context.current_room.exit != true) {
-						const userToUpdate = response.data.users.find(
-							(element) => element.id == context.user_logged.id
-						);
-						context.setUserLogged((user) => {
-							return {
-								...user,
-								countries: userToUpdate.countries,
-							};
-						});
-						context.setCurrentRoom((old) => ({
-							...old,
-							current: response.data,
-						}));
-					}
-				}
-			})
-			.catch((error) => {
-				if (error.response.status == 404) {
-					return {
-						status: true,
-						message: "Sala no encontrada",
-					};
-				} else {
-					return {
-						status: true,
-						message: error.response.data.message,
-					};
-				}
-			});
-	}
+		if(context.current_room.current){
+			navigate("/room");
+		}
+	}, []);
 
 	async function joinRoom(event) {
 		event.preventDefault();
@@ -205,16 +164,10 @@ const Home = () => {
 
 	return (
 		<>
-			{(context.user_logged.countries?.length < 5 ||
-				context.user_logged.countries == undefined) &&
-				context.songs && (
-					<div className="container container-blue">
-						<CountryPicker countries={context.songs} modal />
-					</div>
-				)}
-			{context.user_logged.countries?.length == 5 &&
-				!context.current_room?.current && (
-					<div className="container">
+			<div className="container">
+				{context.user_logged.countries?.length == 5 &&
+					!context.current_room?.current && (
+
 						<div className="rooms-options">
 							<p>Selecciona una sala de tu lista:</p>
 							<RoomPicker rooms={context.user_logged?.rooms} />
@@ -247,19 +200,10 @@ const Home = () => {
 								</div>
 							</Collapsible>
 						</div>
-					</div>
-				)}
 
-			{context.user_logged.countries?.length == 5 &&
-				context.current_room != undefined &&
-				context.current_room?.current != undefined && (
-					<div className="container">
-						<Classification
-							room={context.current_room.current}
-							updateRoomData={updateRoomData}
-						/>
-					</div>
-				)}
+					)}
+
+			</div>
 		</>
 	);
 };

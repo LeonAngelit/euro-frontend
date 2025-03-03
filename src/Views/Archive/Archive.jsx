@@ -21,7 +21,7 @@ const Archive = () => {
 
 	useEffect(() => {
 		fetchRooms();
-	}, []);
+	}, [historicalRooms]);
 
 
 	function setSelectedRoom(roomId) {

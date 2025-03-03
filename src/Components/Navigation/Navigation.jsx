@@ -80,10 +80,8 @@ const Navigation = () => {
 	}
 
 	function handleLeaveRoom() {
-		context.setCurrentRoom((old) => ({
-			...old,
-			current: undefined,
-			exit: true,
+		context.setCurrentRoom(() => ({
+			
 		}));
 		setUserMenu(!userMenu);
 	}

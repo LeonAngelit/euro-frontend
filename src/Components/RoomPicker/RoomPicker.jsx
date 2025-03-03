@@ -45,7 +45,10 @@ const RoomPicker = (props) => {
 						exit: false,
 					}));
 				}
-			});
+			}).finally(() => {
+				navigate("/room");
+			}
+			)
 	}
 
 	async function forgetRoom(id) {

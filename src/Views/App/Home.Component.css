@@ -1,7 +1,3 @@
-.container-blue {
-  background-color: var(--primary-color-background);
-}
-
 .rooms-options {
   width: 90%;
   display: flex;

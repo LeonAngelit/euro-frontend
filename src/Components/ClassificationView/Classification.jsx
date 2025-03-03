@@ -22,9 +22,8 @@ const Classification = (props) => {
       }
     }, 60000);
     if (context.current_room?.exit) {
-      context.setCurrentRoom((old) => ({
-        ...old,
-        current: undefined,
+      context.setCurrentRoom(() => ({
+      
       }));
     }
   }, [context.current_room]);

@@ -65,3 +65,8 @@ code {
 #root > div {
   z-index: -2;
 }
+
+.country-flag {
+  margin-right: 0.2rem;
+  border-radius: 50%;
+}
