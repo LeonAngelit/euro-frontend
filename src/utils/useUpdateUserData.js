@@ -1,7 +1,7 @@
 import axios from "axios";
 
 async function updateUserData(context, navigate) {
-	axios
+	await axios
 		.get(`${config.baseUrl}users/${context.user_logged.id}`, {
 			headers: {
 				Accept: "application/json",

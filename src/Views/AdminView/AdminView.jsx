@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import config from "../../config/config";
- 
+
 
 const Login = () => {
 	const context = useContext(AppContext);
@@ -26,8 +26,7 @@ const Login = () => {
 		event.preventDefault();
 		axios
 			.get(
-				`${
-					config.baseUrl
+				`${config.baseUrl
 				}countries/updateLinks/${d.getFullYear()}`,
 				{
 					headers: {
@@ -67,6 +66,12 @@ const Login = () => {
 				updatable_user: !context.updatable.updatable_user,
 			};
 		}
+
+		if (event.target.id == "updatable_refresh_enabled") {
+			data = {
+				refresh_enabled: !context.updatable.refresh_enabled,
+			};
+		}
 		if (event.type == "submit") {
 			if (passRef.current.value != passTwoRef.current.value) {
 				setError({ status: true, message: "Las contraseñas no coinciden" });
@@ -85,7 +90,6 @@ const Login = () => {
 			}
 			const salt = bcrypt.genSaltSync(12);
 			const pass = bcrypt.hashSync(passRef.current.value, salt, null);
-
 			data = {
 				master_password: pass,
 			};
@@ -118,6 +122,38 @@ const Login = () => {
 					message: error.response.data.message,
 				});
 			});
+	}
+
+	function archiveResults(event) {
+		event.preventDefault();
+		axios
+			.get(
+				`${config.baseUrl}countries/archive/export/${d.getFullYear()}`,
+				{
+					headers: {
+						Accept: "application/json",
+						Bearer: context.x_token,
+					},
+				}
+			)
+			.then((response) => {
+				if (response.status == 200) {
+					setError(false);
+				} else {
+					setError({
+						status: true,
+						message: response.data.message,
+					});
+				}
+			}
+			)
+			.catch((error) => {
+				setError({
+					status: true,
+					message: error.response.data.message,
+				});
+			}
+			);
 	}
 
 	return (
@@ -164,6 +200,32 @@ const Login = () => {
 						Usuarios NO
 					</button>
 				)}
+
+				{context.updatable.refresh_enabled ? (
+					<button
+						className="admin-button button-green"
+						id="updatable_refresh_enabled"
+						onClick={setUpdatable}
+					>
+						Puntos OK
+					</button>
+				) : (
+					<button
+						className="admin-button button-red"
+						id="updatable_refresh_enabled"
+						onClick={setUpdatable}
+					>
+						Puntos NO
+					</button>
+				)}
+
+				<button
+					className="admin-button button-blue"
+					id="archive_results"
+					onClick={archiveResults}
+				>
+					Exportar resultados
+				</button>
 			</div>
 			<Collapsible title={"Cambiar contraseña: "}>
 				<Form

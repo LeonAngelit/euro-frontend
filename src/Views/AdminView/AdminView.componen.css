@@ -20,3 +20,7 @@
 .button-red {
   background-color: var(--error-color);
 }
+
+.button-blue {
+  background-color: var(--primary-color-background);
+}
