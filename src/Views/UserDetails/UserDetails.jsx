@@ -16,6 +16,7 @@ import config from "../../config/config";
 
 const UserDetails = () => {
 	const context = useContext(AppContext);
+	const [preview, setPreview] = useState(null)
 	const navigate = useNavigate();
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
@@ -144,6 +145,15 @@ const UserDetails = () => {
 		updateUserData(event, formData);
 	}
 
+	const handleImageChange = (event) => {
+		
+		const file = event.target.files[0];
+		if (file) {
+		  setPreview(URL.createObjectURL(file));
+		  
+		}
+	  };
+
 	return (
 		<div className="container details-container">
 			<div className="section-one">
@@ -197,13 +207,15 @@ const UserDetails = () => {
 						fields={[
 							{
 								name: "profileImage",
-								placeholder: "avatar",
 								id: "profileImage",
 								type: "file",
 								ref: imageRef,
+								
 							},
 							
 						]}
+						preview = {preview}
+						onImageChange= {handleImageChange}
 					/>
 				</Collapsible>
 

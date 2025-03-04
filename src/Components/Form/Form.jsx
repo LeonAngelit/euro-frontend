@@ -1,9 +1,10 @@
-import { React, useContext } from "react";
+import { React, useContext, useState } from "react";
 import AppContext from "../../Storage/AppContext";
 import "./Form.Component.css";
 
 const Form = (props) => {
   const context = useContext(AppContext);
+
   function myFunction(event) {
     let input;
     let checkbox = event.target;
@@ -37,12 +38,16 @@ const Form = (props) => {
           return (
             <div className="input-container" key={props.fields.indexOf(field)}>
               <label htmlFor={field.name}>{field.placeholder}</label>
+              {props.preview && <div className="profile-button">     
+                 <img src={props.preview} alt="Profile Preview" style={{ width: 100, height: 100, borderRadius: "50%" }} />
+                 </div>}
               <input
                 type={field.type}
                 placeholder={field.placeholder}
                 name={field.name}
                 id={field.id || ""}
                 ref={field.ref}
+                onChange={props.onImageChange}
                 required
               />
             </div>
@@ -64,7 +69,7 @@ const Form = (props) => {
           <input
             type="submit"
             value={props.submitValue}
-            id={props.submitValue}
+            id={props.submitValue + props.fields[0].name}
           />
         </div>
       </form>

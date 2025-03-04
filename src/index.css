@@ -70,3 +70,19 @@ code {
   margin-right: 0.2rem;
   border-radius: 50%;
 }
+
+.profile-button {
+  display: flex;
+  width: 100%;
+  background: none;
+  border: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-button img {
+  height: 7vh;
+  width: 7vh;
+  border-radius: 50%;
+  object-fit: cover;
+}

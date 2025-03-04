@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AppContext from "./Storage/AppContext";
 import config from "./config/config"
-import useGetAuthToken from "./utils/useGetAuthToken";
+import useGetAuthToken from "./utils/useGetAuthToken.js";
 
  
 
