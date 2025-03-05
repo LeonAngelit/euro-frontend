@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import envCompatible from 'vite-plugin-env-compatible';
-import {nodePolyfills} from 'vite-plugin-node-polyfills';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
 import dotenv from 'dotenv';
 
@@ -23,6 +23,9 @@ export default defineConfig({
       short_name: 'EuroContest',
       description: 'App Eurovision',
       theme_color: '#02025e',
+      background_color: "#ff0088",
+      start_url: "/",
+      display: "fullscreen",
       icons: [
         {
           src: '/star_icon_128.png',
@@ -39,10 +42,10 @@ export default defineConfig({
   }),],
   optimizeDeps: {
     esbuildOptions: {
-      
+
       define: {
         global: 'globalThis',
-        'process.env': '{}', 
+        'process.env': '{}',
       },
       plugins: [
         NodeGlobalsPolyfillPlugin({
