@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import envCompatible from 'vite-plugin-env-compatible';
 import {nodePolyfills} from 'vite-plugin-node-polyfills';
+import { VitePWA } from 'vite-plugin-pwa';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,7 +13,30 @@ export default defineConfig({
   define: {
     'process.env': {}
   },
-  plugins: [react(), envCompatible(), nodePolyfills()],
+  plugins: [react(), envCompatible(), nodePolyfills(), VitePWA({
+    registerType: 'autoUpdate',
+    devOptions: {
+      enabled: true,
+    },
+    manifest: {
+      name: 'EuroContest',
+      short_name: 'EuroContest',
+      description: 'App Eurovision',
+      theme_color: '#02025e',
+      icons: [
+        {
+          src: '/star_icon_128.png',
+          sizes: '128x128',
+          type: 'image/png',
+        },
+        {
+          src: '/star_icon_512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+    },
+  }),],
   optimizeDeps: {
     esbuildOptions: {
       
