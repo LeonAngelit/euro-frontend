@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../App/Home.Component.css";
 import AppContext from "../../Storage/AppContext";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Classification from "../../Components/ClassificationView/Classification";
 import config from "../../config/config";
@@ -9,19 +8,12 @@ import config from "../../config/config";
 
 const Archive = () => {
 	const context = useContext(AppContext);
-	const navigate = useNavigate();
 	const [historicalRooms, setHistoricalRooms] = useState(false);
 	const [selectedHistoricalRoom, setSelectedHistoricalRoom] = useState(false);
 
 	useEffect(() => {
-		if (!context.user_logged?.token) {
-			navigate("/login");
-		}
-	}, [context]);
-
-	useEffect(() => {
 		fetchRooms();
-	}, [historicalRooms]);
+	}, []);
 
 
 	function setSelectedRoom(roomId) {
@@ -108,7 +100,6 @@ const Archive = () => {
 
 					<Classification
 						room={selectedHistoricalRoom}
-						updateRoomData={false}
 					/>
 
 				)}

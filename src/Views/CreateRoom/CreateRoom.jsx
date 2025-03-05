@@ -22,9 +22,6 @@ const CreateRoom = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!context.user_logged) {
-			navigate("/login");
-		}
 		if (!useValidateToken(context.user_logged?.token)) {
 			useHandleCloseSession(context);
 		}

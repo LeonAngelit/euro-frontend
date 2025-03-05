@@ -7,20 +7,28 @@ import Form from "../../Components/Form/Form";
 import useUpdateToken from "../../utils/useUpdateToken";
 import bcrypt from "bcryptjs";
 import config from "../../config/config";
- 
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+
 
 const Login = () => {
 	const context = useContext(AppContext);
 	const passwordRef = useRef(null);
 	const userNameRef = useRef(null);
+	const [callbackUrl, setCallbackUrl] = useState('');
 	const navigate = useNavigate();
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
 		if (context.user_logged?.token) {
-			navigate("/app");
+			useNavigateWithCallback(navigate, "/app");
 		}
-	}, [context]);
+	}, [context.user_logged]);
+
+	useEffect(() => {
+		if (window.location.href.includes("callback_url")) {
+			setCallbackUrl("?callback_url=" + window.location.href.split("callback_url=")[1]);
+		}
+	}, [])
 
 	function login(event) {
 		event.preventDefault();
@@ -115,7 +123,7 @@ const Login = () => {
 			/>
 			<div className="subtitle">
 				<p>
-					Inicia sesión o <Link to={"/signup"}>Crea una cuenta</Link>
+					Inicia sesión o <Link to={"/signup" + callbackUrl}>Crea una cuenta</Link>
 				</p>
 			</div>
 		</div>

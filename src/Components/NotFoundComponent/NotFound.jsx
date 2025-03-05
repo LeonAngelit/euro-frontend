@@ -1,17 +1,24 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import logo from "./logo.svg";
-import "./App.css";
 import { useNavigate } from "react-router-dom";
 import AppContext from "../../Storage/AppContext";
+import "./App.css";
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 
 const NotFound = () => {
-  const context = useContext(AppContext);
   const navigate = useNavigate();
+  const context = useContext(AppContext);
   useEffect(() => {
-    if (context.token == undefined) {
-      navigate("/login");
+
+    if (!context.user_logged?.token) {
+      useNavigateWithCallback(navigate, "/login");
+    } else {
+      useNavigateWithCallback(navigate, "/app")
     }
+
+
   }, []);
+
   return (
     <div className="App">
       <div className="App-header">

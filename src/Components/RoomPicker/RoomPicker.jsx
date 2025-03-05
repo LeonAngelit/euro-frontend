@@ -42,7 +42,6 @@ const RoomPicker = (props) => {
 					context.setCurrentRoom((old) => ({
 						...old,
 						current: response.data,
-						exit: false,
 					}));
 				}
 			}).finally(() => {

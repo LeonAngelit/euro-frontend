@@ -7,6 +7,7 @@ import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcryptjs";
 import useUpdateToken from "../../utils/useUpdateToken";
 import config from "../../config/config";
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 
 const SignUp = () => {
 	const context = useContext(AppContext);
@@ -17,14 +18,11 @@ const SignUp = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (context.user_logged?.token != undefined) {
-			navigate("/app");
+		if (context.user_logged?.token) {
+			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.user_logged]);
-
-	useEffect(() => {
-		useUpdateToken(context.user_logged, context);
-	}, [context.user_logged]);
+	
 
 	async function getUsuario(event) {
 		event.preventDefault();
@@ -105,6 +103,7 @@ const SignUp = () => {
 				if (response.status == 200) {
 					{
 						context.setUserLogged(response.data);
+						useUpdateToken(response.data, context);
 					}
 				}
 			})

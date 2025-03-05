@@ -11,21 +11,14 @@ const Classification = (props) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    props.updateRoomData && setTimeout(() => {
+    setTimeout(() => {
       if (
         context.x_token &&
-        context.current_room != undefined &&
-        context.current_room?.exit != true
+        context.current_room?.current != undefined
       ) {
-        props.updateRoomData(context.current_room?.current?.id);
         setAnimate(!animate);
       }
     }, 60000);
-    if (context.current_room?.exit) {
-      context.setCurrentRoom(() => ({
-      
-      }));
-    }
   }, [context.current_room]);
 
   useEffect(() => {
@@ -37,7 +30,7 @@ const Classification = (props) => {
       let total = 0;
       user.countries.map((country) => {
         let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
-        if ((winnerOption===true || winnerOption === country.id) && country.position == 1) {
+        if ((winnerOption === true || winnerOption === country.id) && country.position == 1) {
           total += parseInt(country.points + country.points * 0.1);
         } else {
           total += parseInt(country.points);
@@ -73,7 +66,7 @@ const Classification = (props) => {
                 <div className="user-card-data">
                   <div className="user-card-info">
                     <img
-                      src={user.image !== '' ?  `${user.image}` :
+                      src={user.image !== '' ? `${user.image}` :
                         `${config.defProfilePicUrl}${user.username}`}
                       alt="imagen de usuario"
                     />
@@ -85,8 +78,8 @@ const Classification = (props) => {
                   </div>
                   <div className="user-card-countries">
                     {user.countries.map((country) => {
-                      
-                       let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
+
+                      let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
                       return (
                         <div
                           key={user.countries.indexOf(country)}
@@ -95,7 +88,7 @@ const Classification = (props) => {
                           <p
                             style={{
                               fontWeight:
-                                (winnerOption===true || winnerOption === country.id)
+                                (winnerOption === true || winnerOption === country.id)
                                   ? "bold"
                                   : "100",
                             }}
@@ -109,7 +102,7 @@ const Classification = (props) => {
                                     : "none",
                               }}
                             ></span>
-                            {(winnerOption===true || winnerOption === country.id)
+                            {(winnerOption === true || winnerOption === country.id)
                               ? parseInt(country.points + country.points * 0.1)
                               : country.points}
                           </p>

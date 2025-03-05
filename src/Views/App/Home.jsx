@@ -13,21 +13,23 @@ import RoomPicker from "../../Components/RoomPicker/RoomPicker";
 import updateUserData from "../../utils/useUpdateUserData";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import config from "../../config/config";
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 
 
 const Home = () => {
 	const context = useContext(AppContext);
 	const navigate = useNavigate();
-	const [songs, setSongs] = useState(false);
+	const [songs, setSongs] = useState(context.songs);
 	const passwordRef = useRef(null);
 	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (!context.user_logged?.token) {
-			navigate("/login");
+		if (context.current_room?.current) {
+			useNavigateWithCallback(navigate,"/room");
 		}
-	}, [context]);
+	}, [])
+
 	useEffect(() => {
 		let interval = setInterval(() => {
 			if (!useValidateToken(context.user_logged?.token)) {
@@ -44,18 +46,6 @@ const Home = () => {
 	useEffect(() => {
 		context.setSongs(songs);
 	}, [songs]);
-	useEffect(() => {
-		if (context.user_logged?.countries?.length < 5) {
-			context.setCurrentRoom(() => ({
-				
-			}));
-			navigate("/country-select");
-		}
-
-		if(context.current_room?.current){
-			navigate("/room");
-		}
-	}, []);
 
 	async function joinRoom(event) {
 		event.preventDefault();
@@ -157,8 +147,10 @@ const Home = () => {
 	}
 
 	async function initializeSongs() {
-		const songs = await useGetSongs(context);
-		setSongs(songs);
+		if(!songs){
+			const songs = await useGetSongs(context);
+			setSongs(songs);
+		}
 	}
 
 	return (

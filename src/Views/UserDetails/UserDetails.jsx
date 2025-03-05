@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./UserDetails.Component.css";
 import AppContext from "../../Storage/AppContext";
-import { useNavigate } from "react-router-dom";
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import Modal from "../../Components/Modal/Modal";
@@ -17,16 +16,9 @@ import config from "../../config/config";
 const UserDetails = () => {
 	const context = useContext(AppContext);
 	const [preview, setPreview] = useState(null)
-	const navigate = useNavigate();
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
 
-	useEffect(() => {
-		if (!context.user_logged) {
-			navigate("/login");
-			setError({});
-		}
-	}, []);
 	useEffect(() => {
 		if (!useValidateToken(context.user_logged?.token)) {
 			useHandleCloseSession(context);
