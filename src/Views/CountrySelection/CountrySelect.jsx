@@ -32,7 +32,7 @@ const CountrySelect = () => {
 				useNavigateWithCallback(navigate, "/app");
 			}
 		}
-	}, []);
+	}, [context.user_logged]);
 
 	return (
 		<>

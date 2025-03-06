@@ -26,19 +26,6 @@ const Classification = (props) => {
     let usersTemp = users.filter(
       (element) => element.countries.length == 5
     );
-    usersTemp.map((user) => {
-      let total = 0;
-      user.countries.map((country) => {
-        let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
-        if ((winnerOption === true || winnerOption === country.id) && country.position == 1) {
-          total += parseInt(country.points + country.points * 0.1);
-        } else {
-          total += parseInt(country.points);
-        }
-      });
-      user.total = total;
-    });
-    usersTemp.sort((a, b) => b.total - a.total);
     setUsers(usersTemp);
     setAnimate(props.animate);
   }, [context.current_room]);
@@ -79,7 +66,7 @@ const Classification = (props) => {
                   <div className="user-card-countries">
                     {user.countries.map((country) => {
 
-                      let winnerOption = props.room.users ? country.UserCountry?.winnerOption : user.winnerOption[0]?.countryId;
+                      let winnerOption = user.winnerOption[0]?.countryId;
                       return (
                         <div
                           key={user.countries.indexOf(country)}
@@ -99,12 +86,10 @@ const Classification = (props) => {
                                 outline:
                                   country.position == 1
                                     ? "2px solid var(--euro-gold)"
-                                    : "none",
+                                    : "1px solid black",
                               }}
                             ></span>
-                            {(winnerOption === true || winnerOption === country.id)
-                              ? parseInt(country.points + country.points * 0.1)
-                              : country.points}
+                               {country.position === 1 && winnerOption === country.id ? (parseInt(country.points + country.points * 0.1)) : country.points}
                           </p>
                         </div>
                       );
@@ -113,7 +98,7 @@ const Classification = (props) => {
                 </div>
 
                 <div className="user-card-total">
-                  <p>{user.total}</p>
+                  <p>{user.points}</p>
                 </div>
               </article>
             </div>
