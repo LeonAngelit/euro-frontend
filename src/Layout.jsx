@@ -110,7 +110,7 @@ function Layout({ children }) {
 			useNavigateWithCallback(navigate,"/country-select");
 		}
 
-	}, [context]);
+	}, [context.user_logged]);
 
 	useEffect(() => {
 		useGetAuthToken(context);
@@ -119,7 +119,6 @@ function Layout({ children }) {
 
 
 	useEffect(() => {
-
 		if (
 			context.x_token &&
 			context.user_logged?.username === config.appAdmin &&
@@ -129,10 +128,13 @@ function Layout({ children }) {
 				updatePointRequest();
 			}, 40000);
 		} else {
-			clearInterval(intervalRef.current);
-			intervalRef.current = null;
+			if(intervalRef.current){
+				clearInterval(intervalRef.current);
+				intervalRef.current = null;
+			}
+			
 		}
-	}, [context.updatable, context.x_token, context.user_logged]);
+	}, [context.user_logged]);
 	return (
 		<>
 			<Navigation />
