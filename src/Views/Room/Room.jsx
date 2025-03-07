@@ -24,6 +24,7 @@ const Room = () => {
 					<div className="container">
 						<Classification
 							room={context.current_room?.current}
+							animate={true}
 						/>
 					</div>
 				)}

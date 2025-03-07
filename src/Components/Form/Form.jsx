@@ -45,6 +45,7 @@ const Form = (props) => {
                 type={field.type}
                 placeholder={field.placeholder}
                 name={field.name}
+                defaultValue={props.default}
                 id={field.id || ""}
                 ref={field.ref}
                 onChange={props.onImageChange}

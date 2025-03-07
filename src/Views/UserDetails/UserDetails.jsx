@@ -216,6 +216,7 @@ const UserDetails = () => {
 					<Form
 						action={updateColor}
 						error={error}
+						default={context.user_logged?.color}
 						submitValue="Enviar"
 						fields={[
 							{

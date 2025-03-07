@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../../Storage/AppContext";
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
-import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import { useNavigate } from "react-router-dom";
+import useValidateToken from "../../utils/useValidateToken"
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+import config from "../../config/config";
 
 const CountrySelect = () => {
 	const context = useContext(AppContext);
 	const navigate = useNavigate();
-	const [callbackUrl, setCallbackUrl] = useState('');
 
 	useEffect(() => {
 		let interval = setInterval(() => {
@@ -18,16 +19,11 @@ const CountrySelect = () => {
 		}, 3600000);
 	}, []);
 
-	useEffect(() => {
-		if (window.location.href.includes("callback_url")) {
-			setCallbackUrl("?callback_url=" + window.location.href.split("callback_url=")[1]);
-		}
-	}, []);
 
 	useEffect(() => {
 		if (context.user_logged?.countries?.length >= 5) {
-			if (callbackUrl != '') {
-				navigate(callbackUrl);
+			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
+				window.location.href=window.location.href.split("callback_url=")[1];
 			} else {
 				useNavigateWithCallback(navigate, "/app");
 			}

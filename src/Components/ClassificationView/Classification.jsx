@@ -14,7 +14,7 @@ const Classification = (props) => {
     setTimeout(() => {
       if (
         context.x_token &&
-        context.current_room?.current != undefined
+        context.current_room?.current != undefined && props.animate
       ) {
         setAnimate(!animate);
       }
@@ -53,7 +53,7 @@ const Classification = (props) => {
                 <div className="user-card-data">
                   <div className="user-card-info">
                     <img
-                      src={user.image !== '' ? `${user.image}` :
+                      src={user.image ? `${user.image}` :
                         `${config.defProfilePicUrl}${user.username}`}
                       alt="imagen de usuario"
                     />

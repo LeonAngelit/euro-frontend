@@ -8,6 +8,7 @@ import AppContext from "./Storage/AppContext";
 import config from "./config/config"
 import useGetAuthToken from "./utils/useGetAuthToken.js";
 import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
+import useUpdateuserData from "./utils/useUpdateUserData.js"
 
 
 
@@ -41,19 +42,19 @@ function Layout({ children }) {
 			});
 	}
 	useEffect(() => {
-			if (context.x_token &&
-				context.current_room?.current != undefined) {
-					if(!RoomIntervalRef.current){
-						RoomIntervalRef.current = setInterval(() => {
-							updateRoomData(context.current_room?.current?.id);
-						}, 60000);
-					}
-					
-			}else {
-				clearInterval(RoomIntervalRef.current);
-				RoomIntervalRef.current = null;
+		if (context.x_token &&
+			context.current_room?.current != undefined) {
+			if (!RoomIntervalRef.current) {
+				RoomIntervalRef.current = setInterval(() => {
+					updateRoomData(context.current_room?.current?.id);
+				}, 60000);
 			}
-		
+
+		} else {
+			clearInterval(RoomIntervalRef.current);
+			RoomIntervalRef.current = null;
+		}
+
 	}, [context.current_room]);
 
 	function updateRoomData(roomId) {
@@ -99,15 +100,30 @@ function Layout({ children }) {
 	}
 
 	useEffect(() => {
-
+		useGetAuthToken(context);
 		if (!context.user_logged?.token) {
-			useNavigateWithCallback(navigate, "/login");
+			if (window.location.pathname == "/join-room") {
+				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/login");
+			}
 		}
-		if (context.user_logged?.countries?.length < 5) {
+		else if (context.user_logged?.countries?.length < 5) {
 			context.setCurrentRoom(() => ({
-
 			}));
-			useNavigateWithCallback(navigate,"/country-select");
+			if (window.location.pathname == "/join-room") {
+				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/country-select");
+			}
+		} else {
+			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
+				window.location.href = window.location.href.split("callback_url=")[1];
+			}
+
+			if (window.location.pathname == "/join-room") {
+				handleJoinRoomLink();
+			}
 		}
 
 	}, [context.user_logged]);
@@ -116,7 +132,6 @@ function Layout({ children }) {
 		useGetAuthToken(context);
 		setInterval(() => useGetAuthToken(context), 1200000);
 	}, []);
-
 
 	useEffect(() => {
 		if (
@@ -128,13 +143,58 @@ function Layout({ children }) {
 				updatePointRequest();
 			}, 40000);
 		} else {
-			if(intervalRef.current){
+			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
 				intervalRef.current = null;
 			}
-			
+
 		}
 	}, [context.user_logged]);
+
+	async function addUserRoom(data) {
+		await axios
+			.post(`${config.baseUrl}rooms/add-user`, data, {
+				headers: {
+					Accept: "application/json",
+					Bearer: context.x_token,
+				},
+			})
+			.then((response) => {
+				if (response.status == 201) {
+					useUpdateuserData(context, navigate);
+				}
+			})
+			.catch(() => {
+				navigate("/app");
+			});
+	}
+	async function handleJoinRoomLink() {
+		if (window.location.href.includes("roomAuth")) {
+			const roomAuth = window.location.href.split("roomAuth=")[1];
+			await axios.post(`${config.baseUrl}rooms/verifyRoomToken`, { token: roomAuth }, {
+				headers: {
+					Accept: "application/json",
+					Bearer: context.x_token,
+				},
+			})
+				.then((response) => {
+					if (response.status == 200) {
+						addUserRoom({
+							userId: context.user_logged.id,
+							roomId: response.data.id,
+						});
+					}
+				})
+				.catch(async (error) => {
+					if (error.response.status == 401) {
+						await useGetAuthToken(context);
+						handleJoinRoomLink();
+					}
+					navigate("/app");
+				});
+		}
+	}
+
 	return (
 		<>
 			<Navigation />

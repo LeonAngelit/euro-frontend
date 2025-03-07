@@ -17,36 +17,36 @@ const Archive = () => {
 
 
 	function setSelectedRoom(roomId) {
-		if(roomId){
+		if (roomId) {
 			axios
-			.get(`${config.baseUrl}archive/${roomId}`, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 200) {
-					setSelectedHistoricalRoom(response.data);
-				}
-			})
-			.catch((error) => {
-				if (error.response.status == 404) {
-					return {
-						status: true,
-						message: "No se han encontrado datos",
-					};
-				} else {
-					return {
-						status: true,
-						message: error.response.data.message,
-					};
-				}
-			});
-		} else{
+				.get(`${config.baseUrl}archive/${roomId}`, {
+					headers: {
+						Accept: "application/json",
+						Bearer: context.x_token,
+					},
+				})
+				.then((response) => {
+					if (response.status == 200) {
+						setSelectedHistoricalRoom(response.data);
+					}
+				})
+				.catch((error) => {
+					if (error.response.status == 404) {
+						return {
+							status: true,
+							message: "No se han encontrado datos",
+						};
+					} else {
+						return {
+							status: true,
+							message: error.response.data.message,
+						};
+					}
+				});
+		} else {
 			setSelectedHistoricalRoom(false)
 		}
-		
+
 	}
 
 	function fetchRooms() {
@@ -80,22 +80,22 @@ const Archive = () => {
 	return (
 		<>
 			<div className="container">
-			{historicalRooms && (
-				//A select element with all the rooms in the array
-				<select
-					onChange={(e) => setSelectedRoom(e.target.value)}
-					className="select-css"
-				>
-					<option value="">Seleccione una sala</option>
-					{historicalRooms.map((room) => (
-						<option key={room._id} value={room._id} id={room._id}>
-							{room.room.name} - {room.year}
-						</option>
-					))}
-				</select>
-			)
-			}
-	
+				{historicalRooms ? (
+					//A select element with all the rooms in the array
+					<select
+						onChange={(e) => setSelectedRoom(e.target.value)}
+						className="select-css"
+					>
+						<option value="">Seleccione una sala</option>
+						{historicalRooms.map((room) => (
+							<option key={room._id} value={room._id} id={room._id}>
+								{room.room.name} - {room.year}
+							</option>
+						))}
+					</select>
+				) : <p>No se han encontrado resultados históricos para el usuario</p>
+				}
+
 				{selectedHistoricalRoom && (
 
 					<Classification

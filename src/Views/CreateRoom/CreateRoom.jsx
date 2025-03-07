@@ -4,7 +4,7 @@ import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import useValidateToken from "../../utils/useValidateToken";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
-import updateUserData from "../../utils/useUpdateUserData";
+import useUpdateUserData from "../../utils/useUpdateUserData";
 import { useNavigate } from "react-router-dom";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcryptjs";
@@ -75,7 +75,7 @@ const CreateRoom = () => {
 			})
 			.then((response) => {
 				if (response.status == 201) {
-					updateUserData(context, navigate);
+					useUpdateUserData(context, navigate);
 				} else {
 					setError({
 						status: true,

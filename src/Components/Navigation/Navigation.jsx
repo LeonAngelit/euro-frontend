@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navigation.component.css";
 import { HiStar } from "react-icons/hi";
@@ -18,6 +18,12 @@ const Navigation = () => {
 	const passwordRef = useRef(null);
 	const [error, setError] = useState({});
 	const navigate = useNavigate();
+	const [callbackUrl, setCallbackUrl] = useState('');
+	useEffect(() => {
+		if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
+			setCallbackUrl("?callback_url=" + window.location.href.split("callback_url=")[1]);
+		}
+	}, [window.location.href]);
 
 	function loginAdmin(event) {
 		event.preventDefault();
@@ -81,7 +87,7 @@ const Navigation = () => {
 
 	function handleLeaveRoom() {
 		context.setCurrentRoom(() => ({
-			
+
 		}));
 		setUserMenu(!userMenu);
 	}
@@ -89,7 +95,7 @@ const Navigation = () => {
 		<header className="header-container">
 			<div className="header">
 				<div className="home-container">
-					<Link to={"/"} className="header-text" onClick={handleMenuHome}>
+					<Link to={"/" + callbackUrl} className="header-text" onClick={handleMenuHome}>
 						<IconContext.Provider value={{ color: "#FF0087", size: "40px" }}>
 							<div className="header-icon-container">
 								<HiStar />
@@ -104,8 +110,8 @@ const Navigation = () => {
 						<div className="profile-button-container">
 							<button className="profile-button" onClick={handleMenu}>
 								<img
-									  src={context.user_logged?.image !== '' ?  `${context.user_logged?.image}` :
-									  `${config.defProfilePicUrl}${context.user_logged?.username}`}
+									src={context.user_logged?.image ? `${context.user_logged?.image}` :
+										`${config.defProfilePicUrl}${context.user_logged?.username}`}
 									alt="imagen de usuario"
 								/>
 							</button>

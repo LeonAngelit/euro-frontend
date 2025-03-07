@@ -2,13 +2,14 @@ import { React, useContext, useState } from "react";
 import "./RoomPicker.Component.css";
 import AppContext from "../../Storage/AppContext";
 import { VscChevronRight } from "react-icons/vsc";
+import { FiShare2 } from "react-icons/fi";
 import { IconContext } from "react-icons";
 import axios from "axios";
-import updateUserData from "../../utils/useUpdateUserData";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import Modal from "../Modal/Modal";
 import config from "../../config/config";
+import useUpdateUserData from "../../utils/useUpdateUserData";
 
 const RoomPicker = (props) => {
 	const context = useContext(AppContext);
@@ -18,6 +19,12 @@ const RoomPicker = (props) => {
 	async function selectRoom(event) {
 		let button = event.currentTarget;
 		initializeRoom(button.id);
+	}
+
+	async function shareRoom(event) {
+		event.preventDefault();
+		let button = event.currentTarget;
+		await getRoomToken(button.getAttribute("data"), button.getAttribute("name"));
 	}
 
 	async function initializeRoom(roomId) {
@@ -64,7 +71,7 @@ const RoomPicker = (props) => {
 			})
 			.then((response) => {
 				if (response.status == 204) {
-					updateUserData(context, navigate);
+					useUpdateUserData(context, navigate);
 				}
 			})
 			.catch((error) => {
@@ -82,12 +89,40 @@ const RoomPicker = (props) => {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					updateUserData(context, navigate);
+					useUpdateUserData(context, navigate);
 				}
 			})
 			.catch((error) => {
 				return error.response.data.message;
 			});
+	}
+
+	async function getRoomToken(roomId, roomName) {
+		await axios
+			.get(`${config.baseUrl}rooms/generateRoomtoken/${roomId}`, {
+				headers: {
+					Accept: "application/json",
+					Bearer: context.x_token,
+				},
+			})
+			.then((response) => {
+				if (response.status == 200) {
+					let url = window.location.origin + "/join-room?roomAuth=" + response.data;
+						if (navigator.canShare) {
+							navigator.share({
+								title: `Participa conmigo en la sala ${roomName}!`,
+								text: "Haz clic en el link para unirte a la sala:",
+								url: url
+							}).catch(err => console.error("Error sharing:", err));
+						} else {
+							// Fallback for devices that don’t support Web Share API
+							navigator.clipboard.writeText(url);
+							alert("Link copied to clipboard!");
+						}
+				}
+			}).catch((error) => {
+				return ''
+			})
 	}
 
 	return (
@@ -97,16 +132,28 @@ const RoomPicker = (props) => {
 					return (
 						<div className="room-card" key={props.rooms.indexOf(room)}>
 							<article className="room-container">
-								<p>{room.name}</p>
 								<button
 									id={room.id}
 									onClick={selectRoom}
-									className="room-icon-container"
+									className="room-icon-container room-name"
 								>
+									<p>{room.name}</p>
 									<IconContext.Provider
 										value={{ color: "black", size: "20px" }}
 									>
-										<VscChevronRight />
+										<VscChevronRight style={{ strokeWidth: 1 }} />
+									</IconContext.Provider>
+								</button>
+								<button
+									id={`share-${room.id}`}
+									data={room.id}
+									name={room.name}
+									onClick={shareRoom}
+									className="room-icon-container">
+									<IconContext.Provider
+										value={{ size: "20px" }}
+									>
+										<FiShare2 />
 									</IconContext.Provider>
 								</button>
 							</article>

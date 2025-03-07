@@ -10,6 +10,7 @@ const config = {
   authP: import.meta.env.VITE_REACT_APP_AUTH_P,
   key: import.meta.env.VITE_REACT_APP_P_KEY,
   defProfilePicUrl: 'https://ui-avatars.com/api/',
+  joinRoomLink: import.meta.env.VITE_REACT_APP_JOIN_ROOM
 };
 
 export default config;

@@ -10,7 +10,7 @@ import bcrypt from "bcryptjs";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
 import RoomPicker from "../../Components/RoomPicker/RoomPicker";
-import updateUserData from "../../utils/useUpdateUserData";
+import useUpdateUserData from "../../utils/useUpdateUserData";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
@@ -29,6 +29,35 @@ const Home = () => {
 			useNavigateWithCallback(navigate,"/room");
 		}
 	}, [])
+
+	useEffect(() => {
+		if (!context.user_logged?.token) {
+			if(window.location.pathname == "/join-room"){
+				useNavigateWithCallback(navigate, "/login?callback_url="+window.location.href);
+			}else{
+			useNavigateWithCallback(navigate, "/login");
+			}
+		}
+		else if (context.user_logged?.countries?.length < 5) {
+			context.setCurrentRoom(() => ({
+			}));
+			if(window.location.pathname == "/join-room"){
+				useNavigateWithCallback(navigate, "/country-select?callback_url="+window.location.href);
+			}else{
+			useNavigateWithCallback(navigate, "/country-select");
+			}
+		} else {
+			if(window.location.href.includes("callback_url")){
+				const url = window.location.href.split("callback_url=")[1];
+				navigate(url);
+			}
+
+			if(window.location.pathname == "/join-room"){
+				handleJoinRoomLink();
+			}
+		}
+
+	}, []);
 
 	useEffect(() => {
 		let interval = setInterval(() => {
@@ -128,7 +157,7 @@ const Home = () => {
 			})
 			.then((response) => {
 				if (response.status == 201) {
-					updateUserData(context, navigate);
+					useUpdateUserData(context, navigate);
 				}
 			})
 			.catch((error) => {

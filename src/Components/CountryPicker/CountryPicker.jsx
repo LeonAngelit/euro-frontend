@@ -9,10 +9,10 @@ import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import config from "../../config/config";
 import useGetSongs from "../../utils/useGetSongs";
-const CountryPicker = () => {
+const CountryPicker = (props) => {
 	const [modal, setModal] = useState({});
 	const [continuar, setContinuar] = useState(false);
-	const [songs, setSongs] = useState(false);
+	const [songs, setSongs] = useState(props.countries);
 
 	const context = useContext(AppContext);
 	useEffect(() => {
@@ -161,7 +161,7 @@ const CountryPicker = () => {
 											: ""
 									}
 								>
-									{context.songs.find((element) => element.id == country).name}
+									{songs && songs.find((element) => element.id == country).name}
 								</p>
 							);
 						})}
@@ -174,7 +174,7 @@ const CountryPicker = () => {
 						</button>
 					</div>
 				)}
-				{context.songs && context.songs?.map((country) => {
+				{songs && songs?.map((country) => {
 					return (
 						<article
 							className={
@@ -182,7 +182,7 @@ const CountryPicker = () => {
 									? "country-container country-selected-card"
 									: "country-container"
 							}
-							key={context.songs?.indexOf(country)}
+							key={songs?.indexOf(country)}
 						>
 							<label htmlFor={country.id}>
 								<div className="country-info-container">

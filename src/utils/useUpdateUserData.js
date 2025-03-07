@@ -1,6 +1,7 @@
 import axios from "axios";
+import config from "../config/config";
 
-async function updateUserData(context, navigate) {
+async function useUpdateUserData(context, navigate) {
 	await axios
 		.get(`${config.baseUrl}users/${context.user_logged.id}`, {
 			headers: {
@@ -23,4 +24,4 @@ async function updateUserData(context, navigate) {
 		});
 }
 
-export default updateUserData;
+export default useUpdateUserData;
