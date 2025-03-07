@@ -111,17 +111,13 @@ const RoomPicker = (props) => {
 						if (navigator.canShare) {
 							navigator.share({
 								title: `Participa conmigo en la sala ${roomName}!`,
-								text: `Participa conmigo en la sala ${roomName}!
-								
-								Haz clic en el link para unirte a la sala:
-								
-								`,
+								text: `Participa conmigo en la sala ${roomName}!\nHaz clic en el link para unirte a la sala:\n `,
 								url: url
 							}).catch(err => console.error("Error sharing:", err));
 						} else {
 							// Fallback for devices that don’t support Web Share API
 							navigator.clipboard.writeText(url);
-							alert("Link copied to clipboard!");
+							alert("Link copiado al portapapeles");
 						}
 				}
 			}).catch((error) => {
