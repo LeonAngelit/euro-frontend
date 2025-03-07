@@ -111,7 +111,11 @@ const RoomPicker = (props) => {
 						if (navigator.canShare) {
 							navigator.share({
 								title: `Participa conmigo en la sala ${roomName}!`,
-								text: "Haz clic en el link para unirte a la sala:",
+								text: `Participa conmigo en la sala ${roomName}!
+								
+								Haz clic en el link para unirte a la sala:
+								
+								`,
 								url: url
 							}).catch(err => console.error("Error sharing:", err));
 						} else {
