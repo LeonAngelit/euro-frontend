@@ -9,12 +9,13 @@
   --primary-color-background: rgb(0, 67, 255, 0.4);
   --error-color: rgb(164, 8, 8);
   --error-background: rgb(164, 8, 8, 0.3);
-  --success-color: rgb(75, 181, 67);
+  --success-color: rgb(154 229 148);
   --euro-pink: rgb(255, 0, 135);
   --euro-pink-background: rgb(255, 0, 135, 0.5);
   --euro-yellow: rgb(255, 248, 0);
   --euro-gold: rgb(218, 183, 29);
 }
+
 
 body {
   margin: 0;
