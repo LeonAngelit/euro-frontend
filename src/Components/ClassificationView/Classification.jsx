@@ -32,6 +32,7 @@ const Classification = (props) => {
 
   return (
     <>
+    <h2>{props.room.name}</h2>
       {users.map((user) => {
         if (user.countries.length == 5) {
           return (

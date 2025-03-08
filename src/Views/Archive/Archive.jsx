@@ -10,9 +10,13 @@ const Archive = () => {
 	const context = useContext(AppContext);
 	const [historicalRooms, setHistoricalRooms] = useState(false);
 	const [selectedHistoricalRoom, setSelectedHistoricalRoom] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		fetchRooms();
+		setTimeout(()=>{setLoading(false)}, 500
+	)
+		
 	}, []);
 
 
@@ -80,7 +84,7 @@ const Archive = () => {
 	return (
 		<>
 			<div className="container">
-				{historicalRooms ? (
+				{loading ? <p>Obteniendo datos...</p> : historicalRooms ? (
 					//A select element with all the rooms in the array
 					<select
 						onChange={(e) => setSelectedRoom(e.target.value)}
