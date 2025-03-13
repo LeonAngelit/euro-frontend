@@ -11,7 +11,7 @@ const Collapsible = (props) => {
   useEffect(() => {
     if (props.collapsed == true) {
       setCollapse(props.collapsed);
-      window.scrollTo({ top: 0 });
+      window.scrollTo(0, 0);
     }
   }, [props.collapsed]);
 
