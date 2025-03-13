@@ -10,7 +10,7 @@ async function useUpdateToken(user, context) {
 		.put(`${config.baseUrl}users/${user.id}`, data, {
 			headers: {
 				Accept: "application/json",
-				Authorization: `Bearer ${context.x_token}`,
+				bearer: `${context.x_token}`,
 			},
 		})
 		.then(() => {

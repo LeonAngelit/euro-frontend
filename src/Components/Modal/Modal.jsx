@@ -11,7 +11,9 @@ const Modal = (props) => {
           props.status == "success"
             ? "modal success-modal"
             : props.status == "error"
-            ? "modal error-modal"
+            ? "modal error-modal" 
+            : props.component 
+            ? "modal modal-component"
             : "modal"
         }
       >
@@ -21,7 +23,8 @@ const Modal = (props) => {
         >
           <p>X</p>
         </button>
-        <p>{props.message}</p>
+        {props.component ?? <>
+          <p>{props.message}</p>
         {props.confirm && (
           <div className="modal-action-buttons">
             <button
@@ -38,6 +41,7 @@ const Modal = (props) => {
             </button>
           </div>
         )}
+        </>}
       </div>
     </div>
   );

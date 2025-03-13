@@ -1,20 +1,25 @@
-import { React, useContext, useState } from "react";
+import { React, useContext, useState, useRef } from "react";
 import "./RoomPicker.Component.css";
 import AppContext from "../../Storage/AppContext";
 import { VscChevronRight } from "react-icons/vsc";
 import { FiShare2 } from "react-icons/fi";
+import { AiOutlineEdit } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
+import Form from "../Form/Form";
 import Modal from "../Modal/Modal";
 import config from "../../config/config";
+import { validateUserNameRegex } from "../../utils/regexUtils";
 import useUpdateUserData from "../../utils/useUpdateUserData";
 
 const RoomPicker = (props) => {
 	const context = useContext(AppContext);
 	const [modal, setModal] = useState({});
+	const [error, setError] = useState({});
 	const navigate = useNavigate();
+	const roomNameRef = useRef(null);
 
 	async function selectRoom(event) {
 		let button = event.currentTarget;
@@ -108,21 +113,93 @@ const RoomPicker = (props) => {
 			.then((response) => {
 				if (response.status == 200) {
 					let url = window.location.origin + "/join-room?roomAuth=" + response.data;
-						if (navigator.canShare) {
-							navigator.share({
-								title: `Participa conmigo en la sala ${roomName}!`,
-								text: `Participa conmigo en la sala ${roomName}!\nHaz clic en el link para unirte a la sala:\n `,
-								url: url
-							}).catch(err => console.error("Error sharing:", err));
-						} else {
-							// Fallback for devices that don’t support Web Share API
-							navigator.clipboard.writeText(url);
-							alert("Link copiado al portapapeles");
-						}
+					if (navigator.canShare) {
+						navigator.share({
+							title: `Participa conmigo en la sala ${roomName}!`,
+							text: `Participa conmigo en la sala ${roomName}!\nHaz clic en el link para unirte a la sala:\n `,
+							url: url
+						}).catch(err => console.error("Error sharing:", err));
+					} else {
+						// Fallback for devices that don’t support Web Share API
+						navigator.clipboard.writeText(url);
+						alert("Link copiado al portapapeles");
+					}
 				}
 			}).catch((error) => {
 				return ''
 			})
+	}
+
+	function updateRoomName(event, roomId) {
+		event.preventDefault()
+		if (
+			!validateUserNameRegex(roomNameRef.current.value, () =>
+				setError({
+					status: true,
+					message:
+						"Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+				})
+			)
+		) {
+			return false;
+		}
+		setError(false);
+		let data = {
+			name: roomNameRef.current.value,
+		};
+		udpateRoomData(roomId, data);
+	}
+
+	function udpateRoomData(roomId, data) {
+		axios
+			.put(
+				`${config.baseUrl}rooms/${roomId}`,
+				data,
+				{
+					headers: {
+						Accept: "application/json",
+						bearer: `${context.x_token}`,
+					},
+				}
+			).then((response) => {
+				if (response.status == 200) {
+					axios
+					.get(
+						`${config.baseUrl}users/${context.user_logged.id}`,
+						{
+							headers: {
+								Accept: "application/json",
+								bearer: `${context.x_token}`,
+							},
+						}
+					).then((response) => {
+						if (response.status == 200) {
+							setModal({
+								visible: true,
+								message: "Actualización correcta",
+								status: "success",
+								confirm: setModal({}),
+							});
+							setTimeout(() => {
+								setModal({});
+							}, 5000);
+							context.setUserLogged(response.data);
+						}
+					})
+				}
+				
+			})
+			.catch((error) => {
+				setModal({
+					visible: true,
+					message: error.response.data.message,
+					status: "error",
+					confirm: setModal({}),
+				});
+				setTimeout(() => {
+					setModal({});
+				}, 5000);
+			});
 	}
 
 	return (
@@ -144,6 +221,45 @@ const RoomPicker = (props) => {
 										<VscChevronRight style={{ strokeWidth: 1 }} />
 									</IconContext.Provider>
 								</button>
+								{room.adminId == context.user_logged.id && (
+									<button
+										id={room.id}
+										onClick={(event) => {
+											event.preventDefault()
+											let element = event.currentTarget;
+											setModal({
+												visible: true,
+												confirm: true,
+												component: <Form
+													action={(event) => updateRoomName(event, element.id)}
+													error={error}
+													submitValue="Enviar"
+													fields={[
+														{
+															name: "nombreSala",
+															placeholder: "Nuevo nombre de la sala",
+															id: "nombreSala",
+															type: "text",
+															ref: roomNameRef,
+														},
+													]}
+												/>,
+												onaccept: () => {
+													deleteRoom(element.id);
+													setModal({});
+												},
+												onclick: () => setModal({}),
+											});
+										}}
+										className="room-icon-edit-container"
+									>
+										<IconContext.Provider
+											value={{ color: "black", size: "20px" }}
+										>
+											<AiOutlineEdit style={{ strokeWidth: 1 }} />
+										</IconContext.Provider>
+									</button>
+								)}
 								<button
 									id={`share-${room.id}`}
 									data={room.id}
@@ -213,12 +329,26 @@ const RoomPicker = (props) => {
 			) : (
 				<p>Actualmente no te has registrado en ninguna sala.</p>
 			)}
-			{modal.visible && (
+			{modal.visible && modal.confirm && (
 				<Modal
 					onclick={modal.onclick}
 					message={modal.message}
 					confirm={modal.confirm}
 					onaccept={modal.onaccept}
+				/>
+			)}
+			{modal.visible && modal.component && (
+				<Modal
+					onclick={modal.onclick}
+					message={modal.message}
+					component={modal.component}
+				/>
+			)}
+			{modal.visible && !modal.confirm && !modal.component && (
+				<Modal
+					message={modal.message}
+					status={modal.status}
+					onclick={() => setModal({})}
 				/>
 			)}
 		</>

@@ -25,6 +25,12 @@
   animation: slideIn 0.2s ease-out forwards;
 }
 
+.modal.modal-component{
+  right: 16%;
+  border: 1px solid var(--primary-color);
+  animation: none;
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(120%);

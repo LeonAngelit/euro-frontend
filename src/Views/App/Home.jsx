@@ -23,6 +23,7 @@ const Home = () => {
 	const passwordRef = useRef(null);
 	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
+	const [rooms, setRooms] = useState(context.user_logged?.rooms)
 
 	useEffect(() => {
 		if (context.current_room?.current) {
@@ -75,6 +76,11 @@ const Home = () => {
 	useEffect(() => {
 		context.setSongs(songs);
 	}, [songs]);
+
+	useEffect(() => {
+		setRooms(context.user_logged?.rooms)
+	}, [context.user_logged])
+
 
 	async function joinRoom(event) {
 		event.preventDefault();
@@ -190,7 +196,7 @@ const Home = () => {
 
 						<div className="rooms-options">
 							<p>Selecciona una sala de tu lista:</p>
-							<RoomPicker rooms={context.user_logged?.rooms} />
+							<RoomPicker rooms={rooms} />
 							<Collapsible title={"Unirte a una sala: "}>
 								<Form
 									action={joinRoom}

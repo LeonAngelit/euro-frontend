@@ -39,7 +39,7 @@ const UserDetails = () => {
 				{
 					headers: {
 						Accept: "application/json",
-						Authorization: `Bearer ${context.x_token}`,
+						bearer: `${context.x_token}`,
 					},
 				}
 			)

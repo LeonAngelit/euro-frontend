@@ -25,6 +25,17 @@
   font-weight: bold;
 }
 
+.room-icon-edit-container{
+  display: flex;
+  background-color: whitesmoke;
+  border: none;
+  justify-content: flex-start;
+  align-items: flex-end;
+  text-decoration: none;
+  width: 90%;
+  font-weight: bold;
+}
+
 .room-icon-container.room-name{
   justify-content: flex-start;
 }
