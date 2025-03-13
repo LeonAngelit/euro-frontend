@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import "./Modal.component.css";
 
 const Modal = (props) => {
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
   return (
     <div className="modal-container">
       <div
