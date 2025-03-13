@@ -1,5 +1,5 @@
 import "./Collapsible.component.css";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { VscChevronRight } from "react-icons/vsc";
 import { IconContext } from "react-icons";
 
@@ -8,6 +8,12 @@ const Collapsible = (props) => {
   function handleCollapse() {
     setCollapse(!collapse);
   }
+  useEffect(() => {
+    if (props.collapsed == true) {
+      setCollapse(props.collapsed);
+    }
+  }, [props.collapsed]);
+
   return (
     <div className="collapsible-wrapper">
       <div

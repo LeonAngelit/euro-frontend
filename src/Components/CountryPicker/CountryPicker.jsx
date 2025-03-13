@@ -34,6 +34,7 @@ const CountryPicker = (props) => {
 				})
 				.then((response) => {
 					if (response.status == 201) {
+						props.additionalAction()
 						setModal({
 							visible: true,
 							message: "Actualización correcta",

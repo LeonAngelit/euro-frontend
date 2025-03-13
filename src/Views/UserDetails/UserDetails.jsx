@@ -18,6 +18,7 @@ const UserDetails = () => {
 	const [preview, setPreview] = useState(null)
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
+	const [currentCollapsed, setcurrentCollapsed] = useState(false);
 
 	useEffect(() => {
 		if (!useValidateToken(context.user_logged?.token)) {
@@ -146,6 +147,10 @@ const UserDetails = () => {
 		}
 	  };
 
+	function handleCollapsed(){
+		setcurrentCollapsed(!currentCollapsed);
+	}
+
 	return (
 		<div className="container details-container">
 			<div className="section-one">
@@ -229,8 +234,8 @@ const UserDetails = () => {
 						]}
 					/>
 				</Collapsible>
-				<Collapsible title={"Cambiar países seleccionados"}>
-					<CountryPicker countries={context.songs} modal />
+				<Collapsible title={"Cambiar países seleccionados"} collapsed={currentCollapsed}>
+					<CountryPicker countries={context.songs} additionalAction={handleCollapsed} />
 				</Collapsible>
 			</div>
 
