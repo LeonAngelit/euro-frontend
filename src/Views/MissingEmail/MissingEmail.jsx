@@ -9,6 +9,7 @@ import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import useValidateEmail from "../../utils/useValidateEmail";
 import useGetAuthToken from "../../utils/useGetAuthToken";
+import useUpdateUserData from "../../utils/useUpdateUserData";
 
 
 const MissingEmail = () => {
@@ -32,7 +33,7 @@ const MissingEmail = () => {
 					setTimeout(() => {
 						setModal({});
 					}, 5000);
-					context.setUserLogged(response.message);
+					useUpdateUserData(response.data)
 					useNavigateWithCallback(navigate, "/app");
 				} else {
 					setModal({
@@ -130,7 +131,10 @@ const MissingEmail = () => {
 		<>
 
 			<div className="container">
-				{(context.user_logged?.email_sent == null || ((Date.now() - (context.user_logged?.email_sent || 0)) / 3600000) > 1) ?
+				{(
+					context.user_logged?.email == null 
+					&& 
+					(context.user_logged?.email_sent == null || ((Date.now() - context.user_logged?.email_sent) / 3600000) > 1)) ?
 					<div>
 						<p style={{ textAlign: "center" }}>
 							Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada

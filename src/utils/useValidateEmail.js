@@ -2,6 +2,7 @@ import axios from "axios";
 import config from "../config/config";
 
 async function useValidateEmail(context, argToken) {
+	let response = {}
 	if (!argToken) {
 		return false;
 	}
@@ -14,23 +15,19 @@ async function useValidateEmail(context, argToken) {
 		})
 		.then((response) => {
 			if (response.status == 200) {
-				{
-
-					return {
-						response: true,
-					}
+				response = {
+					response: true,
+			        data: response.data.id
 				}
-			} else {
-				{
 
-					return {
-						response: false,
-					}
+			} else {
+				response =  {
+					response: false,
 				}
 			}
 		})
 		.catch((error) => {
-			return {
+			response =  {
 				response: false,
 				message: error.response.data.message
 			}

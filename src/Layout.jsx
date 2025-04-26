@@ -115,7 +115,7 @@ function Layout({ children }) {
 			} else {
 				useNavigateWithCallback(navigate, "/login");
 			}
-		} else if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
+		} else if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
 			navigate("/missing-email");
 		} else if (context.user_logged?.countries?.length < 5) {
 			context.setCurrentRoom(() => ({

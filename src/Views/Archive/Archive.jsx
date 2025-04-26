@@ -29,7 +29,7 @@ const Archive = () => {
 		}
 	}, []);
 	useEffect(() => {
-		if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
+		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
 			useNavigateWithCallback(navigate,"/missing-email");
 		}
 	}, [])
