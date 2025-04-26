@@ -7,6 +7,8 @@ import Form from "../../Components/Form/Form";
 import Modal from "../../Components/Modal/Modal";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+import useValidateEmail from "../../utils/useValidateEmail";
+import useGetAuthToken from "../../utils/useGetAuthToken";
 
 
 const MissingEmail = () => {
@@ -17,11 +19,48 @@ const MissingEmail = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		console.log(((Date.now() - context.user_logged?.email_sent) / 3600000) < 1)
+		async function validateEmail() {
+			if (window.location.href.includes(config.confirmemailLink)) {
+				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
+				if (response.response) {
+					setModal({
+						visible: true,
+						message: "Actualización correcta",
+						status: "success",
+						confirm: setModal({}),
+					});
+					setTimeout(() => {
+						setModal({});
+					}, 5000);
+					context.setUserLogged(response.message);
+					useNavigateWithCallback(navigate, "/app");
+				} else {
+					setModal({
+						visible: true,
+						message: response.message,
+						status: "error",
+						confirm: setModal({}),
+					});
+					setTimeout(() => {
+						setModal({});
+					}, 5000);
+				}
+			}
+		}
+		validateEmail();
+		if (context.user_logged?.email && context.user_logged?.email != '') {
+			useNavigateWithCallback(navigate, "/app");
+		}
+	}, [context.x_token]);
+
+	useEffect(() => {
+			useGetAuthToken(context)
 		if (context.user_logged?.email && context.user_logged?.email != '') {
 			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.user_logged]);
+
+
 
 	function requestEmail(event) {
 		event.preventDefault();
@@ -59,7 +98,6 @@ const MissingEmail = () => {
 						setModal({});
 					}, 5000);
 					event.target.reset();
-					console.log(response.data)
 					context.setUserLogged(response.data);
 				}
 			})

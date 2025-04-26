@@ -1,9 +1,12 @@
-async function useValidateEmail(argToken) {
-  if(!argToken){
-    return false;
-  }
-  await axios
-		.post(`${config.baseUrl}/users/updateUserEmail`,{token: argToken}, {
+import axios from "axios";
+import config from "../config/config";
+
+async function useValidateEmail(context, argToken) {
+	if (!argToken) {
+		return false;
+	}
+	await axios
+		.post(`${config.baseUrl}users/updateUserEmail`, { token: argToken }, {
 			headers: {
 				Accept: "application/json",
 				bearer: `${context.x_token}`,
@@ -12,15 +15,25 @@ async function useValidateEmail(argToken) {
 		.then((response) => {
 			if (response.status == 200) {
 				{
-					context.setUserLogged(response.data);
+
+					return {
+						response: true,
+					}
+				}
+			} else {
+				{
+
+					return {
+						response: false,
+					}
 				}
 			}
 		})
-		.then(() => {
-			navigate("/app");
-		})
 		.catch((error) => {
-			return error.response.data.message;
+			return {
+				response: false,
+				message: error.response.data.message
+			}
 		});
 }
 

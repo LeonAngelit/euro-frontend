@@ -17,6 +17,7 @@ function App() {
       <div>
         <Routes>
           <Route path={"/app"} exact={true} element={<Home />} />
+          <Route path={"/confirm-email"} exact={true} element={<MissingEmail />} />
           <Route path={"/login"} exact={true} element={<Login />} />
           <Route path={"/signup"} exact={true} element={<SignUp />} />
           <Route path={"/profile"} exact={true} element={<UserDetails />} />

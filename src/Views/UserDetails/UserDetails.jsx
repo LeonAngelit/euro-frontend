@@ -29,8 +29,7 @@ const UserDetails = () => {
 		}
 	}, []);
 	useEffect(() => {
-		if (!context.user_logged?.email) {
-			navigate()
+		if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
 			useNavigateWithCallback(navigate,"/missing-email");
 		}
 	}, [])

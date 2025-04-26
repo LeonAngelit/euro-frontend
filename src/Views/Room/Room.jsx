@@ -22,7 +22,7 @@ const Room = () => {
 		}
 	}, []);
 	useEffect(() => {
-		if (!context.user_logged?.email) {
+		if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
 			useNavigateWithCallback(navigate,"/missing-email");
 		}
 	}, [])

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Components/Footer/Footer";
 import Navigation from "./Components/Navigation/Navigation";
@@ -12,13 +12,14 @@ import useUpdateuserData from "./utils/useUpdateUserData.js"
 import useValidateToken from "./utils/useValidateToken.js";
 import useHandleCloseSession from "./utils/useHandleCloseSession.js";
 import useValidateEmail from "./utils/useValidateEmail.js";
-
+import Modal from "./Components/Modal/Modal";
 
 
 function Layout({ children }) {
 	const d = new Date();
 	const context = useContext(AppContext);
 	const intervalRef = useRef(null);
+	const [modal, setModal] = useState({});
 	const RoomIntervalRef = useRef(null);
 	const navigate = useNavigate();
 	async function updatePointRequest() {
@@ -103,36 +104,34 @@ function Layout({ children }) {
 	}
 
 	useEffect(() => {
-		useGetAuthToken(context);
-		if (window.location.href.includes("/confirm-email?user_id=")) {
-			useValidateEmail(window.location.href.split("user_id=")[1])
-		} else {
-			if (!(context.user_logged?.token || useValidateToken(context.user_logged?.token))) {
-				useHandleCloseSession(context);
-				if (window.location.pathname == "/join-room") {
-					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
-				} else {
-					useNavigateWithCallback(navigate, "/login");
-				}
-			} else if (!context.user_logged?.email) {
-				console.log("no email")
-				navigate("/missing-email");
-			} else if (context.user_logged?.countries?.length < 5) {
-				context.setCurrentRoom(() => ({
-				}));
-				if (window.location.pathname == "/join-room") {
-					useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
-				} else {
-					useNavigateWithCallback(navigate, "/country-select");
-				}
+		async function getToken() {
+			await useGetAuthToken(context);
+		}
+		getToken();
+		if (!(context.user_logged?.token || useValidateToken(context.user_logged?.token))) {
+			useHandleCloseSession(context);
+			if (window.location.pathname == "/join-room") {
+				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
 			} else {
-				if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
-					window.location.href = window.location.href.split("callback_url=")[1];
-				}
+				useNavigateWithCallback(navigate, "/login");
+			}
+		} else if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
+			navigate("/missing-email");
+		} else if (context.user_logged?.countries?.length < 5) {
+			context.setCurrentRoom(() => ({
+			}));
+			if (window.location.pathname == "/join-room") {
+				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/country-select");
+			}
+		} else {
+			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
+				window.location.href = window.location.href.split("callback_url=")[1];
+			}
 
-				if (window.location.pathname == "/join-room") {
-					handleJoinRoomLink();
-				}
+			if (window.location.pathname == "/join-room") {
+				handleJoinRoomLink();
 			}
 		}
 
@@ -209,6 +208,13 @@ function Layout({ children }) {
 		<>
 			<Navigation />
 			{children}
+			{modal.visible && !modal.confirm && (
+				<Modal
+					message={modal.message}
+					status={modal.status}
+					onclick={() => setModal({})}
+				/>
+			)}
 			<Footer />
 		</>
 	);
