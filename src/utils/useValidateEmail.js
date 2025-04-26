@@ -17,21 +17,23 @@ async function useValidateEmail(context, argToken) {
 			if (response.status == 200) {
 				response = {
 					response: true,
-			        data: response.data.id
+					data: response.data.id
 				}
 
 			} else {
-				response =  {
+				response = {
 					response: false,
 				}
 			}
 		})
 		.catch((error) => {
-			response =  {
+			response = {
 				response: false,
 				message: error.response.data.message
 			}
 		});
+
+	return response;
 }
 
 export default useValidateEmail;
