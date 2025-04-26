@@ -43,7 +43,7 @@ const RoomPicker = (props) => {
 			.then((response) => {
 				if (response.status == 200) {
 					const userToUpdate = response.data.users.find(
-						(element) => element.id == context.user_logged.id
+						(element) => element.id == context.user_logged?.id
 					);
 					context.setUserLogged((user) => {
 						return {
@@ -64,7 +64,7 @@ const RoomPicker = (props) => {
 
 	async function forgetRoom(id) {
 		const data = {
-			userId: parseInt(context.user_logged.id),
+			userId: parseInt(context.user_logged?.id),
 			roomId: parseInt(id),
 		};
 		axios
@@ -165,7 +165,7 @@ const RoomPicker = (props) => {
 				if (response.status == 200) {
 					axios
 					.get(
-						`${config.baseUrl}users/${context.user_logged.id}`,
+						`${config.baseUrl}users/${context.user_logged?.id}`,
 						{
 							headers: {
 								Accept: "application/json",
@@ -221,7 +221,7 @@ const RoomPicker = (props) => {
 										<VscChevronRight style={{ strokeWidth: 1 }} />
 									</IconContext.Provider>
 								</button>
-								{room.adminId == context.user_logged.id && (
+								{room.adminId == context.user_logged?.id && (
 									<button
 										id={room.id}
 										onClick={(event) => {
@@ -293,7 +293,7 @@ const RoomPicker = (props) => {
 								>
 									Olvidar
 								</button>
-								{room.adminId == context.user_logged.id && (
+								{room.adminId == context.user_logged?.id && (
 									<button
 										id={room.id}
 										onClick={(event) => {

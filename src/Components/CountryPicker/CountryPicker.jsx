@@ -22,7 +22,7 @@ const CountryPicker = (props) => {
 	async function handleContinue() {
 		if (context.selection.current.length == 5) {
 			const data = {
-				userId: context.user_logged.id,
+				userId: context.user_logged?.id,
 				selection: context.selection.current,
 			};
 			axios

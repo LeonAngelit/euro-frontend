@@ -32,6 +32,12 @@ const Home = () => {
 	}, [])
 
 	useEffect(() => {
+		if (!context.user_logged?.email) {
+			useNavigateWithCallback(navigate,"/missing-email");
+		}
+	}, [])
+
+	useEffect(() => {
 		if (!context.user_logged?.token) {
 			if(window.location.pathname == "/join-room"){
 				useNavigateWithCallback(navigate, "/login?callback_url="+window.location.href);
@@ -125,7 +131,7 @@ const Home = () => {
 						)
 					) {
 						addUserRoom({
-							userId: context.user_logged.id,
+							userId: context.user_logged?.id,
 							roomId: response.data.id,
 						});
 					} else {

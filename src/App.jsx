@@ -9,6 +9,7 @@ const CreateRoom = lazy(() => import("./Views/CreateRoom/CreateRoom"));
 const AdminView = lazy(() => import("./Views/AdminView/AdminView"));
 const Archive = lazy(() => import("./Views/Archive/Archive"));
 const CountrySelect = lazy(() => import("./Views/CountrySelection/CountrySelect"));
+const MissingEmail = lazy(() => import("./Views/MissingEmail/MissingEmail"));
 const Room = lazy(() => import("./Views/Room/Room"));
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path={"/admin"} exact={true} element={<AdminView />} />
           <Route path={"/archive"} element={<Archive />} />
           <Route path={"/room"} element={<Room />} />
+          <Route path={"/missing-email"} element={<MissingEmail />} />
           <Route path={"/country-select"} element={<CountrySelect />} />
           <Route path={"*"} element={<NotFound />} />
         </Routes>

@@ -1,12 +1,12 @@
-import axios from "axios";
-import config from "../config/config";
-
-async function useUpdateUserData(context, navigate) {
-	await axios
-		.get(`${config.baseUrl}users/${context.user_logged?.id}`, {
+async function useValidateEmail(argToken) {
+  if(!argToken){
+    return false;
+  }
+  await axios
+		.post(`${config.baseUrl}/users/updateUserEmail`,{token: argToken}, {
 			headers: {
 				Accept: "application/json",
-				Bearer: context.x_token,
+				bearer: `${context.x_token}`,
 			},
 		})
 		.then((response) => {
@@ -24,4 +24,4 @@ async function useUpdateUserData(context, navigate) {
 		});
 }
 
-export default useUpdateUserData;
+export default useValidateEmail;

@@ -64,7 +64,7 @@ const CreateRoom = () => {
 		const data = {
 			name: roomNameRef.current.value,
 			password: pass,
-			adminId: context.user_logged.id,
+			adminId: context.user_logged?.id,
 		};
 		axios
 			.post(`${config.baseUrl}rooms`, data, {

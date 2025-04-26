@@ -9,6 +9,9 @@ import config from "./config/config"
 import useGetAuthToken from "./utils/useGetAuthToken.js";
 import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
 import useUpdateuserData from "./utils/useUpdateUserData.js"
+import useValidateToken from "./utils/useValidateToken.js";
+import useHandleCloseSession from "./utils/useHandleCloseSession.js";
+import useValidateEmail from "./utils/useValidateEmail.js";
 
 
 
@@ -69,7 +72,7 @@ function Layout({ children }) {
 				if (response.status == 200) {
 					if (context.current_room.current) {
 						const userToUpdate = response.data.users.find(
-							(element) => element.id == context.user_logged.id
+							(element) => element.id == context.user_logged?.id
 						);
 						context.setUserLogged((user) => {
 							return {
@@ -101,28 +104,35 @@ function Layout({ children }) {
 
 	useEffect(() => {
 		useGetAuthToken(context);
-		if (!context.user_logged?.token) {
-			if (window.location.pathname == "/join-room") {
-				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
-			} else {
-				useNavigateWithCallback(navigate, "/login");
-			}
-		}
-		else if (context.user_logged?.countries?.length < 5) {
-			context.setCurrentRoom(() => ({
-			}));
-			if (window.location.pathname == "/join-room") {
-				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
-			} else {
-				useNavigateWithCallback(navigate, "/country-select");
-			}
+		if (window.location.href.includes("/confirm-email?user_id=")) {
+			useValidateEmail(window.location.href.split("user_id=")[1])
 		} else {
-			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
-				window.location.href = window.location.href.split("callback_url=")[1];
-			}
+			if (!(context.user_logged?.token || useValidateToken(context.user_logged?.token))) {
+				useHandleCloseSession(context);
+				if (window.location.pathname == "/join-room") {
+					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/login");
+				}
+			} else if (!context.user_logged?.email) {
+				console.log("no email")
+				navigate("/missing-email");
+			} else if (context.user_logged?.countries?.length < 5) {
+				context.setCurrentRoom(() => ({
+				}));
+				if (window.location.pathname == "/join-room") {
+					useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/country-select");
+				}
+			} else {
+				if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
+					window.location.href = window.location.href.split("callback_url=")[1];
+				}
 
-			if (window.location.pathname == "/join-room") {
-				handleJoinRoomLink();
+				if (window.location.pathname == "/join-room") {
+					handleJoinRoomLink();
+				}
 			}
 		}
 
@@ -180,7 +190,7 @@ function Layout({ children }) {
 				.then((response) => {
 					if (response.status == 200) {
 						addUserRoom({
-							userId: context.user_logged.id,
+							userId: context.user_logged?.id,
 							roomId: response.data.id,
 						});
 					}

@@ -3,6 +3,8 @@ import AppContext from "../../Storage/AppContext";
 import Classification from "../../Components/ClassificationView/Classification";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import { useNavigate } from "react-router-dom";
+import useValidateToken from "../../utils/useValidateToken";
+import useHandleCloseSession from "../../utils/useHandleCloseSession";
 
 
 const Room = () => {
@@ -14,6 +16,16 @@ const Room = () => {
 		}
 		
 	}, []);
+	useEffect(() => {
+		if (!useValidateToken(context.user_logged?.token)) {
+			useHandleCloseSession(context);
+		}
+	}, []);
+	useEffect(() => {
+		if (!context.user_logged?.email) {
+			useNavigateWithCallback(navigate,"/missing-email");
+		}
+	}, [])
 
 
 	return (

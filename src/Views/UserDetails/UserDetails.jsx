@@ -2,20 +2,23 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import "./UserDetails.Component.css";
 import AppContext from "../../Storage/AppContext";
 import CountryPicker from "../../Components/CountryPicker/CountryPicker";
+import { useNavigate } from "react-router-dom";
 import Collapsible from "../../Components/Collapsible/Collapsible";
 import Modal from "../../Components/Modal/Modal";
 import useValidateToken from "../../utils/useValidateToken";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import Form from "../../Components/Form/Form";
 import axios from "axios";
-import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
+import { validateEmailRegex, validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import bcrypt from "bcryptjs";
 import config from "../../config/config";
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
  
 
 const UserDetails = () => {
 	const context = useContext(AppContext);
 	const [preview, setPreview] = useState(null)
+	const navigate = useNavigate();
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
 	const [currentCollapsed, setcurrentCollapsed] = useState(false);
@@ -25,9 +28,16 @@ const UserDetails = () => {
 			useHandleCloseSession(context);
 		}
 	}, []);
+	useEffect(() => {
+		if (!context.user_logged?.email) {
+			navigate()
+			useNavigateWithCallback(navigate,"/missing-email");
+		}
+	}, [])
 	const passRef = useRef(null);
 	const pass2Ref = useRef(null);
 	const userNameRef = useRef(null);
+	const emailRef = useRef(null);
 	const colorRef = useRef(null);
 	const imageRef = useRef(null);
 	let data;
@@ -35,7 +45,7 @@ const UserDetails = () => {
 	function updateUserData(event, data) {
 		axios
 			.put(
-				`${config.baseUrl}users/${context.user_logged.id}`,
+				`${config.baseUrl}users/${context.user_logged?.id}`,
 				data,
 				{
 					headers: {
@@ -70,6 +80,26 @@ const UserDetails = () => {
 					setModal({});
 				}, 5000);
 			});
+	}
+
+	function udpateUserEmail(event) {
+		event.preventDefault();
+		if (
+			!validateEmailRegex(emailRef.current.value, () =>
+				setError({
+					status: true,
+					message:
+						"Correo electrónico no válido",
+				})
+			)
+		) {
+			return false;
+		}
+		setError(false);
+		data = {
+			email: emailRef.current.value,
+		};
+		updateUserData(event, data);
 	}
 
 	function updateUserName(event) {
@@ -166,6 +196,23 @@ const UserDetails = () => {
 								id: "nombreUsuario",
 								type: "text",
 								ref: userNameRef,
+							},
+						]}
+					/>
+				</Collapsible>
+
+				<Collapsible title={"Cambiar correo electrónico: "}>
+					<Form
+						action={udpateUserEmail}
+						error={error}
+						submitValue="Enviar"
+						fields={[
+							{
+								name: "emaiUsuario",
+								placeholder: "Correo electrónico",
+								id: "emaiUsuario",
+								type: "email",
+								ref: emailRef,
 							},
 						]}
 					/>

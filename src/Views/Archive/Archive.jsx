@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../App/Home.Component.css";
 import AppContext from "../../Storage/AppContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Classification from "../../Components/ClassificationView/Classification";
 import config from "../../config/config";
+import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+import useValidateToken from "../../utils/useValidateToken";
+import useHandleCloseSession from "../../utils/useHandleCloseSession";
 
 
 const Archive = () => {
 	const context = useContext(AppContext);
 	const [historicalRooms, setHistoricalRooms] = useState(false);
+	const navigate = useNavigate();
 	const [selectedHistoricalRoom, setSelectedHistoricalRoom] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -18,6 +23,16 @@ const Archive = () => {
 	)
 		
 	}, []);
+	useEffect(() => {
+		if (!useValidateToken(context.user_logged?.token)) {
+			useHandleCloseSession(context);
+		}
+	}, []);
+	useEffect(() => {
+		if (!context.user_logged?.email) {
+			useNavigateWithCallback(navigate,"/missing-email");
+		}
+	}, [])
 
 
 	function setSelectedRoom(roomId) {

@@ -3,7 +3,7 @@ import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Form from "../../Components/Form/Form";
-import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
+import { validateRegex, validateUserNameRegex, validateEmailRegex } from "../../utils/regexUtils";
 import bcrypt from "bcryptjs";
 import useUpdateToken from "../../utils/useUpdateToken";
 import config from "../../config/config";
@@ -14,6 +14,7 @@ const SignUp = () => {
 	const passwordRef = useRef(null);
 	const passwordTwodRef = useRef(null);
 	const userNameRef = useRef(null);
+	const emailRef = useRef(null);
 	const navigate = useNavigate();
 	const [error, setError] = useState(false);
 
@@ -32,6 +33,18 @@ const SignUp = () => {
 					status: true,
 					message:
 						"Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+				})
+			)
+		) {
+			return false;
+		}
+
+		if (
+			!validateEmailRegex(emailRef.current.value, () =>
+				setError({
+					status: true,
+					message:
+						"Correo electrónico no válido",
 				})
 			)
 		) {
@@ -125,6 +138,12 @@ const SignUp = () => {
 						placeholder: "Nombre de usuario",
 						type: "text",
 						ref: userNameRef,
+					},
+					{
+						name: "email",
+						placeholder: "Correo electrónico",
+						type: "email",
+						ref: emailRef,
 					},
 					{
 						name: "password",
