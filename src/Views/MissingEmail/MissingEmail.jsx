@@ -130,7 +130,7 @@ const MissingEmail = () => {
 		<>
 
 			<div className="container">
-				{context.user_logged?.email_sent && ((Date.now() - context.user_logged?.email_sent) / 3600000) > 1 ?
+				{(context.user_logged?.email_sent == null || ((Date.now() - (context.user_logged?.email_sent || 0)) / 3600000) > 1) ?
 					<div>
 						<p style={{ textAlign: "center" }}>
 							Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada
