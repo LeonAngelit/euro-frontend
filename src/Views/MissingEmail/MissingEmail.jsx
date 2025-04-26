@@ -23,7 +23,7 @@ const MissingEmail = () => {
 		async function validateEmail() {
 			if (window.location.href.includes(config.confirmemailLink)) {
 				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
-				if (response.response) {
+				if (response.result) {
 					setModal({
 						visible: true,
 						message: "Actualización correcta",
@@ -33,7 +33,7 @@ const MissingEmail = () => {
 					setTimeout(() => {
 						setModal({});
 					}, 5000);
-					useUpdateUserData(response.data)
+					useUpdateUserData(context, navigate)
 					useNavigateWithCallback(navigate, "/app");
 				} else {
 					setModal({
