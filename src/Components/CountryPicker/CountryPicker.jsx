@@ -25,8 +25,8 @@ const CountryPicker = (props) => {
 				userId: context.user_logged?.id,
 				selection: context.selection.current,
 			};
-			axios
-				.post(`${config.baseUrl}users/bulk/add-country`, data, {
+			await axios
+				.post(`${config.baseUrl}users/bulk/add-country/`, data, {
 					headers: {
 						Accept: "application/json",
 						Bearer: context.x_token,
@@ -34,7 +34,6 @@ const CountryPicker = (props) => {
 				})
 				.then((response) => {
 					if (response.status == 201) {
-						props.additionalAction()
 						setModal({
 							visible: true,
 							message: "Actualización correcta",

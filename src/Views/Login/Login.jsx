@@ -2,9 +2,8 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
+import { validateEmailRegex, validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import Form from "../../Components/Form/Form";
-import useUpdateToken from "../../utils/useUpdateToken";
 import bcrypt from "bcryptjs";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
@@ -19,7 +18,7 @@ const Login = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (context.user_logged?.token) {
+		if (context.user_logged) {
 			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.user_logged]);
@@ -30,14 +29,20 @@ const Login = () => {
 		}
 	}, [])
 
-	function login(event) {
+	async function login(event) {
 		event.preventDefault();
 		if (
 			!validateUserNameRegex(userNameRef.current.value, () =>
 				setError({
 					status: true,
 					message:
-						"Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+						"Nombre de usuario o email no válido",
+				})
+			) && !validateEmailRegex(userNameRef.current.value, () =>
+				setError({
+					status: true,
+					message:
+						"Nombre de usuario o email no válido",
 				})
 			)
 		) {
@@ -54,9 +59,14 @@ const Login = () => {
 		) {
 			return false;
 		}
-		axios
-			.get(
-				`${config.baseUrl}users/name/${userNameRef.current.value}`,
+		
+		const data = {
+			name: userNameRef.current.value,
+			password: passwordRef.current.value.split('').reverse().join('')
+		}
+		await axios
+			.post(
+				`${config.baseUrl}users/login`, data,
 				{
 					headers: {
 						Accept: "application/json",
@@ -66,20 +76,14 @@ const Login = () => {
 			)
 			.then((response) => {
 				if (response.status == 200) {
-					if (
-						bcrypt.compareSync(
-							passwordRef.current.value,
-							response.data.password
-						)
-					) {
-						context.setUserLogged(response.data);
-						useUpdateToken(response.data, context);
-					} else {
-						setError({
-							status: true,
-							message: "Usuario o contaseña incorrectos",
-						});
-					}
+					context.setUserLogged(response.data);
+					navigate("/app")
+
+				} else {
+					setError({
+						status: true,
+						message: "Usuario o contaseña incorrectos",
+					});
 				}
 			})
 			.catch((error) => {
@@ -108,7 +112,7 @@ const Login = () => {
 				fields={[
 					{
 						name: "username",
-						placeholder: "Nombre de usuario",
+						placeholder: "Nombre de usuario o email",
 						type: "text",
 						ref: userNameRef,
 					},

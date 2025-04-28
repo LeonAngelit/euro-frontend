@@ -11,12 +11,21 @@ const CountrySelect = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		let interval = setInterval(() => {
-			if (!useValidateToken(context.user_logged?.token)) {
+		async function validateUserToken() {
+			const isValidToken = await useValidateToken(context);
+			if (!context.user_logged || !isValidToken) {
 				useHandleCloseSession(context);
-				clearInterval(interval);
+				if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
+					useNavigateWithCallback(navigate, "/missing-email");
+				} 
+				if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/login");
+				}
 			}
-		}, 3600000);
+		}
+		validateUserToken();
 	}, []);
 
 

@@ -17,15 +17,19 @@ const Room = () => {
 		
 	}, []);
 	useEffect(() => {
-		if (!useValidateToken(context.user_logged?.token)) {
-			useHandleCloseSession(context);
+		async function validateUserToken() {
+			const isValidToken = await useValidateToken(context);
+			if (!context.user_logged || !isValidToken) {
+				useHandleCloseSession(context);
+				if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/login");
+				}
+			}
 		}
+		validateUserToken();
 	}, []);
-	useEffect(() => {
-		if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
-			useNavigateWithCallback(navigate,"/missing-email");
-		}
-	}, [])
 
 
 	return (

@@ -24,15 +24,20 @@ const UserDetails = () => {
 	const [currentCollapsed, setcurrentCollapsed] = useState(false);
 
 	useEffect(() => {
-		if (!useValidateToken(context.user_logged?.token)) {
-			useHandleCloseSession(context);
+		async function validateUserToken() {
+			const isValidToken = await useValidateToken(context);
+			if (!context.user_logged || !isValidToken) {
+				useHandleCloseSession(context);
+				if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/login");
+				}
+			}
 		}
+		validateUserToken();
 	}, []);
-	useEffect(() => {
-		if (!context.user_logged?.email && !window.location.href.includes(config.confirmemailLink)) {
-			useNavigateWithCallback(navigate,"/missing-email");
-		}
-	}, [])
+	
 	const passRef = useRef(null);
 	const pass2Ref = useRef(null);
 	const userNameRef = useRef(null);
@@ -41,8 +46,8 @@ const UserDetails = () => {
 	const imageRef = useRef(null);
 	let data;
 
-	function updateUserData(event, data) {
-		axios
+	async function updateUserData(event, data) {
+		await axios
 			.put(
 				`${config.baseUrl}users/${context.user_logged?.id}`,
 				data,

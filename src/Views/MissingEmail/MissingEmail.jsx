@@ -10,6 +10,8 @@ import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import useValidateEmail from "../../utils/useValidateEmail";
 import useGetAuthToken from "../../utils/useGetAuthToken";
 import useUpdateUserData from "../../utils/useUpdateUserData";
+import useValidateToken from "../../utils/useValidateToken";
+import useHandleCloseSession from "../../utils/useHandleCloseSession";
 
 
 const MissingEmail = () => {
@@ -18,6 +20,7 @@ const MissingEmail = () => {
 	const navigate = useNavigate();
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState(false);
+	const [emailSent, setEmailSent] = useState(false);
 
 	useEffect(() => {
 		async function validateEmail() {
@@ -38,32 +41,61 @@ const MissingEmail = () => {
 				} else {
 					setModal({
 						visible: true,
-						message: response.message,
+						message: response.data,
 						status: "error",
 						confirm: setModal({}),
 					});
 					setTimeout(() => {
 						setModal({});
 					}, 5000);
+					useNavigateWithCallback(navigate, "/missing-email");
 				}
 			}
 		}
 		validateEmail();
-		if (context.user_logged?.email && context.user_logged?.email != '') {
+		if (context.user_logged?.email != null && !emailSent) {
 			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.x_token]);
 
-	useEffect(() => {
-			useGetAuthToken(context)
-		if (context.user_logged?.email && context.user_logged?.email != '') {
-			useNavigateWithCallback(navigate, "/app");
+	async function validateUserToken() {
+		const isValidToken = await useValidateToken(context);
+		if (!context.user_logged || !isValidToken) {
+			useHandleCloseSession(context);
+			if (window.location.href.includes(config.confirmemailLink)) {
+				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/login");
+			}
 		}
+	}
+
+	useEffect(() => {
+		useGetAuthToken(context)
+		validateUserToken();
+		setEmailSent(isEmailSent());
 	}, [context.user_logged]);
 
+	useEffect(() => {
+		useGetAuthToken(context)
+		isEmailSent();
+	}, [context.user_logged]);
 
+	async function isEmailSent() {
+		const mailResponse = await axios.get(`${config.baseUrl}users/validateEmailSent/${context.user_logged.id}`, {
+			headers: {
+				Accept: "application/json",
+				Bearer: context.x_token,
+			},
+		}).then((response) => {
+			return response;
+		}).catch((error) => {
+			return error
+		})
+		setEmailSent(mailResponse.data.emailSent || false)
+	}
 
-	function requestEmail(event) {
+	async function requestEmail(event) {
 		event.preventDefault();
 		if (
 			!validateEmailRegex(emailRef.current.value, () =>
@@ -76,7 +108,7 @@ const MissingEmail = () => {
 		) {
 			return false;
 		}
-		axios
+		await axios
 			.put(
 				`${config.baseUrl}users/${context.user_logged?.id}`,
 				{ email: emailRef.current.value },
@@ -99,7 +131,7 @@ const MissingEmail = () => {
 						setModal({});
 					}, 5000);
 					event.target.reset();
-					context.setUserLogged(response.data);
+					setEmailSent(true)
 				}
 			})
 			.catch((error) => {
@@ -131,16 +163,13 @@ const MissingEmail = () => {
 		<>
 
 			<div className="container">
-				{(
-					context.user_logged?.email == null 
-					&& 
-					(context.user_logged?.email_sent == null || ((Date.now() - context.user_logged?.email_sent) / 3600000) > 1)) ?
+				{(context.user_logged?.email == null && !emailSent) ?
 					<div>
 						<p style={{ textAlign: "center" }}>
 							Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada
 						</p>
-						<p  style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>
-						Por lo que deberás introducir un email válido en el formulario más abajo para seguir usando la app 👇 Muchas gracias 
+						<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>
+							Por lo que deberás introducir un email válido en el formulario más abajo para seguir usando la app 👇 Muchas gracias
 						</p>
 						<Form
 							action={requestEmail}

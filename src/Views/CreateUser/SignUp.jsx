@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Form from "../../Components/Form/Form";
 import { validateRegex, validateUserNameRegex, validateEmailRegex } from "../../utils/regexUtils";
 import bcrypt from "bcryptjs";
-import useUpdateToken from "../../utils/useUpdateToken";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 
@@ -19,7 +18,7 @@ const SignUp = () => {
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (context.user_logged?.token) {
+		if (context.user_logged) {
 			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.user_logged]);
@@ -70,10 +69,11 @@ const SignUp = () => {
 		const pass = bcrypt.hashSync(passwordRef.current.value, salt, null);
 		const data = {
 			username: userNameRef.current.value,
+			email: emailRef.current.value,
 			password: pass,
 		};
-		axios
-			.post(`${config.baseUrl}users`, data, {
+		await axios
+			.post(`${config.baseUrl}users/signup`, data, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -93,7 +93,7 @@ const SignUp = () => {
 				if (error.status == 409) {
 					setError({
 						status: true,
-						message: "Este nombre de usuario ya está registrado",
+						message: "Nombre de usuario no disponible",
 					});
 				} else {
 					setError({
@@ -105,7 +105,7 @@ const SignUp = () => {
 	}
 
 	async function updateUsuario(id) {
-		axios
+		await axios
 			.get(`${config.baseUrl}users/${id}`, {
 				headers: {
 					Accept: "application/json",
@@ -116,7 +116,6 @@ const SignUp = () => {
 				if (response.status == 200) {
 					{
 						context.setUserLogged(response.data);
-						useUpdateToken(response.data, context);
 					}
 				}
 			})

@@ -22,13 +22,19 @@ const CreateRoom = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!useValidateToken(context.user_logged?.token)) {
-			useHandleCloseSession(context);
+		async function validateUserToken() {
+			const isValidToken = await useValidateToken(context);
+			if (!context.user_logged || !isValidToken) {
+				useHandleCloseSession(context);
+				if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+				} else {
+					useNavigateWithCallback(navigate, "/login");
+				}
+			}
 		}
+		validateUserToken();
 	}, []);
-	useEffect(() => {
-		useValidateToken(context.user_logged?.token);
-	}, [context]);
 
 	async function crearSala(event) {
 		event.preventDefault();
@@ -66,7 +72,7 @@ const CreateRoom = () => {
 			password: pass,
 			adminId: context.user_logged?.id,
 		};
-		axios
+		await axios
 			.post(`${config.baseUrl}rooms`, data, {
 				headers: {
 					Accept: "application/json",

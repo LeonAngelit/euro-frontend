@@ -1,12 +1,22 @@
-function useValidateToken(token) {
-  if(!token){
+import axios from "axios";
+import config from "../config/config";
+
+async function useValidateToken(context) {
+  const response = await axios.get(`${config.baseUrl}users/validateToken/${context.user_logged?.id}`, {
+    headers: {
+      Accept: "application/json",
+      Bearer: context.x_token,
+    },
+  }).then((response) => {
+    return response;
+  }).catch((error) => {
+    return false
+  })
+  if (response.status == 200) {
+    return response.data.isValidToken;
+  } else {
     return false;
   }
-  const difference = (Date.now() - parseInt(token)) / 3600000;
-  if (difference >= 24) {
-    return false;
-  }
-  return true;
 }
 
 export default useValidateToken;

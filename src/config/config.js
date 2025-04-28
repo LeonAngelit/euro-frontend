@@ -11,7 +11,8 @@ const config = {
   key: import.meta.env.VITE_REACT_APP_P_KEY,
   defProfilePicUrl: 'https://ui-avatars.com/api/',
   joinRoomLink: import.meta.env.VITE_REACT_APP_JOIN_ROOM,
-  confirmemailLink: import.meta.env.VITE_REACT_APP_CONFIRM_EMAIL_URL
+  confirmemailLink: import.meta.env.VITE_REACT_APP_CONFIRM_EMAIL_URL,
+  joinRoomPath: import.meta.env.VITE_REACT_APP_JOIN_ROOM_PATH
 };
 
 export default config;

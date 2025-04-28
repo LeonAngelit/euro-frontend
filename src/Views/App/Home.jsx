@@ -25,41 +25,44 @@ const Home = () => {
 	const [error, setError] = useState(false);
 	const [rooms, setRooms] = useState(context.user_logged?.rooms)
 
+
 	useEffect(() => {
 		if (context.current_room?.current) {
-			useNavigateWithCallback(navigate,"/room");
+			useNavigateWithCallback(navigate, "/room");
 		}
 	}, [])
-
-	useEffect(() => {
-		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
-			useNavigateWithCallback(navigate,"/missing-email");
-		}
-	}, [])
-
-	useEffect(() => {
-		if (!context.user_logged?.token) {
-			if(window.location.pathname == "/join-room"){
-				useNavigateWithCallback(navigate, "/login?callback_url="+window.location.href);
-			}else{
-			useNavigateWithCallback(navigate, "/login");
+	async function validateUserToken() {
+		const isValidToken = await useValidateToken(context);
+		if (!context.user_logged || !isValidToken) {
+			useHandleCloseSession(context);
+			if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/login");
 			}
 		}
-		else if (context.user_logged?.countries?.length < 5) {
+	}
+	
+
+	useEffect(() => {	
+		validateUserToken();
+		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
+			useNavigateWithCallback(navigate, "/missing-email");
+		} else if (context.user_logged?.countries?.length < 5) {
 			context.setCurrentRoom(() => ({
 			}));
-			if(window.location.pathname == "/join-room"){
-				useNavigateWithCallback(navigate, "/country-select?callback_url="+window.location.href);
-			}else{
-			useNavigateWithCallback(navigate, "/country-select");
+			if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
+				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/country-select");
 			}
 		} else {
-			if(window.location.href.includes("callback_url")){
+			if (window.location.href.includes("callback_url")) {
 				const url = window.location.href.split("callback_url=")[1];
 				navigate(url);
 			}
 
-			if(window.location.pathname == "/join-room"){
+			if (window.location.pathname == "/join-room") {
 				handleJoinRoomLink();
 			}
 		}
@@ -68,10 +71,12 @@ const Home = () => {
 
 	useEffect(() => {
 		let interval = setInterval(() => {
-			if (!useValidateToken(context.user_logged?.token)) {
-				useHandleCloseSession(context);
-				clearInterval(interval);
-			}
+			(async () => {
+				if (!await useValidateToken(context)) {
+					clearInterval(interval);
+					useHandleCloseSession(context);
+				}
+			})();
 		}, 3600000);
 	}, []);
 	useEffect(() => {
@@ -112,7 +117,7 @@ const Home = () => {
 		) {
 			return false;
 		}
-		axios
+		await axios
 			.get(
 				`${config.baseUrl}rooms/name/${roomNameRef.current.value}`,
 				{
@@ -160,7 +165,7 @@ const Home = () => {
 	}
 
 	async function addUserRoom(data) {
-		axios
+		await axios
 			.post(`${config.baseUrl}rooms/add-user`, data, {
 				headers: {
 					Accept: "application/json",
@@ -188,7 +193,7 @@ const Home = () => {
 	}
 
 	async function initializeSongs() {
-		if(!songs){
+		if (!songs) {
 			const songs = await useGetSongs(context);
 			setSongs(songs);
 		}

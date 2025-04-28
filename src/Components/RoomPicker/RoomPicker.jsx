@@ -33,7 +33,7 @@ const RoomPicker = (props) => {
 	}
 
 	async function initializeRoom(roomId) {
-		axios
+		await axios
 			.get(`${config.baseUrl}rooms/${roomId}`, {
 				headers: {
 					Accept: "application/json",
@@ -67,7 +67,7 @@ const RoomPicker = (props) => {
 			userId: parseInt(context.user_logged?.id),
 			roomId: parseInt(id),
 		};
-		axios
+		await axios
 			.post(`${config.baseUrl}rooms/remove-user`, data, {
 				headers: {
 					Accept: "application/json",
@@ -85,7 +85,7 @@ const RoomPicker = (props) => {
 	}
 
 	async function deleteRoom(id) {
-		axios
+		await axios
 			.delete(`${config.baseUrl}rooms/${id}`, {
 				headers: {
 					Accept: "application/json",
@@ -150,8 +150,8 @@ const RoomPicker = (props) => {
 		udpateRoomData(roomId, data);
 	}
 
-	function udpateRoomData(roomId, data) {
-		axios
+	async function udpateRoomData(roomId, data) {
+		await axios
 			.put(
 				`${config.baseUrl}rooms/${roomId}`,
 				data,
@@ -161,9 +161,9 @@ const RoomPicker = (props) => {
 						bearer: `${context.x_token}`,
 					},
 				}
-			).then((response) => {
+			).then(async (response) => {
 				if (response.status == 200) {
-					axios
+					await axios
 					.get(
 						`${config.baseUrl}users/${context.user_logged?.id}`,
 						{

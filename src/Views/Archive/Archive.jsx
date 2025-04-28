@@ -19,25 +19,32 @@ const Archive = () => {
 
 	useEffect(() => {
 		fetchRooms();
-		setTimeout(()=>{setLoading(false)}, 500
-	)
-		
+		setTimeout(() => { setLoading(false) }, 500
+		)
+
 	}, []);
+
 	useEffect(() => {
-		if (!useValidateToken(context.user_logged?.token)) {
-			useHandleCloseSession(context);
+		async function validateUserToken() {
+			const isValidToken = await useValidateToken(context);
+			if (!context.user_logged || !isValidToken) {
+				useHandleCloseSession(context);
+				useNavigateWithCallback(navigate, "/login");
+
+			}
 		}
+		validateUserToken();
 	}, []);
 	useEffect(() => {
 		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
-			useNavigateWithCallback(navigate,"/missing-email");
+			useNavigateWithCallback(navigate, "/missing-email");
 		}
 	}, [])
 
 
-	function setSelectedRoom(roomId) {
+	async function setSelectedRoom(roomId) {
 		if (roomId) {
-			axios
+			await axios
 				.get(`${config.baseUrl}archive/${roomId}`, {
 					headers: {
 						Accept: "application/json",
@@ -68,8 +75,8 @@ const Archive = () => {
 
 	}
 
-	function fetchRooms() {
-		axios
+	async function fetchRooms() {
+		await axios
 			.get(`${config.baseUrl}archive/users/${context.user_logged?.username}`, {
 				headers: {
 					Accept: "application/json",

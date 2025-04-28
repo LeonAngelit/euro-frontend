@@ -11,7 +11,6 @@ import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
 import useUpdateuserData from "./utils/useUpdateUserData.js"
 import useValidateToken from "./utils/useValidateToken.js";
 import useHandleCloseSession from "./utils/useHandleCloseSession.js";
-import useValidateEmail from "./utils/useValidateEmail.js";
 import Modal from "./Components/Modal/Modal";
 
 
@@ -61,8 +60,8 @@ function Layout({ children }) {
 
 	}, [context.current_room]);
 
-	function updateRoomData(roomId) {
-		axios
+	async function updateRoomData(roomId) {
+		await axios
 			.get(`${config.baseUrl}rooms/${roomId}`, {
 				headers: {
 					Accept: "application/json",
@@ -108,39 +107,13 @@ function Layout({ children }) {
 			await useGetAuthToken(context);
 		}
 		getToken();
-		if (!(context.user_logged?.token || useValidateToken(context.user_logged?.token))) {
-			useHandleCloseSession(context);
-			if (window.location.pathname == "/join-room") {
-				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
-			} else {
-				useNavigateWithCallback(navigate, "/login");
-			}
-		} else if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
-			navigate("/missing-email");
-		} else if (context.user_logged?.countries?.length < 5) {
-			context.setCurrentRoom(() => ({
-			}));
-			if (window.location.pathname == "/join-room") {
-				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
-			} else {
-				useNavigateWithCallback(navigate, "/country-select");
-			}
-		} else {
-			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
-				window.location.href = window.location.href.split("callback_url=")[1];
-			}
-
-			if (window.location.pathname == "/join-room") {
-				handleJoinRoomLink();
-			}
-		}
-
 	}, [context.user_logged]);
 
 	useEffect(() => {
 		useGetAuthToken(context);
 		setInterval(() => useGetAuthToken(context), 1200000);
 	}, []);
+
 
 	useEffect(() => {
 		if (

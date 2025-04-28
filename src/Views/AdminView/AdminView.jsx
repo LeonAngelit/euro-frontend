@@ -22,9 +22,9 @@ const Login = () => {
 		}
 	}, []);
 
-	function updateLinks(event) {
+	async function updateLinks(event) {
 		event.preventDefault();
-		axios
+		await axios
 			.get(
 				`${config.baseUrl
 				}countries/updateLinks/${d.getFullYear()}`,
@@ -53,7 +53,7 @@ const Login = () => {
 			});
 	}
 
-	function setUpdatable(event) {
+	async function setUpdatable(event) {
 		event.preventDefault();
 		let data;
 		if (event.target.id == "updatable_countries") {
@@ -95,7 +95,7 @@ const Login = () => {
 			};
 		}
 
-		axios
+		await axios
 			.put(`${config.baseUrl}updatable`, data, {
 				headers: {
 					Accept: "application/json",
@@ -124,9 +124,9 @@ const Login = () => {
 			});
 	}
 
-	function archiveResults(event) {
+	async function archiveResults(event) {
 		event.preventDefault();
-		axios
+		await axios
 			.get(
 				`${config.baseUrl}countries/archive/export/${d.getFullYear()}`,
 				{

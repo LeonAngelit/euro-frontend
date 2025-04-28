@@ -25,10 +25,10 @@ const Navigation = () => {
 		}
 	}, [window.location.href]);
 
-	function loginAdmin(event) {
+	async function loginAdmin(event) {
 		event.preventDefault();
 		const pass = passwordRef.current.value;
-		axios
+	await axios
 			.get(`${config.baseUrl}updatable`, {
 				headers: {
 					Accept: "application/json",
