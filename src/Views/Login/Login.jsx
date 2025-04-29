@@ -4,7 +4,6 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { validateEmailRegex, validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import Form from "../../Components/Form/Form";
-import bcrypt from "bcryptjs";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 
@@ -22,7 +21,7 @@ const Login = () => {
 			if (callbackUrl != '' && callbackUrl.includes(config.confirmemailLink)) {
 				navigate(window.location.href.split("callback_url=")[1])
 			} else {
-				useNavigateWithCallback("/app", callbackUrl)
+				useNavigateWithCallback(navigate, "/app");
 			}
 		}
 	}, [context.user_logged]);
