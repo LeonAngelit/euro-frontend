@@ -69,10 +69,10 @@ const Login = () => {
 			.then((response) => {
 				if (response.status == 200) {
 					context.setUserLogged(response.data);
-					if (callbackUrl != '') {
-						navigate(callbackUrl)
+					if (callbackUrl != '' && callbackUrl.includes(config.confirmemailLink)) {
+						navigate(window.location.href.split("callback_url=")[1])
 					} else {
-						navigate("/app")
+						useNavigateWithCallback("/app", callbackUrl)
 					}
 
 				} else {
