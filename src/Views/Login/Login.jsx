@@ -31,21 +31,13 @@ const Login = () => {
 
 	async function login(event) {
 		event.preventDefault();
-		if (
-			!validateUserNameRegex(userNameRef.current.value, () =>
-				setError({
-					status: true,
-					message:
-						"Nombre de usuario o email no válido",
-				})
-			) && !validateEmailRegex(userNameRef.current.value, () =>
-				setError({
-					status: true,
-					message:
-						"Nombre de usuario o email no válido",
-				})
-			)
-		) {
+		if (!(validateUserNameRegex(userNameRef.current.value) || validateEmailRegex(userNameRef.current.value))) {
+			setError({
+				status: true,
+				message:
+					"Nombre de usuario o email no válido",
+			})
+
 			return false;
 		}
 		if (
@@ -59,7 +51,7 @@ const Login = () => {
 		) {
 			return false;
 		}
-		
+
 		const data = {
 			name: userNameRef.current.value,
 			password: passwordRef.current.value.split('').reverse().join('')
@@ -77,7 +69,11 @@ const Login = () => {
 			.then((response) => {
 				if (response.status == 200) {
 					context.setUserLogged(response.data);
-					navigate("/app")
+					if (callbackUrl != '') {
+						navigate(callbackUrl)
+					} else {
+						navigate("/app")
+					}
 
 				} else {
 					setError({

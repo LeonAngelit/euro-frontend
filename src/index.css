@@ -83,6 +83,21 @@ span.fis.country-flag {
 
 }
 
+.select-css {
+  margin-top: 1rem;
+  border: none;
+  border-bottom: 1px solid black;
+  background: none;
+  outline: none;
+}
+
+.select-css.selected {
+  position: absolute;
+  top: 8dvh;
+  right: 5vw;
+  z-index: 50;
+}
+
 .profile-button {
   display: flex;
   width: 100%;

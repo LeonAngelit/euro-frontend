@@ -106,29 +106,40 @@ const Archive = () => {
 	return (
 		<>
 			<div className="container">
-				{loading ? <p>Obteniendo datos...</p> : historicalRooms ? (
-					//A select element with all the rooms in the array
-					<select
+				{loading ? <p>Obteniendo datos...</p> : historicalRooms ?
+				selectedHistoricalRoom ? (
+					<>
+							<select 
 						onChange={(e) => setSelectedRoom(e.target.value)}
-						className="select-css"
+						className="select-css selected"
 					>
-						<option value="">Seleccione una sala</option>
+						<option value="">Selecciona una sala</option>
 						{historicalRooms.map((room) => (
 							<option key={room._id} value={room._id} id={room._id}>
 								{room.room.name} - {room.year}
 							</option>
 						))}
 					</select>
-				) : <p>No se han encontrado resultados históricos para el usuario</p>
-				}
-
-				{selectedHistoricalRoom && (
-
 					<Classification
 						room={selectedHistoricalRoom}
 					/>
+					</>
+					
 
-				)}
+				) : (
+					//A select element with all the rooms in the array
+					<select
+						onChange={(e) => setSelectedRoom(e.target.value)}
+						className="select-css"
+					>
+						<option value="">Selecciona una sala</option>
+						{historicalRooms.map((room) => (
+							<option key={room._id} value={room._id} id={room._id}>
+								{room.room.name} - {room.year}
+							</option>
+						))}
+					</select>
+				) : <p>No se han encontrado resultados históricos para el usuario</p> }
 			</div>
 		</>
 	);

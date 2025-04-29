@@ -33,7 +33,7 @@ const Classification = (props) => {
   return (
     <>
     <div className="room-title-container">
-    <h2>{props.room.name}</h2>
+    <h2>{props.room.name ?? props.room?.room?.name}</h2>
     </div>
       {users.map((user) => {
         if (user.countries.length == 5) {

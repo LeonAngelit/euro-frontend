@@ -26,7 +26,6 @@ const MissingEmail = () => {
 		async function validateEmail() {
 			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
 				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
-				console.log(response)
 				if (response.result) {
 					setModal({
 						visible: true,

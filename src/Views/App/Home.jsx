@@ -46,7 +46,7 @@ const Home = () => {
 
 	useEffect(() => {	
 		validateUserToken();
-		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
+		if (context.user_logged?.email == null) {
 			useNavigateWithCallback(navigate, "/missing-email");
 		} else if (context.user_logged?.countries?.length < 5) {
 			context.setCurrentRoom(() => ({
