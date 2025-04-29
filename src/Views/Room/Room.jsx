@@ -17,6 +17,12 @@ const Room = () => {
 		
 	}, []);
 	useEffect(() => {
+		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
+			useNavigateWithCallback(navigate, "/missing-email");
+		}
+	}, [])
+	
+	useEffect(() => {
 		async function validateUserToken() {
 			const isValidToken = await useValidateToken(context);
 			if (!context.user_logged || !isValidToken) {

@@ -37,6 +37,12 @@ const UserDetails = () => {
 		}
 		validateUserToken();
 	}, []);
+
+	useEffect(() => {
+		if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
+			useNavigateWithCallback(navigate, "/missing-email");
+		}
+	}, [])
 	
 	const passRef = useRef(null);
 	const pass2Ref = useRef(null);

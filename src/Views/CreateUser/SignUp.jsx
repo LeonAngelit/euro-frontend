@@ -131,6 +131,7 @@ const SignUp = () => {
 				error={error}
 				showPassword={true}
 				submitValue="Registrarse"
+				remember={true}
 				fields={[
 					{
 						name: "username",
