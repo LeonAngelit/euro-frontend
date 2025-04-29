@@ -93,7 +93,7 @@ const SignUp = () => {
 				if (error.status == 409) {
 					setError({
 						status: true,
-						message: "Nombre de usuario no disponible",
+						message: error.response.data.message
 					});
 				} else {
 					setError({
