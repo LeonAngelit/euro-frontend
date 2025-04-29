@@ -1,12 +1,15 @@
 .footer {
   display: flex;
   max-width: 100vw;
-  height: 8vh;
+  height: 2.5vh;
   background-color: var(--primary-color);
   justify-content: center;
   align-items: center;
+  position: sticky;
+  bottom: 0;
 }
 
 .footer p {
   color: whitesmoke;
+  font-size: .75rem;
 }

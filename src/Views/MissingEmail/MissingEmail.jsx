@@ -24,8 +24,9 @@ const MissingEmail = () => {
 
 	useEffect(() => {
 		async function validateEmail() {
-			if (window.location.href.includes(config.confirmemailLink)) {
+			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
 				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
+				console.log(response)
 				if (response.result) {
 					setModal({
 						visible: true,
@@ -37,7 +38,6 @@ const MissingEmail = () => {
 						setModal({});
 					}, 5000);
 					useUpdateUserData(context, navigate)
-					useNavigateWithCallback(navigate, "/app");
 				} else {
 					setModal({
 						visible: true,
@@ -56,7 +56,7 @@ const MissingEmail = () => {
 		if (context.user_logged?.email != null && !emailSent) {
 			useNavigateWithCallback(navigate, "/app");
 		}
-	}, [context.x_token]);
+	}, [context.x_token, emailSent]);
 
 	async function validateUserToken() {
 		const isValidToken = await useValidateToken(context);
@@ -72,13 +72,8 @@ const MissingEmail = () => {
 
 	useEffect(() => {
 		useGetAuthToken(context)
-		validateUserToken();
-		setEmailSent(isEmailSent());
-	}, [context.user_logged]);
-
-	useEffect(() => {
-		useGetAuthToken(context)
 		isEmailSent();
+		validateUserToken();
 	}, [context.user_logged]);
 
 	async function isEmailSent() {
@@ -163,7 +158,7 @@ const MissingEmail = () => {
 		<>
 
 			<div className="container">
-				{(context.user_logged?.email == null && !emailSent) ?
+				{context.user_logged?.email == null ? !emailSent ?
 					<div>
 						<p style={{ textAlign: "center" }}>
 							Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada
@@ -192,7 +187,13 @@ const MissingEmail = () => {
 						<br></br>
 						<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no lo encuentras, revisa la bandeja de correo no deseado.</p>
 					</div>
-				}
+				: <div>
+				<p style={{ textAlign: "center" }}>
+					Actualización correcta, serás redirigido a la app automáticamente
+				</p>
+				<br></br>
+				<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no eres redirigido automáticamente, recarga la página</p>
+			</div>}
 			</div>
 
 

@@ -32,7 +32,9 @@ const Classification = (props) => {
 
   return (
     <>
+    <div className="room-title-container">
     <h2>{props.room.name}</h2>
+    </div>
       {users.map((user) => {
         if (user.countries.length == 5) {
           return (
@@ -51,17 +53,22 @@ const Classification = (props) => {
                 }}
                 className="user-card"
               >
-                <div className="user-card-data">
-                  <div className="user-card-info">
-                    <img
+                <div className="user-card-position">
+                  <p>{users.indexOf(user) + 1}</p>
+                </div>
+                <div className="user-card-image">
+                <img
                       src={user.image ? `${user.image}` :
                         `${config.defProfilePicUrl}${user.username}`}
                       alt="imagen de usuario"
                     />
+                </div>
+                <div className="user-card-data">
+                  <div className="user-card-info">
                     <p
                       className={users.indexOf(user) == 0 ? "user-winner" : ""}
                     >
-                      {users.indexOf(user) + 1}. {user.username}
+                     {user.username}
                     </p>
                   </div>
                   <div className="user-card-countries">
@@ -87,7 +94,7 @@ const Classification = (props) => {
                                 outline:
                                   country.position == 1
                                     ? "2px solid var(--euro-gold)"
-                                    : "1px solid black",
+                                    : "",
                               }}
                             ></span>
                                {country.position === 1 && winnerOption === country.id ? (parseInt(country.points + country.points * 0.1)) : country.points}
