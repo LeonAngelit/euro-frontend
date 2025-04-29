@@ -15,14 +15,7 @@ const CountrySelect = () => {
 			const isValidToken = await useValidateToken(context);
 			if (!context.user_logged || !isValidToken) {
 				useHandleCloseSession(context);
-				if (context.user_logged?.email == null && !window.location.href.includes(config.confirmemailLink)) {
-					useNavigateWithCallback(navigate, "/missing-email");
-				} 
-				if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
-					useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
-				} else {
 					useNavigateWithCallback(navigate, "/login");
-				}
 			}
 		}
 		validateUserToken();
@@ -33,7 +26,7 @@ const CountrySelect = () => {
 		if (context.user_logged?.countries?.length >= 5) {
 			if (window.location.href.includes("callback_url=") && window.location.href.includes(config.joinRoomLink)) {
 				window.location.href=window.location.href.split("callback_url=")[1];
-			} else {
+			} else{
 				useNavigateWithCallback(navigate, "/app");
 			}
 		}

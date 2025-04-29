@@ -39,14 +39,13 @@ const CreateRoom = () => {
 	async function crearSala(event) {
 		event.preventDefault();
 		if (
-			!validateUserNameRegex(roomNameRef.current.value, () =>
-				setError({
-					status: true,
-					message:
-						"Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
-				})
-			)
+			!validateUserNameRegex(roomNameRef.current.value)
 		) {
+			setError({
+				status: true,
+				message:
+					"Nombre de sala no válido, debe contener 5 a 25 caracteres, evita caracteres especiales",
+			})
 			return false;
 		}
 

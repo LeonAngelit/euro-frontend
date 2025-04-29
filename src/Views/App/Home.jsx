@@ -31,6 +31,7 @@ const Home = () => {
 			useNavigateWithCallback(navigate, "/room");
 		}
 	}, [])
+
 	async function validateUserToken() {
 		const isValidToken = await useValidateToken(context);
 		if (!context.user_logged || !isValidToken) {
@@ -58,12 +59,7 @@ const Home = () => {
 			}
 		} else {
 			if (window.location.href.includes("callback_url")) {
-				const url = window.location.href.split("callback_url=")[1];
-				navigate(url);
-			}
-
-			if (window.location.pathname == "/join-room") {
-				handleJoinRoomLink();
+				window.location.href=window.location.href.split("callback_url=")[1];
 			}
 		}
 

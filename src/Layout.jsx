@@ -9,6 +9,7 @@ import config from "./config/config"
 import useGetAuthToken from "./utils/useGetAuthToken.js";
 import useUpdateuserData from "./utils/useUpdateUserData.js"
 import Modal from "./Components/Modal/Modal";
+import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
 
 
 function Layout({ children }) {
@@ -104,7 +105,45 @@ function Layout({ children }) {
 			await useGetAuthToken(context);
 		}
 		getToken();
+		if (context.user_logged && context.user_logged?.email != null && context.user_logged?.countries?.length == 5 && window.location.pathname == "/join-room") {
+			handleJoinRoomLink();
+		}
+		if(!context.user_logged){
+			if (window.location.href.includes("/join-room") || window.location.href.includes(config.confirmemailLink)) {
+				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
+			} else {
+				useNavigateWithCallback(navigate, "/login");
+			}
+		}
+	
 	}, [context.user_logged]);
+
+	async function handleJoinRoomLink() {
+		if (window.location.href.includes("roomAuth")) {
+			const roomAuth = window.location.href.split("roomAuth=")[1];
+			await axios.post(`${config.baseUrl}rooms/verifyRoomToken`, { token: roomAuth }, {
+				headers: {
+					Accept: "application/json",
+					Bearer: context.x_token,
+				},
+			})
+				.then((response) => {
+					if (response.status == 200) {
+						addUserRoom({
+							userId: context.user_logged?.id,
+							roomId: response.data.id,
+						});
+					}
+				})
+				.catch(async (error) => {
+					if (error.response.status == 401) {
+						await useGetAuthToken(context);
+						handleJoinRoomLink();
+					}
+					navigate("/app");
+				});
+		}
+	}
 
 	useEffect(() => {
 		useGetAuthToken(context);
@@ -146,32 +185,6 @@ function Layout({ children }) {
 			.catch(() => {
 				navigate("/app");
 			});
-	}
-	async function handleJoinRoomLink() {
-		if (window.location.href.includes("roomAuth")) {
-			const roomAuth = window.location.href.split("roomAuth=")[1];
-			await axios.post(`${config.baseUrl}rooms/verifyRoomToken`, { token: roomAuth }, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-				.then((response) => {
-					if (response.status == 200) {
-						addUserRoom({
-							userId: context.user_logged?.id,
-							roomId: response.data.id,
-						});
-					}
-				})
-				.catch(async (error) => {
-					if (error.response.status == 401) {
-						await useGetAuthToken(context);
-						handleJoinRoomLink();
-					}
-					navigate("/app");
-				});
-		}
 	}
 
 	return (

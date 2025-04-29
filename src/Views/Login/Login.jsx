@@ -18,11 +18,7 @@ const Login = () => {
 
 	useEffect(() => {
 		if (context.user_logged) {
-			if (callbackUrl != '' && callbackUrl.includes(config.confirmemailLink)) {
-				navigate(window.location.href.split("callback_url=")[1])
-			} else {
-				useNavigateWithCallback(navigate, "/app");
-			}
+			useNavigateWithCallback(navigate, "/app");
 		}
 	}, [context.user_logged]);
 
@@ -72,7 +68,7 @@ const Login = () => {
 			.then((response) => {
 				if (response.status == 200) {
 					context.setUserLogged(response.data);
-					
+
 				} else {
 					setError({
 						status: true,
