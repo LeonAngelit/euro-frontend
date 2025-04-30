@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { node } from "prop-types";
 
 let initialAppContext;
 window.localStorage.getItem("app-context")
@@ -17,6 +17,8 @@ window.localStorage.getItem("app-context")
       updatable: undefined,
       selection: { current: [] },
       x_token: "",
+      modal: {},
+      setModal: () => {},
       setXToken: () => {},
       setSelection: () => {},
       setSelectedUser: () => {},
@@ -32,6 +34,7 @@ export function AppContextProvider({ children }) {
   const [rememberUser, setRememberUser] = useState(initialAppContext.token);
   const [userLogged, setUserLogged] = useState(initialAppContext.user_logged);
   const [songs, setSongs] = useState(initialAppContext.songs);
+  const [modal, setModal] = useState(initialAppContext.modal);
   const [selection, setSelection] = useState(initialAppContext.selection);
   const [xToken, setXtoken] = useState(initialAppContext.x_token);
   const [updatable, setUpdatable] = useState(initialAppContext.updatable);
@@ -51,6 +54,10 @@ export function AppContextProvider({ children }) {
   }
   function setXtokenHandler(xToken) {
     setXtoken(xToken);       
+  }
+
+  function setModalHandler(modal) {
+    setModal(modal);       
   }
   function setUserHandler(user) {
     setUserLogged(user);   
@@ -82,7 +89,9 @@ export function AppContextProvider({ children }) {
     songs: songs,
     selection: selection,
     x_token: xToken,
+    modal: modal,
     updatable: updatable,
+    setModal: setModalHandler,
     setXtoken: setXtokenHandler,
     setSelection: setSelectionHandler,
     setUserLogged: setUserHandler,

@@ -16,7 +16,6 @@ import useUpdateUserData from "../../utils/useUpdateUserData";
 
 const RoomPicker = (props) => {
 	const context = useContext(AppContext);
-	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
 	const navigate = useNavigate();
 	const roomNameRef = useRef(null);
@@ -174,14 +173,14 @@ const RoomPicker = (props) => {
 						}
 					).then((response) => {
 						if (response.status == 200) {
-							setModal({
+							context.setModal({
 								visible: true,
 								message: "Actualización correcta",
 								status: "success",
-								confirm: setModal({}),
+								confirm: context.setModal({}),
 							});
 							setTimeout(() => {
-								setModal({});
+								context.setModal({});
 							}, 5000);
 							context.setUserLogged(response.data);
 						}
@@ -190,14 +189,14 @@ const RoomPicker = (props) => {
 				
 			})
 			.catch((error) => {
-				setModal({
+				context.setModal({
 					visible: true,
 					message: error.response.data.message,
 					status: "error",
-					confirm: setModal({}),
+					confirm: context.setModal({}),
 				});
 				setTimeout(() => {
-					setModal({});
+					context.setModal({});
 				}, 5000);
 			});
 	}
@@ -227,7 +226,7 @@ const RoomPicker = (props) => {
 										onClick={(event) => {
 											event.preventDefault()
 											let element = event.currentTarget;
-											setModal({
+											context.setModal({
 												visible: true,
 												confirm: true,
 												component: <Form
@@ -246,9 +245,9 @@ const RoomPicker = (props) => {
 												/>,
 												onaccept: () => {
 													deleteRoom(element.id);
-													setModal({});
+													context.setModal({});
 												},
-												onclick: () => setModal({}),
+												onclick: () => context.setModal({}),
 											});
 										}}
 										className="room-icon-edit-container"
@@ -278,16 +277,16 @@ const RoomPicker = (props) => {
 									id={room.id}
 									onClick={(event) => {
 										let element = event.currentTarget;
-										setModal({
+										context.setModal({
 											visible: true,
 											message:
 												"¿Deseas olvidar la sala? Podrás volver a unirte introduciendo id y contraseña en el formulario",
 											confirm: true,
 											onaccept: () => {
 												forgetRoom(element.id);
-												setModal({});
+												context.setModal({});
 											},
-											onclick: () => setModal({}),
+											onclick: () => context.setModal({}),
 										});
 									}}
 								>
@@ -298,16 +297,16 @@ const RoomPicker = (props) => {
 										id={room.id}
 										onClick={(event) => {
 											let element = event.currentTarget;
-											setModal({
+											context.setModal({
 												visible: true,
 												message:
 													"¿Deseas eliminar la sala? Esta acción es irreversible",
 												confirm: true,
 												onaccept: () => {
 													deleteRoom(element.id);
-													setModal({});
+													context.setModal({});
 												},
-												onclick: () => setModal({}),
+												onclick: () => context.setModal({}),
 											});
 										}}
 										className="delete-button"
@@ -328,28 +327,6 @@ const RoomPicker = (props) => {
 				})
 			) : (
 				<p>Actualmente no te has registrado en ninguna sala.</p>
-			)}
-			{modal.visible && modal.confirm && (
-				<Modal
-					onclick={modal.onclick}
-					message={modal.message}
-					confirm={modal.confirm}
-					onaccept={modal.onaccept}
-				/>
-			)}
-			{modal.visible && modal.component && (
-				<Modal
-					onclick={modal.onclick}
-					message={modal.message}
-					component={modal.component}
-				/>
-			)}
-			{modal.visible && !modal.confirm && !modal.component && (
-				<Modal
-					message={modal.message}
-					status={modal.status}
-					onclick={() => setModal({})}
-				/>
 			)}
 		</>
 	);

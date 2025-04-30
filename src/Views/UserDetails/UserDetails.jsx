@@ -19,7 +19,6 @@ const UserDetails = () => {
 	const context = useContext(AppContext);
 	const [preview, setPreview] = useState(null)
 	const navigate = useNavigate();
-	const [modal, setModal] = useState({});
 	const [error, setError] = useState({});
 	const [currentCollapsed, setcurrentCollapsed] = useState(false);
 
@@ -66,28 +65,28 @@ const UserDetails = () => {
 			)
 			.then((response) => {
 				if (response.status == 200) {
-					setModal({
+					context.setModal({
 						visible: true,
 						message: "Actualización correcta",
 						status: "success",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 					event.target.reset();
 					context.setUserLogged(response.data);
 				}
 			})
 			.catch((error) => {
-				setModal({
+				context.setModal({
 					visible: true,
 					message: error.response.data.message,
 					status: "error",
-					confirm: setModal({}),
+					confirm: context.setModal({}),
 				});
 				setTimeout(() => {
-					setModal({});
+					context.setModal({});
 				}, 5000);
 			});
 	}
@@ -299,14 +298,6 @@ const UserDetails = () => {
 			<div className="section-two">
 				<button className="delete-user-button">Eliminar cuenta</button>
 			</div>
-
-			{modal.visible && !modal.confirm && (
-				<Modal
-					message={modal.message}
-					status={modal.status}
-					onclick={() => setModal({})}
-				/>
-			)}
 		</div>
 	);
 };

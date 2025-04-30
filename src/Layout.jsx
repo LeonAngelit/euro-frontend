@@ -16,7 +16,7 @@ function Layout({ children }) {
 	const d = new Date();
 	const context = useContext(AppContext);
 	const intervalRef = useRef(null);
-	const [modal, setModal] = useState({});
+	const [modal, setModal] = useState(context.modal);
 	const RoomIntervalRef = useRef(null);
 	const navigate = useNavigate();
 	async function updatePointRequest() {
@@ -57,6 +57,10 @@ function Layout({ children }) {
 		}
 
 	}, [context.current_room]);
+
+	useEffect(() => {
+		setModal(context.modal);
+	}, [context.modal])
 
 	async function updateRoomData(roomId) {
 		await axios
@@ -108,14 +112,14 @@ function Layout({ children }) {
 		if (context.user_logged && context.user_logged?.email != null && context.user_logged?.countries?.length == 5 && window.location.pathname == "/join-room") {
 			handleJoinRoomLink();
 		}
-		if(!context.user_logged){
+		if (!context.user_logged) {
 			if (window.location.href.includes("/join-room") || window.location.href.includes(config.confirmemailLink)) {
 				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
 			} else {
 				useNavigateWithCallback(navigate, "/login");
 			}
 		}
-	
+
 	}, [context.user_logged]);
 
 	async function handleJoinRoomLink() {
@@ -191,11 +195,28 @@ function Layout({ children }) {
 		<>
 			<Navigation />
 			{children}
-			{modal.visible && !modal.confirm && (
+			{modal.visible && modal.confirm && !modal.component && (
 				<Modal
 					message={modal.message}
 					status={modal.status}
-					onclick={() => setModal({})}
+					onclick={() => context.setModal({})}
+					onaccept={modal.onaccept}
+					confirm={true}
+				/>
+			)}
+			{modal.visible && modal.component && (
+				<Modal
+					onclick={modal.onclick}
+					onaccept={modal.onaccept}
+					message={modal.message}
+					component={modal.component}
+				/>
+			)}
+			{modal.visible && !modal.confirm && !modal.component && (
+				<Modal
+					message={modal.message}
+					status={modal.status}
+					onclick={() => context.setModal({})}
 				/>
 			)}
 			<Footer />

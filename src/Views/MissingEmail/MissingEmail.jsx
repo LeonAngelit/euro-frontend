@@ -18,7 +18,6 @@ const MissingEmail = () => {
 	const context = useContext(AppContext);
 	const emailRef = useRef(null);
 	const navigate = useNavigate();
-	const [modal, setModal] = useState({});
 	const [error, setError] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
 	
@@ -35,25 +34,25 @@ const MissingEmail = () => {
 			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
 				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
 				if (response.result) {
-					setModal({
+					context.setModal({
 						visible: true,
-						message: "Actualización correcta",
+						message: "Email confirmado",
 						status: "success",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 					useUpdateUserData(context, navigate)
 				} else {
-					setModal({
+					context.setModal({
 						visible: true,
 						message: response.data,
 						status: "error",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 					useNavigateWithCallback(navigate, "/missing-email");
 				}
@@ -69,36 +68,6 @@ const MissingEmail = () => {
 		useGetAuthToken(context)
 		isEmailSent();
 		validateUserToken();
-		async function validateEmail() {
-			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
-				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
-				if (response.result) {
-					setModal({
-						visible: true,
-						message: "Actualización correcta",
-						status: "success",
-						confirm: setModal({}),
-					});
-					setTimeout(() => {
-						setModal({});
-					}, 5000);
-					useUpdateUserData(context, navigate)
-					useNavigateWithCallback(navigate, "/app");
-				} else {
-					setModal({
-						visible: true,
-						message: response.data,
-						status: "error",
-						confirm: setModal({}),
-					});
-					setTimeout(() => {
-						setModal({});
-					}, 5000);
-					useNavigateWithCallback(navigate, "/missing-email");
-				}
-			}
-		}
-		validateEmail();
 		if (context.user_logged?.email != null) {
 			useNavigateWithCallback(navigate, "/app");
 		}
@@ -144,14 +113,14 @@ const MissingEmail = () => {
 			)
 			.then((response) => {
 				if (response.status == 200) {
-					setModal({
+					context.setModal({
 						visible: true,
-						message: "Actualización correcta",
+						message: "Email de confirmación enviado",
 						status: "success",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 					event.target.reset();
 					setEmailSent(true)
@@ -159,24 +128,24 @@ const MissingEmail = () => {
 			})
 			.catch((error) => {
 				if (error.response.status == 404) {
-					setModal({
+					context.setModal({
 						visible: true,
 						message: "Usuario no encontrado",
 						status: "error",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 				} else {
-					setModal({
+					context.setModal({
 						visible: true,
 						message: error.response.data.message,
 						status: "error",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 5000);
 				}
 			});
@@ -223,15 +192,6 @@ const MissingEmail = () => {
 				<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no eres redirigido automáticamente, recarga la página</p>
 			</div>}
 			</div>
-
-
-			{modal.visible && !modal.confirm && (
-				<Modal
-					message={modal.message}
-					status={modal.status}
-					onclick={() => setModal({})}
-				/>
-			)}
 		</>
 
 	);

@@ -10,7 +10,6 @@ import axios from "axios";
 import config from "../../config/config";
 import useGetSongs from "../../utils/useGetSongs";
 const CountryPicker = (props) => {
-	const [modal, setModal] = useState({});
 	const [continuar, setContinuar] = useState(false);
 	const [songs, setSongs] = useState(props.countries);
 
@@ -34,14 +33,14 @@ const CountryPicker = (props) => {
 				})
 				.then((response) => {
 					if (response.status == 201) {
-						setModal({
+						context.setModal({
 							visible: true,
 							message: "Actualización correcta",
 							status: "success",
-							confirm: setModal({}),
+							confirm: context.setModal({}),
 						});
 						setTimeout(() => {
-							setModal({});
+							context.setModal({});
 						}, 3000);
 						context.setUserLogged((user) => ({
 							...user,
@@ -50,27 +49,27 @@ const CountryPicker = (props) => {
 					}
 				})
 				.catch((error) => {
-					setModal({
+					context.setModal({
 						visible: true,
 						message: error.response.data.message,
 						status: "error",
-						confirm: setModal({}),
+						confirm: context.setModal({}),
 					});
 					setTimeout(() => {
-						setModal({});
+						context.setModal({});
 					}, 3000);
 
 					return error;
 				});
 		} else {
-			setModal({
+			context.setModal({
 				visible: true,
 				message: "Tienes que elegir 5 países",
 				status: "error",
-				confirm: setModal({}),
+				confirm: context.setModal({}),
 			});
 			setTimeout(() => {
-				setModal({});
+				context.setModal({});
 			}, 3000);
 		}
 	}
@@ -101,14 +100,14 @@ const CountryPicker = (props) => {
 			if (validateSelection()) {
 				selectedCountriesTemp.push(parseInt(event.target.id));
 			} else {
-				setModal({
+				context.setModal({
 					visible: true,
 					message: "No puedes elegir más de 5 países",
 					status: "error",
-					confirm: setModal({}),
+					confirm: context.setModal({}),
 				});
 				setTimeout(() => {
-					setModal({});
+					context.setModal({});
 				}, 3000);
 			}
 		} else {
@@ -222,14 +221,6 @@ const CountryPicker = (props) => {
 					);
 				})}
 			</div>
-
-			{modal.visible && !modal.confirm && (
-				<Modal
-					message={modal.message}
-					status={modal.status}
-					onclick={() => setModal({})}
-				/>
-			)}
 		</>
 	);
 };
