@@ -21,7 +21,15 @@ const MissingEmail = () => {
 	const [modal, setModal] = useState({});
 	const [error, setError] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
+	
 
+	async function validateUserToken() {
+		const isValidToken = await useValidateToken(context);
+		if (!context.user_logged || !isValidToken) {
+			useHandleCloseSession(context);
+			useNavigateWithCallback(navigate, "/login");
+		}
+	}
 	useEffect(() => {
 		async function validateEmail() {
 			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
@@ -55,24 +63,45 @@ const MissingEmail = () => {
 		if (context.user_logged?.email != null && !emailSent) {
 			useNavigateWithCallback(navigate, "/app");
 		}
-	}, [context.x_token, emailSent]);
-
-	async function validateUserToken() {
-		const isValidToken = await useValidateToken(context);
-		if (!context.user_logged || !isValidToken) {
-			useHandleCloseSession(context);
-			if (window.location.href.includes(config.confirmemailLink)) {
-				useNavigateWithCallback(navigate, "/login?callback_url=" + window.location.href);
-			} else {
-				useNavigateWithCallback(navigate, "/login");
-			}
-		}
-	}
+	}, [emailSent]);
 
 	useEffect(() => {
 		useGetAuthToken(context)
 		isEmailSent();
 		validateUserToken();
+		async function validateEmail() {
+			if (window.location.href.includes(config.confirmemailLink) && emailSent) {
+				const response = await useValidateEmail(context, window.location.href.split(config.confirmemailLink)[1]);
+				if (response.result) {
+					setModal({
+						visible: true,
+						message: "Actualización correcta",
+						status: "success",
+						confirm: setModal({}),
+					});
+					setTimeout(() => {
+						setModal({});
+					}, 5000);
+					useUpdateUserData(context, navigate)
+					useNavigateWithCallback(navigate, "/app");
+				} else {
+					setModal({
+						visible: true,
+						message: response.data,
+						status: "error",
+						confirm: setModal({}),
+					});
+					setTimeout(() => {
+						setModal({});
+					}, 5000);
+					useNavigateWithCallback(navigate, "/missing-email");
+				}
+			}
+		}
+		validateEmail();
+		if (context.user_logged?.email != null) {
+			useNavigateWithCallback(navigate, "/app");
+		}
 	}, [context.user_logged]);
 
 	async function isEmailSent() {
