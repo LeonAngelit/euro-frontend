@@ -5,6 +5,7 @@ import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import { useNavigate } from "react-router-dom";
 import useValidateToken from "../../utils/useValidateToken";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
+import config from "../../config/config";
 
 
 const Room = () => {

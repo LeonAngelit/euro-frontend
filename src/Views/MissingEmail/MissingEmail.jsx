@@ -4,11 +4,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { validateEmailRegex } from "../../utils/regexUtils";
 import Form from "../../Components/Form/Form";
-import Modal from "../../Components/Modal/Modal";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import useValidateEmail from "../../utils/useValidateEmail";
-import useGetAuthToken from "../../utils/useGetAuthToken";
 import useUpdateUserData from "../../utils/useUpdateUserData";
 import useValidateToken from "../../utils/useValidateToken";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
@@ -20,7 +18,7 @@ const MissingEmail = () => {
 	const navigate = useNavigate();
 	const [error, setError] = useState(false);
 	const [emailSent, setEmailSent] = useState(false);
-	
+
 
 	async function validateUserToken() {
 		const isValidToken = await useValidateToken(context);
@@ -65,12 +63,14 @@ const MissingEmail = () => {
 	}, [emailSent]);
 
 	useEffect(() => {
-		useGetAuthToken(context)
-		isEmailSent();
-		validateUserToken();
-		if (context.user_logged?.email != null) {
-			useNavigateWithCallback(navigate, "/app");
+		if (context.user_logged) {
+			validateUserToken();
+			isEmailSent();
+			if (context.user_logged?.email != null) {
+				useNavigateWithCallback(navigate, "/app");
+			}
 		}
+
 	}, [context.user_logged]);
 
 	async function isEmailSent() {
@@ -84,7 +84,7 @@ const MissingEmail = () => {
 		}).catch((error) => {
 			return error
 		})
-		setEmailSent(mailResponse.data.emailSent || false)
+		setEmailSent(mailResponse.data?.emailSent || false)
 	}
 
 	async function requestEmail(event) {
@@ -155,7 +155,7 @@ const MissingEmail = () => {
 		<>
 
 			<div className="container">
-				{context.user_logged?.email == null ? !emailSent ?
+				{context.user_logged && (context.user_logged?.email == null ? !emailSent ?
 					<div>
 						<p style={{ textAlign: "center" }}>
 							Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada
@@ -184,13 +184,13 @@ const MissingEmail = () => {
 						<br></br>
 						<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no lo encuentras, revisa la bandeja de correo no deseado.</p>
 					</div>
-				: <div>
-				<p style={{ textAlign: "center" }}>
-					Actualización correcta, serás redirigido a la app automáticamente
-				</p>
-				<br></br>
-				<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no eres redirigido automáticamente, recarga la página</p>
-			</div>}
+					: <div>
+						<p style={{ textAlign: "center" }}>
+							Actualización correcta, serás redirigido a la app automáticamente
+						</p>
+						<br></br>
+						<p style={{ fontWeight: "bold", marginTop: "1rem", textAlign: "center" }}>Si no eres redirigido automáticamente, recarga la página</p>
+					</div>)}
 			</div>
 		</>
 

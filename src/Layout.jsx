@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AppContext from "./Storage/AppContext";
 import config from "./config/config"
-import useGetAuthToken from "./utils/useGetAuthToken.js";
 import useUpdateuserData from "./utils/useUpdateUserData.js"
 import Modal from "./Components/Modal/Modal";
 import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
@@ -33,10 +32,7 @@ function Layout({ children }) {
 			.then((response) => {
 				if (response.status == 200) {
 					return response.data;
-				} else if (response.status == 401) {
-					useGetAuthToken(context);
-					updatePointRequest();
-				}
+				} 
 			})
 			.catch((error) => {
 				return error.response.data.message;
@@ -64,7 +60,7 @@ function Layout({ children }) {
 
 	async function updateRoomData(roomId) {
 		await axios
-			.get(`${config.baseUrl}rooms/${roomId}`, {
+			.get(`${config.baseUrl}rooms/${roomId}/${context.user_logged?.id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -105,10 +101,6 @@ function Layout({ children }) {
 	}
 
 	useEffect(() => {
-		async function getToken() {
-			await useGetAuthToken(context);
-		}
-		getToken();
 		if (context.user_logged && context.user_logged?.email != null && context.user_logged?.countries?.length == 5 && window.location.pathname == "/join-room") {
 			handleJoinRoomLink();
 		}
@@ -125,34 +117,41 @@ function Layout({ children }) {
 	async function handleJoinRoomLink() {
 		if (window.location.href.includes("roomAuth")) {
 			const roomAuth = window.location.href.split("roomAuth=")[1];
-			await axios.post(`${config.baseUrl}rooms/verifyRoomToken`, { token: roomAuth }, {
+			await axios.post(`${config.baseUrl}rooms/verifyRoomToken/${context.user_logged?.id}`, { token: roomAuth }, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
 				},
 			})
 				.then((response) => {
-					if (response.status == 200) {
-						addUserRoom({
-							userId: context.user_logged?.id,
-							roomId: response.data.id,
+					if (response.status == 201) {
+						useUpdateuserData(context, navigate);
+						context.setModal({
+							visible: true,
+							message: "Actualización correcta",
+							status: "success",
+							confirm: context.setModal({}),
 						});
+						setTimeout(() => {
+							context.setModal({});
+						}, 5000);
 					}
 				})
-				.catch(async (error) => {
-					if (error.response.status == 401) {
-						await useGetAuthToken(context);
-						handleJoinRoomLink();
-					}
+				.catch((error) => {
+					context.setModal({
+						visible: true,
+						message: error.response.data.message,
+						status: "error",
+						confirm: context.setModal({}),
+					});
+					setTimeout(() => {
+						context.setModal({});
+					}, 5000);
 					navigate("/app");
 				});
 		}
 	}
 
-	useEffect(() => {
-		useGetAuthToken(context);
-		setInterval(() => useGetAuthToken(context), 1200000);
-	}, []);
 
 
 	useEffect(() => {
@@ -172,24 +171,6 @@ function Layout({ children }) {
 
 		}
 	}, [context.user_logged]);
-
-	async function addUserRoom(data) {
-		await axios
-			.post(`${config.baseUrl}rooms/add-user`, data, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 201) {
-					useUpdateuserData(context, navigate);
-				}
-			})
-			.catch(() => {
-				navigate("/app");
-			});
-	}
 
 	return (
 		<>

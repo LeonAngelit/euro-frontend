@@ -6,6 +6,7 @@ import { validateEmailRegex, validateRegex, validateUserNameRegex } from "../../
 import Form from "../../Components/Form/Form";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+import useGetAuthToken from "../../utils/useGetAuthToken";
 
 
 const Login = () => {
@@ -30,65 +31,72 @@ const Login = () => {
 
 	async function login(event) {
 		event.preventDefault();
+	
+		const token = await useGetAuthToken(context);
+	
+		if (!token) {
+			setError({ status: true, message: "Token inválido" });
+			return;
+		}
+	
 		if (!(validateUserNameRegex(userNameRef.current.value) || validateEmailRegex(userNameRef.current.value))) {
 			setError({
 				status: true,
-				message:
-					"Nombre de usuario o email no válido",
-			})
-
-			return false;
+				message: "Nombre de usuario o email no válido",
+			});
+			return;
 		}
+	
 		if (
 			!validateRegex(passwordRef.current.value, () =>
 				setError({
 					status: true,
-					message:
-						"Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula",
+					message: "Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula",
 				})
 			)
 		) {
-			return false;
+			return;
 		}
-
+	
 		const data = {
 			name: userNameRef.current.value,
 			password: passwordRef.current.value.split('').reverse().join('')
-		}
-		await axios
-			.post(
-				`${config.baseUrl}users/login`, data,
+		};
+	
+		try {
+			const response = await axios.post(
+				`${config.baseUrl}users/login`,
+				data,
 				{
 					headers: {
 						Accept: "application/json",
-						Bearer: context.x_token,
+						Bearer: token, 
 					},
 				}
-			)
-			.then((response) => {
-				if (response.status == 200) {
-					context.setUserLogged(response.data);
-
-				} else {
-					setError({
-						status: true,
-						message: "Usuario o contaseña incorrectos",
-					});
-				}
-			})
-			.catch((error) => {
-				if (error.response.status == 404) {
-					setError({
-						status: true,
-						message: "Usuario no encontrado",
-					});
-				} else {
-					setError({
-						status: true,
-						message: error.response.data.message,
-					});
-				}
-			});
+			);
+	
+			if (response.status === 200) {
+				context.setXtoken(`${response.data.token}`); // Set new user token for future requests
+				context.setUserLogged(response.data.user);
+			} else {
+				setError({
+					status: true,
+					message: "Usuario o contaseña incorrectos",
+				});
+			}
+		} catch (error) {
+			if (error?.response?.status === 404) {
+				setError({
+					status: true,
+					message: "Usuario no encontrado",
+				});
+			} else {
+				setError({
+					status: true,
+					message: error?.response?.data?.message || "Error de servidor",
+				});
+			}
+		}
 	}
 
 	return (

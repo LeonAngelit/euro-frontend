@@ -78,8 +78,15 @@ code {
   margin-right: 0.2rem;
 }
 
+span.fis.country-flag-select {
+  margin-right: 0.5rem;
+}
+.archive-element{
+  margin-top: 1.5rem;
+}
 span.fis.country-flag {
-  width: 50%;
+  width: 30%;
+  background-size: cover
 
 }
 

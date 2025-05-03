@@ -187,7 +187,7 @@ const CountryPicker = (props) => {
 								<div className="country-info-container">
 									<p>
 										<span
-											className={`fi fi-${country.code} fis country-flag`}
+											className={`fi fi-${country.code} fis country-flag-select`}
 										></span>
 										{country.name}
 									</p>

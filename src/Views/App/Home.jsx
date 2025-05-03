@@ -43,9 +43,9 @@ const Home = () => {
 			}
 		}
 	}
-	
 
-	useEffect(() => {	
+
+	useEffect(() => {
 		validateUserToken();
 		if (context.user_logged?.email == null) {
 			useNavigateWithCallback(navigate, "/missing-email");
@@ -59,7 +59,7 @@ const Home = () => {
 			}
 		} else {
 			if (window.location.href.includes("callback_url")) {
-				window.location.href=window.location.href.split("callback_url=")[1];
+				window.location.href = window.location.href.split("callback_url=")[1];
 			}
 		}
 
@@ -113,9 +113,15 @@ const Home = () => {
 		) {
 			return false;
 		}
+		let data = {
+			roomName: roomNameRef.current.value,
+			password: passwordRef.current.value,
+			userId: context.user_logged?.id
+		}
 		await axios
-			.get(
-				`${config.baseUrl}rooms/name/${roomNameRef.current.value}`,
+			.post(
+				`${config.baseUrl}rooms/login`,
+				data,
 				{
 					headers: {
 						Accept: "application/json",
@@ -124,54 +130,23 @@ const Home = () => {
 				}
 			)
 			.then((response) => {
-				if (response.status == 200) {
-					if (
-						bcrypt.compareSync(
-							passwordRef.current.value,
-							response.data.password
-						)
-					) {
-						addUserRoom({
-							userId: context.user_logged?.id,
-							roomId: response.data.id,
-						});
-					} else {
-						setError({
-							status: true,
-							message: "Contaseña incorrecta",
-						});
-					}
-				}
-				setError(false);
-				event.target.reset();
-			})
-			.catch((error) => {
-				if (error.response.status == 404) {
-					setError({
-						status: true,
-						message: "Sala no encontrada, prueba con otro ID",
+				if (response.status == 201) {
+					useUpdateUserData(context, navigate);
+					context.setModal({
+						visible: true,
+						message: "Sala registrada correctamente",
+						status: "success",
+						confirm: context.setModal({}),
 					});
+					setError(false);
+					event.target.reset();
 				} else {
 					setError({
 						status: true,
 						message: error.response.data.message,
 					});
 				}
-			});
-	}
 
-	async function addUserRoom(data) {
-		await axios
-			.post(`${config.baseUrl}rooms/add-user`, data, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 201) {
-					useUpdateUserData(context, navigate);
-				}
 			})
 			.catch((error) => {
 				if (error.response.status == 404) {

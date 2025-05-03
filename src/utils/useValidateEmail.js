@@ -7,7 +7,7 @@ async function useValidateEmail(context, argToken) {
 		return false;
 	}
 	await axios
-		.post(`${config.baseUrl}users/updateUserEmail`, { token: argToken }, {
+		.post(`${config.baseUrl}users/updateUserEmail/${context.user_logged?.id}`, { token: argToken }, {
 			headers: {
 				Accept: "application/json",
 				bearer: `${context.x_token}`,
@@ -17,7 +17,7 @@ async function useValidateEmail(context, argToken) {
 			if (response.status == 200) {
 				responseReturn = {
 					result: true,
-					data: response.data.id
+					data: response.data
 				}
 
 			} else {

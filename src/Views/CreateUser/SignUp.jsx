@@ -7,6 +7,7 @@ import { validateRegex, validateUserNameRegex, validateEmailRegex } from "../../
 import bcrypt from "bcryptjs";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
+import useGetAuthToken from "../../utils/useGetAuthToken"
 
 const SignUp = () => {
 	const context = useContext(AppContext);
@@ -24,8 +25,15 @@ const SignUp = () => {
 	}, [context.user_logged]);
 	
 
-	async function getUsuario(event) {
+	async function createNewUser(event) {
 		event.preventDefault();
+		const token = await useGetAuthToken(context)
+		if (!token) {
+			setError({ status: true, message: "Token inválido" });
+			return;
+		}
+	
+		
 		if (
 			!validateUserNameRegex(userNameRef.current.value, () =>
 				setError({
@@ -76,12 +84,13 @@ const SignUp = () => {
 			.post(`${config.baseUrl}users/signup`, data, {
 				headers: {
 					Accept: "application/json",
-					Bearer: context.x_token,
+					Bearer: token,
 				},
 			})
 			.then((response) => {
 				if (response.status == 201) {
-					updateUsuario(response.data.id);
+					context.setXtoken(response.data.token);
+					context.setUserLogged(response.data.user);
 				} else {
 					setError({
 						status: true,
@@ -98,36 +107,16 @@ const SignUp = () => {
 				} else {
 					setError({
 						status: true,
-						message: error.response.data.message,
+						message: error.toString()
 					});
 				}
-			});
-	}
-
-	async function updateUsuario(id) {
-		await axios
-			.get(`${config.baseUrl}users/${id}`, {
-				headers: {
-					Accept: "application/json",
-					Bearer: context.x_token,
-				},
-			})
-			.then((response) => {
-				if (response.status == 200) {
-					{
-						context.setUserLogged(response.data);
-					}
-				}
-			})
-			.catch((error) => {
-				return error.response.data.message;
 			});
 	}
 
 	return (
 		<div className="container">
 			<Form
-				action={getUsuario}
+				action={createNewUser}
 				error={error}
 				showPassword={true}
 				submitValue="Registrarse"

@@ -33,7 +33,7 @@ const RoomPicker = (props) => {
 
 	async function initializeRoom(roomId) {
 		await axios
-			.get(`${config.baseUrl}rooms/${roomId}`, {
+			.get(`${config.baseUrl}rooms/${roomId}/${context.user_logged?.id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -85,7 +85,7 @@ const RoomPicker = (props) => {
 
 	async function deleteRoom(id) {
 		await axios
-			.delete(`${config.baseUrl}rooms/${id}`, {
+			.delete(`${config.baseUrl}rooms/${id}/${context.user_logged?.id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -103,7 +103,7 @@ const RoomPicker = (props) => {
 
 	async function getRoomToken(roomId, roomName) {
 		await axios
-			.get(`${config.baseUrl}rooms/generateRoomtoken/${roomId}`, {
+			.get(`${config.baseUrl}rooms/generateRoomtoken/${roomId}/${context.user_logged?.id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -152,7 +152,7 @@ const RoomPicker = (props) => {
 	async function udpateRoomData(roomId, data) {
 		await axios
 			.put(
-				`${config.baseUrl}rooms/${roomId}`,
+				`${config.baseUrl}rooms/${roomId}/${context.user_logged?.id}`,
 				data,
 				{
 					headers: {
@@ -163,30 +163,30 @@ const RoomPicker = (props) => {
 			).then(async (response) => {
 				if (response.status == 200) {
 					await axios
-					.get(
-						`${config.baseUrl}users/${context.user_logged?.id}`,
-						{
-							headers: {
-								Accept: "application/json",
-								bearer: `${context.x_token}`,
-							},
-						}
-					).then((response) => {
-						if (response.status == 200) {
-							context.setModal({
-								visible: true,
-								message: "Actualización correcta",
-								status: "success",
-								confirm: context.setModal({}),
-							});
-							setTimeout(() => {
-								context.setModal({});
-							}, 5000);
-							context.setUserLogged(response.data);
-						}
-					})
+						.get(
+							`${config.baseUrl}users/${context.user_logged?.id}`,
+							{
+								headers: {
+									Accept: "application/json",
+									bearer: `${context.x_token}`,
+								},
+							}
+						).then((response) => {
+							if (response.status == 200) {
+								context.setModal({
+									visible: true,
+									message: "Actualización correcta",
+									status: "success",
+									confirm: context.setModal({}),
+								});
+								setTimeout(() => {
+									context.setModal({});
+								}, 5000);
+								context.setUserLogged(response.data);
+							}
+						})
 				}
-				
+
 			})
 			.catch((error) => {
 				context.setModal({

@@ -19,10 +19,13 @@ const Archive = () => {
 
 	useEffect(() => {
 		fetchRooms();
-		setTimeout(() => { setLoading(false) }, 500
-		)
+		
 
 	}, []);
+	useEffect(() => {
+		setTimeout(() => { setLoading(false) }, 500
+	)
+	}, [historicalRooms])
 
 	useEffect(() => {
 		async function validateUserToken() {
@@ -45,7 +48,7 @@ const Archive = () => {
 	async function setSelectedRoom(roomId) {
 		if (roomId) {
 			await axios
-				.get(`${config.baseUrl}archive/${roomId}`, {
+				.get(`${config.baseUrl}archive/room/${roomId}/${context.user_logged?.id}`, {
 					headers: {
 						Accept: "application/json",
 						Bearer: context.x_token,
@@ -77,7 +80,7 @@ const Archive = () => {
 
 	async function fetchRooms() {
 		await axios
-			.get(`${config.baseUrl}archive/users/${context.user_logged?.username}`, {
+			.get(`${config.baseUrl}archive/users/${context.user_logged?.id}`, {
 				headers: {
 					Accept: "application/json",
 					Bearer: context.x_token,
@@ -85,7 +88,7 @@ const Archive = () => {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					setHistoricalRooms(response.data);
+				 setHistoricalRooms(response.data);
 				}
 			})
 			.catch((error) => {
@@ -106,7 +109,7 @@ const Archive = () => {
 	return (
 		<>
 			<div className="container">
-				{loading ? <p>Obteniendo datos...</p> : historicalRooms ?
+				{loading ? <p className="archive-element">Obteniendo datos...</p> : historicalRooms ?
 				selectedHistoricalRoom ? (
 					<>
 							<select 

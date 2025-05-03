@@ -104,6 +104,7 @@ export function AppContextProvider({ children }) {
 
   if (context.remember_user) {
     window.localStorage.setItem("app-context", JSON.stringify(context));
+    window.sessionStorage.setItem("app-context", JSON.stringify(context));
   } else {
     window.sessionStorage.setItem("app-context", JSON.stringify(context));
   }
