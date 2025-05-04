@@ -19,12 +19,14 @@ const Archive = () => {
 
 	useEffect(() => {
 		fetchRooms();
-		
+
 
 	}, []);
 	useEffect(() => {
-		setTimeout(() => { setLoading(false) }, 500
-	)
+		if (historicalRooms) {
+			setLoading(false)
+		}
+
 	}, [historicalRooms])
 
 	useEffect(() => {
@@ -88,7 +90,7 @@ const Archive = () => {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-				 setHistoricalRooms(response.data);
+					setHistoricalRooms(response.data);
 				}
 			})
 			.catch((error) => {
@@ -110,39 +112,39 @@ const Archive = () => {
 		<>
 			<div className="container">
 				{loading ? <p className="archive-element">Obteniendo datos...</p> : historicalRooms ?
-				selectedHistoricalRoom ? (
-					<>
-							<select 
-						onChange={(e) => setSelectedRoom(e.target.value)}
-						className="select-css selected"
-					>
-						<option value="">Selecciona una sala</option>
-						{historicalRooms.map((room) => (
-							<option key={room._id} value={room._id} id={room._id}>
-								{room.room.name} - {room.year}
-							</option>
-						))}
-					</select>
-					<Classification
-						room={selectedHistoricalRoom}
-					/>
-					</>
-					
+					selectedHistoricalRoom ? (
+						<>
+							<select
+								onChange={(e) => setSelectedRoom(e.target.value)}
+								className="select-css selected"
+							>
+								<option value="">Selecciona una sala</option>
+								{historicalRooms.map((room) => (
+									<option key={room._id} value={room._id} id={room._id}>
+										{room.room.name} - {room.year}
+									</option>
+								))}
+							</select>
+							<Classification
+								room={selectedHistoricalRoom}
+							/>
+						</>
 
-				) : (
-					//A select element with all the rooms in the array
-					<select
-						onChange={(e) => setSelectedRoom(e.target.value)}
-						className="select-css"
-					>
-						<option value="">Selecciona una sala</option>
-						{historicalRooms.map((room) => (
-							<option key={room._id} value={room._id} id={room._id}>
-								{room.room.name} - {room.year}
-							</option>
-						))}
-					</select>
-				) : <p>No se han encontrado resultados históricos para el usuario</p> }
+
+					) : (
+						//A select element with all the rooms in the array
+						<select
+							onChange={(e) => setSelectedRoom(e.target.value)}
+							className="select-css"
+						>
+							<option value="">Selecciona una sala</option>
+							{historicalRooms.map((room) => (
+								<option key={room._id} value={room._id} id={room._id}>
+									{room.room.name} - {room.year}
+								</option>
+							))}
+						</select>
+					) : <p>No se han encontrado resultados históricos para el usuario</p>}
 			</div>
 		</>
 	);
