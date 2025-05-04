@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import config from "../../config/config";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import useGetAuthToken from "../../utils/useGetAuthToken"
+import { GoogleLogin } from '@react-oauth/google';
 
 const SignUp = () => {
 	const context = useContext(AppContext);
@@ -24,7 +25,43 @@ const SignUp = () => {
 		}
 	}, [context.user_logged]);
 	
+	async function googleLogin(data) {
+		const token = await useGetAuthToken(context);
+		try {
+			const response = await axios.post(
+				`${config.baseUrl}users/google-login`,
+				data,
+				{
+					headers: {
+						Accept: "application/json",
+						Bearer: token,
+					},
+				}
+			);
 
+			if (response.status === 200) {
+				context.setXtoken(`${response.data.token}`); // Set new user token for future requests
+				context.setUserLogged(response.data.user);
+			} else {
+				setError({
+					status: true,
+					message: "Usuario o contaseña incorrectos",
+				});
+			}
+		} catch (error) {
+			if (error?.response?.status === 404) {
+				setError({
+					status: true,
+					message: "Usuario no encontrado",
+				});
+			} else {
+				setError({
+					status: true,
+					message: error?.response?.data?.message || "Error de servidor",
+				});
+			}
+		}
+	}
 	async function createNewUser(event) {
 		event.preventDefault();
 		const token = await useGetAuthToken(context)
@@ -150,6 +187,14 @@ const SignUp = () => {
 					},
 				]}
 			/>
+			<GoogleLogin
+					onSuccess={credentialResponse => {
+						googleLogin(credentialResponse);
+					}}
+					onError={() => {
+						console.error("Login Failed");
+					}}
+				/>
 		</div>
 	);
 };

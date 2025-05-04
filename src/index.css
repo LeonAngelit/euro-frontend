@@ -47,6 +47,12 @@ code {
 .subtitle {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.subtitle p {
+  margin-bottom: 1rem;
 }
 
 .subtitle a {
