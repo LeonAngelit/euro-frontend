@@ -22,12 +22,14 @@ const Classification = (props) => {
   }, [context.current_room]);
 
   useEffect(() => {
-    let users = props.room.users ?? props.room.room.users;
-    let usersTemp = users.filter(
-      (element) => element.countries.length == 5
-    );
-    setUsers(usersTemp);
-    setAnimate(props.animate);
+    if(context.current_room != undefined){
+      let users = props.room.users ?? props.room.room.users;
+      let usersTemp = users.filter(
+        (element) => element.countries.length == 5
+      );
+      setUsers(usersTemp);
+      setAnimate(props.animate);
+    }
   }, [context.current_room]);
 
   return (
