@@ -213,4 +213,18 @@
     display: flex;
     width: 10%;
   }
+
+
 }
+
+@media (min-width: 700px) {
+  .profile-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5%;
+  }
+
+}
+
+

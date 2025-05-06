@@ -20,7 +20,7 @@
   width: 100%;
 }
 
-.input-container > input {
+.input-container>input {
   border: none;
   border-bottom: 1px solid var(--primary-color);
   width: 50%;
@@ -48,7 +48,7 @@
   margin-top: 1rem;
 }
 
-.checkbox-container > input {
+.checkbox-container>input {
   margin-right: 1rem;
 }
 
@@ -72,4 +72,20 @@
   .login-form {
     width: 90%;
   }
+}
+
+@media (min-width: 700px) {
+
+  .login-form {
+    display: flex;
+    border: 1px solid var(--primary-color);
+    margin-top: 5rem;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .checkbox-container {
+    justify-content: center;
+  }
+  
 }

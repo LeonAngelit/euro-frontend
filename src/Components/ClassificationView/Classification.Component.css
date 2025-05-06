@@ -63,6 +63,7 @@
   align-items: center;
   height: 100%;
   margin-right: -1.5rem;
+  z-index: 60;
 }
 
 .user-card-image img {
@@ -115,4 +116,21 @@
 .user-winner {
   font-weight: bold;
   color: var(--euro-pink);
+}
+
+
+@media (min-width: 700px) {
+  .user-card-position{
+    margin-right: -3rem;
+  }
+
+  .country-wrapper {
+    margin: 0.1rem;
+    margin-bottom: 0.4rem;
+    width: 25%;
+  }
+  .user-card-image{
+    margin-right: -3rem;
+  }
+
 }
