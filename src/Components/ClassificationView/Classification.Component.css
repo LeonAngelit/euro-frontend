@@ -119,7 +119,7 @@
 }
 
 
-@media (min-width: 700px) {
+@media (min-width: 1000px) {
   .user-card-position{
     margin-right: -3rem;
   }

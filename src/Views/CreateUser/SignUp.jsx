@@ -187,6 +187,7 @@ const SignUp = () => {
 					},
 				]}
 			/>
+			<div className="google-container">
 			<GoogleLogin
 					onSuccess={credentialResponse => {
 						googleLogin(credentialResponse);
@@ -195,6 +196,7 @@ const SignUp = () => {
 						console.error("Login Failed");
 					}}
 				/>
+			</div>		
 		</div>
 	);
 };

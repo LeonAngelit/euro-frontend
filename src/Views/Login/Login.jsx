@@ -149,13 +149,13 @@ const Login = () => {
 				fields={[
 					{
 						name: "username",
-						placeholder: "Nombre de usuario o email",
+						label: "Nombre de usuario o email",
 						type: "text",
 						ref: userNameRef,
 					},
 					{
 						name: "password",
-						placeholder: "Contraseña",
+						label: "Contraseña",
 						id: "passwordField",
 						type: "password",
 						ref: passwordRef,

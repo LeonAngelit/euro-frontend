@@ -16,7 +16,9 @@
   --euro-gold: rgb(218, 183, 29);
 }
 
-
+button {
+  cursor: pointer;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -123,6 +125,10 @@ span.fis.country-flag {
   justify-content: center;
   align-items: center;
 }
+.google-container{
+  display: flex;
+  justify-content: center;
+}
 
 .profile-button img {
   height: 100%;
@@ -132,7 +138,7 @@ span.fis.country-flag {
 
 
 
-@media (min-width: 700px) {
+@media (min-width: 1000px) {
 
   .container {
     width: 50%;
@@ -157,5 +163,18 @@ span.fis.country-flag {
     background-size: auto;
   }
   
+  .uncollapsed .login-form{
+    border: none;
+  }
+
+  .details-container{
+    margin-top: 5rem;
+  }
+
+  .modal {
+    width: 30%;
+  }
+  
+ 
 
 }

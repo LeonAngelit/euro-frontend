@@ -73,7 +73,7 @@
 
 
 
-@media (min-width: 700px) {
+@media (min-width: 1000px) {
   .room-icon-container.room-name{
     width: auto;
   }

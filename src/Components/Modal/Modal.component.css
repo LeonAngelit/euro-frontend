@@ -19,7 +19,7 @@
   align-items: center;
   flex-direction: column;
   padding: 2rem;
-  font-size: 3vw;
+  font-size: 1rem;
   position: absolute;
   top: 101px;
   right: 9px;
@@ -30,6 +30,13 @@
   right: 16%;
   border: 1px solid var(--primary-color);
   animation: none;
+}
+
+.password-container {
+  position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 @keyframes slideIn {
@@ -105,3 +112,12 @@
 }
 
 
+@media (min-width: 1000px) {
+
+  .modal {
+    width: 30%;
+  }
+  
+ 
+
+}
