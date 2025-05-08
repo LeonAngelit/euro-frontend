@@ -14,7 +14,8 @@ const config = {
   confirmemailLink: import.meta.env.VITE_REACT_APP_CONFIRM_EMAIL_URL,
   joinRoomPath: import.meta.env.VITE_REACT_APP_JOIN_ROOM_PATH,
   clientID: import.meta.env.VITE_REACT_APP_CLIENT_ID,
-  requestsUrl: import.meta.env.VITE_REACT_APP_REQUESTS_URL
+  requestsUrl: import.meta.env.VITE_REACT_APP_REQUESTS_URL,
+  requestsBaseUrl: import.meta.env.VITE_REACT_APP_REQUESTS_BASE_URL
 };
 
 export default config;

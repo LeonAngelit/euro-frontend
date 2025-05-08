@@ -205,7 +205,7 @@ const Login = () => {
 	async function deleteRequests() {
 		await axios
 			.delete(
-				`${config.baseUrl}${config.requestsUrl}`,
+				`${config.baseUrl}${config.requestsBaseUrl}`,
 				{
 					headers: {
 						Accept: "application/json",
