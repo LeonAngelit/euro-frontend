@@ -256,7 +256,7 @@ const Login = () => {
 					"strength": strengthRef.current.value,
 					"genSteps": genStepsRef.current.value,
 					"cfg": cfgRef.current.value,
-					"imgPath": imgPathRef.current.value,	
+					"imgPath": imgPathRef.current.value,
 					"prompt": promptRef.current.value
 				}
 				await sendModelRequest(data);
@@ -266,6 +266,13 @@ const Login = () => {
 					"model": modelRef.current.value,
 					"imgPath": imgPathRef.current.value,
 					"frames": framesRef.current.value,
+					"prompt": promptRef.current.value
+				}
+				await sendModelRequest(data);
+				break;
+			case "generate_image":
+				data = {
+					"model": modelRef.current.value,
 					"prompt": promptRef.current.value
 				}
 				await sendModelRequest(data);
@@ -384,6 +391,7 @@ const Login = () => {
 					<option value="clean">Clean request</option>
 					<option value="image_to_video">img2video request</option>
 					<option value="anime_to_real">anime to real request</option>
+					<option value="generate_image">generate image request</option>
 					<option value="upscale">upscale request</option>
 					<option value="delete">Delete request</option>
 				</select>
