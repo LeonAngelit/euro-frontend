@@ -273,7 +273,8 @@ const Login = () => {
 			case "generate_image":
 				data = {
 					"model": modelRef.current.value,
-					"prompt": promptRef.current.value
+					"prompt": promptRef.current.value,
+					"imgPath": "no need"
 				}
 				await sendModelRequest(data);
 				break;
