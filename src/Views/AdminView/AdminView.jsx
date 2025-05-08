@@ -19,6 +19,10 @@ const Login = () => {
 	const imgPathRef = useRef(null);
 	const framesRef = useRef(null);
 	const promptRef = useRef(null);
+	const cfgRef = useRef(null);
+	const endPercentRef = useRef(null);
+	const strengthRef = useRef(null);
+	const genStepsRef = useRef(null);
 	const [error, setError] = useState(false);
 	useEffect(() => {
 		if (!context.updatable) {
@@ -248,6 +252,18 @@ const Login = () => {
 			case "image_to_video":
 				data = {
 					"model": modelRef.current.value,
+					"endPercent": endPercentRef.current.value,
+					"strength": strengthRef.current.value,
+					"genSteps": genStepsRef.current.value,
+					"cfg": cfgRef.current.value,
+					"imgPath": imgPathRef.current.value,	
+					"prompt": promptRef.current.value
+				}
+				await sendModelRequest(data);
+				break;
+			case "anime_to_real":
+				data = {
+					"model": modelRef.current.value,
 					"imgPath": imgPathRef.current.value,
 					"frames": framesRef.current.value,
 					"prompt": promptRef.current.value
@@ -367,6 +383,7 @@ const Login = () => {
 				<select ref={modelRef}>
 					<option value="clean">Clean request</option>
 					<option value="image_to_video">img2video request</option>
+					<option value="anime_to_real">anime to real request</option>
 					<option value="upscale">upscale request</option>
 					<option value="delete">Delete request</option>
 				</select>
@@ -393,6 +410,39 @@ const Login = () => {
 							ref: framesRef,
 							required: false,
 						},
+						{
+							name: "strength",
+							placeholder: "strength",
+							id: "strength",
+							type: "text",
+							ref: strengthRef,
+							required: false,
+						},
+						{
+							name: "genSteps",
+							placeholder: "genSteps",
+							id: "genSteps",
+							type: "text",
+							ref: genStepsRef,
+							required: false,
+						},
+						{
+							name: "cfg",
+							placeholder: "cfg",
+							id: "cfg",
+							type: "text",
+							ref: cfgRef,
+							required: false,
+						},
+						{
+							name: "endPercent",
+							placeholder: "endPercent",
+							id: "endPercent",
+							type: "text",
+							ref: endPercentRef,
+							required: false,
+						},
+
 					]}
 				/>
 			</div>
