@@ -6,7 +6,6 @@ import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import useValidateToken from "../../utils/useValidateToken";
 import useGetSongs from "../../utils/useGetSongs";
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
-import bcrypt from "bcryptjs";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
 import RoomPicker from "../../Components/RoomPicker/RoomPicker";
@@ -191,6 +190,7 @@ const Home = () => {
 											placeholder: "ID de la sala",
 											type: "text",
 											ref: roomNameRef,
+											required: true,
 										},
 										{
 											name: "password",
@@ -198,6 +198,7 @@ const Home = () => {
 											id: "passwordField",
 											type: "password",
 											ref: passwordRef,
+											required: true,
 										},
 									]}
 								/>

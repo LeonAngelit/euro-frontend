@@ -152,6 +152,7 @@ const Login = () => {
 						label: "Nombre de usuario o email",
 						type: "text",
 						ref: userNameRef,
+						required: true,
 					},
 					{
 						name: "password",
@@ -159,6 +160,7 @@ const Login = () => {
 						id: "passwordField",
 						type: "password",
 						ref: passwordRef,
+						required: true,
 					},
 				]}
 			/>

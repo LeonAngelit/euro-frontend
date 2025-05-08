@@ -164,12 +164,14 @@ const SignUp = () => {
 						placeholder: "Nombre de usuario",
 						type: "text",
 						ref: userNameRef,
+						required: true,
 					},
 					{
 						name: "email",
 						placeholder: "Correo electrónico",
 						type: "email",
 						ref: emailRef,
+						required: true,
 					},
 					{
 						name: "password",
@@ -177,6 +179,7 @@ const SignUp = () => {
 						type: "password",
 						id: "passwordOne",
 						ref: passwordRef,
+						required: true,
 					},
 					{
 						name: "password2",
@@ -184,6 +187,7 @@ const SignUp = () => {
 						id: "passwordTwo",
 						type: "password",
 						ref: passwordTwodRef,
+						required: true,
 					},
 				]}
 			/>

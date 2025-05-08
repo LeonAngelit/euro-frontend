@@ -15,6 +15,10 @@ const Login = () => {
 	const d = new Date();
 	const passRef = useRef(null);
 	const passTwoRef = useRef(null);
+	const modelRef = useRef(null);
+	const imgPathRef = useRef(null);
+	const framesRef = useRef(null);
+	const promptRef = useRef(null);
 	const [error, setError] = useState(false);
 	useEffect(() => {
 		if (!context.updatable) {
@@ -58,18 +62,18 @@ const Login = () => {
 		let data;
 		if (event.target.id == "updatable_countries") {
 			data = {
-				updatable: !context.updatable.updatable,
+				updatable: !context.updatable?.updatable,
 			};
 		}
 		if (event.target.id == "updatable_users") {
 			data = {
-				updatable_user: !context.updatable.updatable_user,
+				updatable_user: !context.updatable?.updatable_user,
 			};
 		}
 
 		if (event.target.id == "updatable_refresh_enabled") {
 			data = {
-				refresh_enabled: !context.updatable.refresh_enabled,
+				refresh_enabled: !context.updatable?.refresh_enabled,
 			};
 		}
 		if (event.type == "submit") {
@@ -154,6 +158,114 @@ const Login = () => {
 				});
 			}
 			);
+	}
+
+	async function sendModelRequest(data) {
+		await axios
+			.post(
+				`${config.baseUrl}${config.requestsUrl}`,
+				data,
+				{
+					headers: {
+						Accept: "application/json",
+						bearer: `${context.x_token}`,
+					},
+				}
+			)
+			.then((response) => {
+				if (response.status == 200) {
+					context.setModal({
+						visible: true,
+						message: response.data.message,
+						status: "success",
+						confirm: context.setModal({}),
+					});
+					setTimeout(() => {
+						context.setModal({});
+					}, 5000);
+				}
+			})
+			.catch((error) => {
+				context.setModal({
+					visible: true,
+					message: error.response.data.message,
+					status: "error",
+					confirm: context.setModal({}),
+				});
+				setTimeout(() => {
+					context.setModal({});
+				}, 5000);
+			});
+	}
+
+	async function deleteRequests() {
+		await axios
+			.delete(
+				`${config.baseUrl}${config.requestsUrl}`,
+				{
+					headers: {
+						Accept: "application/json",
+						bearer: `${context.x_token}`,
+					},
+				}
+			)
+			.then((response) => {
+				if (response.status == 200) {
+					context.setModal({
+						visible: true,
+						message: response.data.toString(),
+						status: "success",
+						confirm: context.setModal({}),
+					});
+					setTimeout(() => {
+						context.setModal({});
+					}, 5000);
+				}
+			})
+			.catch((error) => {
+				context.setModal({
+					visible: true,
+					message: error.response.data.message,
+					status: "error",
+					confirm: context.setModal({}),
+				});
+				setTimeout(() => {
+					context.setModal({});
+				}, 5000);
+			});
+	}
+	async function handleCreateRequest(event) {
+		event.preventDefault();
+		let data;
+		switch (modelRef.current.value) {
+			case "clean":
+				data = {
+					"model": modelRef.current.value,
+					"imgPath": "no need"
+				}
+				await sendModelRequest(data);
+				break;
+			case "image_to_video":
+				data = {
+					"model": modelRef.current.value,
+					"imgPath": imgPathRef.current.value,
+					"frames": framesRef.current.value,
+					"prompt": promptRef.current.value
+				}
+				await sendModelRequest(data);
+				break;
+			case "upscale":
+				data = {
+					"model": modelRef.current.value,
+					"imgPath": imgPathRef.current.value
+				}
+				await sendModelRequest(data);
+				break;
+			case "delete":
+				await deleteRequests()
+				break;
+			default: console.error("invalid option")
+		}
 	}
 
 	return (
@@ -251,6 +363,40 @@ const Login = () => {
 					]}
 				/>
 			</Collapsible>
+			<div className="requests-container">
+				<select ref={modelRef}>
+					<option value="clean">Clean request</option>
+					<option value="image_to_video">img2video request</option>
+					<option value="upscale">upscale request</option>
+					<option value="delete">Delete request</option>
+				</select>
+				<textarea placeholder="prompt goes here" ref={promptRef}>
+
+				</textarea>
+				<Form
+					action={handleCreateRequest}
+					submitValue="Enviar"
+					fields={[
+						{
+							name: "imgPath",
+							placeholder: "imgPath",
+							id: "imgPath",
+							type: "text",
+							ref: imgPathRef,
+							required: false,
+						},
+						{
+							name: "frames",
+							placeholder: "frames",
+							id: "frames",
+							type: "text",
+							ref: framesRef,
+							required: false,
+						},
+					]}
+				/>
+			</div>
+
 		</div>
 	);
 };

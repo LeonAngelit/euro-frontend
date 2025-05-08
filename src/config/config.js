@@ -13,7 +13,8 @@ const config = {
   joinRoomLink: import.meta.env.VITE_REACT_APP_JOIN_ROOM,
   confirmemailLink: import.meta.env.VITE_REACT_APP_CONFIRM_EMAIL_URL,
   joinRoomPath: import.meta.env.VITE_REACT_APP_JOIN_ROOM_PATH,
-  clientID: import.meta.env.VITE_REACT_APP_CLIENT_ID
+  clientID: import.meta.env.VITE_REACT_APP_CLIENT_ID,
+  requestsUrl: import.meta.env.VITE_REACT_APP_REQUESTS_URL
 };
 
 export default config;

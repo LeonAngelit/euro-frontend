@@ -173,6 +173,7 @@ const MissingEmail = () => {
 									placeholder: "Correo electrónico",
 									type: "email",
 									ref: emailRef,
+									required: true,
 								},
 							]}
 						/>

@@ -116,6 +116,7 @@ const CreateRoom = () => {
 						placeholder: "Nombre de sala",
 						type: "text",
 						ref: roomNameRef,
+						required: true,
 					},
 					{
 						name: "password",
@@ -123,6 +124,7 @@ const CreateRoom = () => {
 						type: "password",
 						id: "passwordOne",
 						ref: passwordRef,
+						required: true,
 					},
 					{
 						name: "password2",
@@ -130,6 +132,7 @@ const CreateRoom = () => {
 						id: "passwordTwo",
 						type: "password",
 						ref: passwordTwodRef,
+						required: true,
 					},
 				]}
 			/>

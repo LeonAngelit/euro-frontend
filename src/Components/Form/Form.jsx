@@ -68,7 +68,7 @@ const Form = (props) => {
                     id={field.id || ""}
                     ref={field.ref}
                     onChange={(event) => handlePasswordChange(event, field.ref)}
-                    required
+                    required={field.required}
                   />
                   {props.showPassword && (
                     <button type="button" onClick={myFunction} name="passtoggle" id={field.id || ""}>{showButton && showButton.includes(field.id) && <FontAwesomeIcon icon={showPassword && showPassword.includes(field.id) ? faEyeSlash : faEye} />}</button>
@@ -81,7 +81,7 @@ const Form = (props) => {
                   id={field.id || ""}
                   ref={field.ref}
                   onChange={props.onImageChange}
-                  required
+                  required={field.required}
                 />}
             </div>
           );
@@ -100,8 +100,8 @@ const Form = (props) => {
           />
         </div>
       </form>
-      {props.error.status && (
-        <span className="error-span">{props.error.message}</span>
+      {props.error?.status && (
+        <span className="error-span">{props.error?.message}</span>
       )}
     </div>
   );

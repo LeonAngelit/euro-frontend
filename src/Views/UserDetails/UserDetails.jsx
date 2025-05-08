@@ -205,6 +205,7 @@ const UserDetails = () => {
 								id: "nombreUsuario",
 								type: "text",
 								ref: userNameRef,
+								required: true,
 							},
 						]}
 					/>
@@ -222,6 +223,7 @@ const UserDetails = () => {
 								id: "emaiUsuario",
 								type: "email",
 								ref: emailRef,
+								required: true,
 							},
 						]}
 					/>
@@ -240,6 +242,7 @@ const UserDetails = () => {
 								id: "passwordOne",
 								type: "password",
 								ref: passRef,
+								required: true,
 							},
 							{
 								name: "passwordTwo",
@@ -247,6 +250,7 @@ const UserDetails = () => {
 								id: "passwordTwo",
 								type: "password",
 								ref: pass2Ref,
+								required: true,
 							},
 						]}
 					/>
@@ -263,7 +267,7 @@ const UserDetails = () => {
 								id: "profileImage",
 								type: "file",
 								ref: imageRef,
-								
+								required: true,			
 							},
 							
 						]}
@@ -286,6 +290,7 @@ const UserDetails = () => {
 								id: "colorField",
 								type: "color",
 								ref: colorRef,
+								required: true,
 							},
 						]}
 					/>
