@@ -252,11 +252,8 @@ const Login = () => {
 			case "image_to_video":
 				data = {
 					"model": modelRef.current.value,
-					"endPercent": endPercentRef.current.value,
-					"strength": strengthRef.current.value,
-					"genSteps": genStepsRef.current.value,
-					"cfg": cfgRef.current.value,
 					"imgPath": imgPathRef.current.value,
+					"frames": framesRef.current.value,
 					"prompt": promptRef.current.value
 				}
 				await sendModelRequest(data);
@@ -264,8 +261,11 @@ const Login = () => {
 			case "anime_to_real":
 				data = {
 					"model": modelRef.current.value,
+					"endPercent": endPercentRef.current.value,
+					"strength": strengthRef.current.value,
+					"genSteps": genStepsRef.current.value,
+					"cfg": cfgRef.current.value,
 					"imgPath": imgPathRef.current.value,
-					"frames": framesRef.current.value,
 					"prompt": promptRef.current.value
 				}
 				await sendModelRequest(data);
