@@ -28,7 +28,7 @@ const Login = () => {
 		if (!context.updatable) {
 			useHandleCloseSession(context);
 		}
-	}, []);
+	}, [context]);
 
 	async function updateLinks(event) {
 		event.preventDefault();
@@ -302,7 +302,7 @@ const Login = () => {
 				>
 					Actualizar links
 				</button>
-				{context.updatable.updatable ? (
+				{context.updatable?.updatable ? (
 					<button
 						className="admin-button button-green"
 						id="updatable_countries"
@@ -319,7 +319,7 @@ const Login = () => {
 						Países NO
 					</button>
 				)}
-				{context.updatable.updatable_user ? (
+				{context.updatable?.updatable_user ? (
 					<button
 						className="admin-button button-green"
 						id="updatable_users"
@@ -337,7 +337,7 @@ const Login = () => {
 					</button>
 				)}
 
-				{context.updatable.refresh_enabled ? (
+				{context.updatable?.refresh_enabled ? (
 					<button
 						className="admin-button button-green"
 						id="updatable_refresh_enabled"
