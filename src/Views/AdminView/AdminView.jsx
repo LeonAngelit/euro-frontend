@@ -136,7 +136,7 @@ const Login = () => {
 		event.preventDefault();
 		await axios
 			.get(
-				`${config.baseUrl}countries/archive/export/${d.getFullYear()}`,
+				`${config.baseUrl}rooms/archive/export/${d.getFullYear()}`,
 				{
 					headers: {
 						Accept: "application/json",
