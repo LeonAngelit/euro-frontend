@@ -14,12 +14,14 @@ const CountryPicker = (props) => {
 	const [songs, setSongs] = useState(props.countries);
 
 	const context = useContext(AppContext);
+	const targetCount = (songs && songs.length > 5) ? 6 : 5;
+
 	useEffect(() => {
-		setContinuar(context.selection.current.length == 5);
-	}, []);
+		setContinuar(context.selection.current.length == targetCount);
+	}, [songs, context.selection.current.length]);
 
 	async function handleContinue() {
-		if (context.selection.current.length == 5) {
+		if (context.selection.current.length == targetCount) {
 			const data = {
 				userId: context.user_logged?.id,
 				selection: context.selection.current,
@@ -64,7 +66,7 @@ const CountryPicker = (props) => {
 		} else {
 			context.setModal({
 				visible: true,
-				message: "Tienes que elegir 5 países",
+				message: `Tienes que elegir ${targetCount} países`,
 				status: "error",
 				confirm: context.setModal({}),
 			});
@@ -76,7 +78,7 @@ const CountryPicker = (props) => {
 
 	function validateSelection() {
 		let elements = Array.from(document.getElementsByTagName("input"));
-		if (context.selection.current.length == 5) {
+		if (context.selection.current.length == targetCount) {
 			setContinuar(true);
 			elements.map((element) => {
 				if (!element.checked) {
@@ -102,7 +104,7 @@ const CountryPicker = (props) => {
 			} else {
 				context.setModal({
 					visible: true,
-					message: "No puedes elegir más de 5 países",
+					message: `No puedes elegir más de ${targetCount} países`,
 					status: "error",
 					confirm: context.setModal({}),
 				});
@@ -143,9 +145,9 @@ const CountryPicker = (props) => {
 		<>
 			<div className="countries-container">
 				<p>
-					Selecciona 5 países de los siguientes, es importante que el primer
-					país seleccionado sea el que creas que será el ganador, podrás
-					comprobarlo porque aparecerá resaltado respecto a los demás.
+					Selecciona {targetCount} países de los siguientes, es importante que el primer
+					país seleccionado sea el que creas que será el ganador, {targetCount == 6 && " el sexto seleccionado será tu apuesta para la última posición,"} podrás
+					comprobarlo porque {targetCount == 6 ? "aparecerán resaltados" : "aparecerá resaltado"} respecto a los demás.
 				</p>
 				<div className="selected-countries-container">
 					<p>Países seleccionados: </p>
@@ -157,6 +159,8 @@ const CountryPicker = (props) => {
 									className={
 										context.selection.current.indexOf(country) == 0
 											? "winner-country"
+											: context.selection.current.indexOf(country) == 5
+											? "last-country"
 											: ""
 									}
 								>

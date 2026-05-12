@@ -25,7 +25,7 @@ const Classification = (props) => {
     if(context.current_room != undefined){
       let users = props.room.users ?? props.room.room.users;
       let usersTemp = users.filter(
-        (element) => element.countries.length == 5
+        (element) => element.countries.length >= 5
       );
       setUsers(usersTemp);
       setAnimate(props.animate);
@@ -38,7 +38,7 @@ const Classification = (props) => {
     <h2>{props.room.name ?? props.room?.room?.name}</h2>
     </div>
       {users.map((user) => {
-        if (user.countries.length == 5) {
+        if (user.countries.length >= 5) {
           return (
             <div
               className={
@@ -75,8 +75,8 @@ const Classification = (props) => {
                   </div>
                   <div className="user-card-countries">
                     {user.countries.map((country) => {
-
                       let winnerOption = user.winnerOption[0]?.countryId;
+                      let tailOption = user.tailOption?.[0]?.countryId;
                       return (
                         <div
                           key={user.countries.indexOf(country)}
@@ -85,7 +85,7 @@ const Classification = (props) => {
                           <p
                             style={{
                               fontWeight:
-                                (winnerOption === true || winnerOption === country.id)
+                                (winnerOption === true || winnerOption === country.id || tailOption === country.id)
                                   ? "bold"
                                   : "100",
                             }}
