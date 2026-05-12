@@ -22,7 +22,9 @@ const Home = () => {
 	const passwordRef = useRef(null);
 	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
-	const [rooms, setRooms] = useState(context.user_logged?.rooms)
+	const [rooms, setRooms] = useState(context.user_logged?.rooms);
+
+	const targetCount = context.songs?.length > 5 ? 6 : 5;
 
 
 	useEffect(() => {
@@ -48,11 +50,16 @@ const Home = () => {
 		validateUserToken();
 		if (context.user_logged?.email == null) {
 			useNavigateWithCallback(navigate, "/missing-email");
-		} else if (context.user_logged?.countries?.length < 5) {
-			context.setCurrentRoom(() => ({
-			}));
-			if (window.location.pathname == "/join-room" || window.location.href.includes(config.confirmemailLink)) {
-				useNavigateWithCallback(navigate, "/country-select?callback_url=" + window.location.href);
+		} else if (context.user_logged?.countries?.length < targetCount) {
+			context.setCurrentRoom(() => ({}));
+			if (
+				window.location.pathname == "/join-room" ||
+				window.location.href.includes(config.confirmemailLink)
+			) {
+				useNavigateWithCallback(
+					navigate,
+					"/country-select?callback_url=" + window.location.href
+				);
 			} else {
 				useNavigateWithCallback(navigate, "/country-select");
 			}
@@ -61,8 +68,7 @@ const Home = () => {
 				window.location.href = window.location.href.split("callback_url=")[1];
 			}
 		}
-
-	}, []);
+	}, [targetCount, context.user_logged]);
 
 	useEffect(() => {
 		let interval = setInterval(() => {
@@ -172,7 +178,7 @@ const Home = () => {
 	return (
 		<>
 			<div className="container">
-				{context.user_logged.countries?.length == 5 &&
+				{context.user_logged.countries?.length >= targetCount &&
 					!context.current_room?.current && (
 
 						<div className="rooms-options">
