@@ -7,14 +7,17 @@ import config from "../../config/config";
 
 const Classification = (props) => {
   const context = useContext(AppContext);
-  const [users, setUsers] = useState(props.room.users ?? props.room?.room?.users);
+  const [users, setUsers] = useState(
+    props.room.users ?? props.room?.room?.users,
+  );
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
       if (
         context.x_token &&
-        context.current_room?.current != undefined && props.animate
+        context.current_room?.current != undefined &&
+        props.animate
       ) {
         setAnimate(!animate);
       }
@@ -22,11 +25,9 @@ const Classification = (props) => {
   }, [context.current_room]);
 
   useEffect(() => {
-    if(context.current_room != undefined){
+    if (context.current_room != undefined) {
       let users = props.room.users ?? props.room.room.users;
-      let usersTemp = users.filter(
-        (element) => element.countries.length >= 5
-      );
+      let usersTemp = users.filter((element) => element.countries.length >= 5);
       setUsers(usersTemp);
       setAnimate(props.animate);
     }
@@ -34,9 +35,9 @@ const Classification = (props) => {
 
   return (
     <>
-    <div className="room-title-container">
-    <h2>{props.room.name ?? props.room?.room?.name}</h2>
-    </div>
+      <div className="room-title-container">
+        <h2>{props.room.name ?? props.room?.room?.name}</h2>
+      </div>
       {users.map((user) => {
         if (user.countries.length >= 5) {
           return (
@@ -59,18 +60,21 @@ const Classification = (props) => {
                   <p>{users.indexOf(user) + 1}</p>
                 </div>
                 <div className="user-card-image">
-                <img
-                      src={user.image ? `${user.image}` :
-                        `${config.defProfilePicUrl}${user.username}`}
-                      alt="imagen de usuario"
-                    />
+                  <img
+                    src={
+                      user.image
+                        ? `${user.image}`
+                        : `${config.defProfilePicUrl}${user.username}`
+                    }
+                    alt="imagen de usuario"
+                  />
                 </div>
                 <div className="user-card-data">
                   <div className="user-card-info">
                     <p
                       className={users.indexOf(user) == 0 ? "user-winner" : ""}
                     >
-                     {user.username}
+                      {user.username}
                     </p>
                   </div>
                   <div className="user-card-countries">
@@ -85,9 +89,13 @@ const Classification = (props) => {
                           <p
                             style={{
                               fontWeight:
-                                (winnerOption === true || winnerOption === country.id || tailOption === country.id)
+                                winnerOption === true ||
+                                winnerOption === country.id ||
+                                tailOption === country.id
                                   ? "bold"
                                   : "100",
+                              color:
+                                tailOption === country.id ? "blue" : "black",
                             }}
                           >
                             <span
@@ -96,10 +104,15 @@ const Classification = (props) => {
                                 outline:
                                   country.position == 1
                                     ? "2px solid var(--euro-gold)"
-                                    : "",
+                                    : country.position == context.songs.length
+                                      ? "2px solid blue"
+                                      : "",
                               }}
                             ></span>
-                               {country.position === 1 && winnerOption === country.id ? (parseInt(country.points + country.points * 0.1)) : country.points}
+                            {country.position === 1 &&
+                            winnerOption === country.id
+                              ? parseInt(country.points + country.points * 0.1)
+                              : country.points}
                           </p>
                         </div>
                       );
