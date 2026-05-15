@@ -157,8 +157,15 @@ program
   .argument("<name>", "Internal name of the feature (snake_case)")
   .option("--title <string>", "Human-readable title")
   .option("--description <string>", "Short description")
-  .option("--acceptance <string>", "Comma-separated list of acceptance criteria")
-  .option("--sdd <boolean>", "Enable Spec Driven Development (default: true)", (val) => val === "true" || val === "1")
+  .option(
+    "--acceptance <string>",
+    "Comma-separated list of acceptance criteria",
+  )
+  .option(
+    "--sdd <boolean>",
+    "Enable Spec Driven Development (default: true)",
+    (val) => val === "true" || val === "1",
+  )
   .action(async (name, options) => {
     try {
       const { addFeature } = await import("./features.js");

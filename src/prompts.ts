@@ -1,14 +1,18 @@
 /** Interactive prompting utility. */
 import readline from "node:readline/promises";
-
-export async function prompt(question: string, defaultValue?: string): Promise<string> {
+export async function prompt(
+  question: string,
+  defaultValue?: string,
+): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
   try {
-    const query = defaultValue ? `${question} [${defaultValue}]: ` : `${question}: `;
+    const query = defaultValue
+      ? `${question} [${defaultValue}]: `
+      : `${question}: `;
     const answer = await rl.question(query);
     return answer.trim() || defaultValue || "";
   } finally {
@@ -29,5 +33,8 @@ export async function promptRequired(question: string): Promise<string> {
 
 export async function promptList(question: string): Promise<string[]> {
   const answer = await promptRequired(`${question} (comma-separated)`);
-  return answer.split(",").map(s => s.trim()).filter(s => s.length > 0);
+  return answer
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
 }

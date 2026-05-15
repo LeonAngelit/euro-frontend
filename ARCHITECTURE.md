@@ -1,0 +1,527 @@
+# ARCHITECTURE.md
+
+> Descriptive reference of the current project architecture.
+> For prescriptive rules, see [`docs/architecture.md`](docs/architecture.md).
+> For style rules, see [`docs/conventions.md`](docs/conventions.md).
+
+---
+
+## 1. Project Overview
+
+**Eurocontest App** is a React single-page application (SPA) for the Eurovision Song Contest voting and room system. It is a client-side application that communicates with a separate REST API backend. The project also includes a CLI subsystem (written in TypeScript) for notes and feature management.
+
+The SPA allows users to:
+- Register and log in (username/password or Google OAuth)
+- Select countries for each year's Eurovision contest
+- Create, join, and participate in voting rooms
+- View live classifications and historical results
+- Manage profiles (including email confirmation)
+
+The CLI subsystem provides commands for managing notes and features via the terminal, using atomic JSON file persistence.
+
+---
+
+## 2. Tech Stack
+
+| Layer | Technology | Notes |
+|---|---|---|
+| UI Framework | React 18 (JSX) | Functional components with hooks |
+| Build Tool | Vite | `vite.config.js` |
+| CLI & Data Layer | TypeScript | `src/cli.ts`, `src/notes.ts`, `src/storage.ts`, `src/features.ts`, `src/prompts.ts` |
+| UI Layer | JavaScript (ES modules) | All `.jsx` and `.js` files under `src/` |
+| Routing | react-router-dom v7 | `BrowserRouter` + `Routes` in `App.jsx` |
+| Authentication | @react-oauth/google | Google OAuth provider wrapping the app |
+| HTTP Client | axios | Used for all backend API calls |
+| Password Hashing | bcryptjs | Client-side salted hashing for auth flow |
+| CLI Framework | Commander.js | `program.command()` pattern in `cli.ts` |
+| Testing | Vitest | Configured in `vitest.config.ts` with node environment |
+| PWA Support | vite-plugin-pwa | Service worker + manifest in `vite.config.js` |
+| Icons | react-icons, @fortawesome/react-fontawesome, flag-icons | Visual elements |
+| Polyfills | vite-plugin-node-polyfills, @esbuild-plugins/node-globals-polyfill | Buffer, process, crypto for browser |
+
+---
+
+## 3. Project Structure
+
+```
+euro-frontend/
+├── src/
+│   ├── App.jsx                    # Route definitions (React Routes)
+│   ├── Layout.jsx                 # Layout shell: Navigation → content → Modal → Footer
+│   ├── index.jsx                  # App bootstrap, context providers, Google OAuth
+│   ├── index.css                  # Global styles
+│   ├── cli.ts                     # CLI entry point (Commander.js program)
+│   ├── notes.ts                   # Note domain model (NoteData, Note, NoteError, NoteNotFound)
+│   ├── storage.ts                 # Atomic JSON file read/write for notes & features
+│   ├── features.ts                # Feature data model and management logic
+│   ├── prompts.ts                 # Interactive CLI prompting (readline)
+│   ├── reportWebVitals.js        # Web Vitals reporter (CLS, FID, FCP, LCP, TTFB)
+│   ├── Components/
+│   │   ├── AdminPanel/            # Password dialog for admin access
+│   │   ├── ClassificationView/    # Room classification/ranking display
+│   │   ├── Collapsible/           # Expandable/collapsible section wrapper
+│   │   ├── CountryPicker/         # Country selection checkboxes with flags
+│   │   ├── Footer/                # App footer (copyright + year)
+│   │   ├── Form/                  # Reusable form component with field rendering
+│   │   ├── Modal/                 # Generic modal (message, confirm, or custom component)
+│   │   ├── Navigation/           # Top navigation bar with user menu
+│   │   ├── NotFoundComponent/     # 404 page with auto-redirect
+│   │   └── RoomPicker/            # Room selection, editing, and management cards
+│   ├── Views/
+│   │   ├── App/                   # Home — main room selection view
+│   │   ├── AdminView/             # Admin panel — updatable settings, export, AI requests
+│   │   ├── Archive/               # Historical room results browser
+│   │   ├── CountrySelection/      # Country voting view (CountrySelect component)
+│   │   ├── CreateRoom/            # Room creation form
+│   │   ├── CreateUser/            # User registration (SignUp)
+│   │   ├── Login/                 # Login form with Google OAuth
+│   │   ├── MissingEmail/          # Email confirmation flow
+│   │   ├── Room/                  # Active room classification view
+│   │   └── UserDetails/           # User profile and country selection management
+│   ├── Storage/
+│   │   └── AppContext.jsx         # React Context provider (global state)
+│   ├── config/
+│   │   └── config.js              # Runtime configuration from env vars
+│   └── utils/
+│       ├── useGetAuthToken.js      # Fetches auth token via bcrypt hash + /getAuthToken
+│       ├── useGetSongs.js          # Fetches songs (countries) from API
+│       ├── useUpdateUserData.js    # Refreshes user data from API
+│       ├── useHandleCloseSession.js # Clears session state
+│       ├── useNavigateWithCallback.js # Navigate with optional callback URL
+│       ├── useValidateEmail.js     # Validates email confirmation token
+│       ├── useValidateToken.js     # Validates current auth token
+│       └── regexUtils.js           # Regex patterns and validators for username, password, email
+├── tests/
+│   ├── cli.test.ts                # Integration tests for CLI commands
+│   ├── cli_features.test.ts       # Tests for the feature-add CLI command
+│   ├── features.test.ts           # Unit tests for features.ts
+│   ├── notes.test.ts              # Unit tests for notes.ts
+│   └── storage.test.ts            # Unit tests for storage.ts (atomic file operations)
+├── docs/
+│   ├── architecture.md            # Prescriptive architecture rules
+│   ├── conventions.md             # Style and naming conventions
+│   ├── specs.md                   # Spec Driven Development process
+│   └── verification.md            # Verification and testing guidelines
+├── specs/                         # Per-feature spec directories (SDD)
+│   └── project_architecture_analysis/
+│       ├── requirements.md
+│       ├── design.md
+│       └── tasks.md
+├── progress/                      # Session tracking
+│   ├── current.md
+│   └── history.md
+├── public/
+│   ├── favicon.ico
+│   ├── index.html                 # PWA manifest link
+│   ├── robots.txt
+│   ├── star_icon_128.png          # PWA icon 128×128
+│   └── star_icon_512.png          # PWA icon 512×512
+├── .env                           # VITE_ environment variables
+├── Dockerfile                     # Multi-stage: node build → nginx serve
+├── compose.yaml                   # Docker Compose with secrets
+├── vite.config.js                 # Vite + PWA plugin config
+├── vitest.config.ts               # Vitest test runner config
+├── tsconfig.json                  # TypeScript config (strict, nodenext)
+└── package.json                   # Dependencies and scripts
+```
+
+---
+
+## 4. Component Architecture
+
+### Components (`src/Components/`)
+
+| Component | File | Responsibility |
+|---|---|---|
+| **AdminPanel** | `AdminPanel/AdminPanel.jsx` | Password dialog overlay for admin access. Wraps the `Form` component with a password field and close button. |
+| **ClassificationView** | `ClassificationView/Classification.jsx` | Displays a ranked list of room participants with their country selections, scores, and animated card layout. Supports winner/last-place highlighting and auto-refresh. |
+| **Collapsible** | `Collapsible/Collapsible.jsx` | Wrapper component that toggles visibility of its children. Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
+| **CountryPicker** | `CountryPicker/CountryPicker.jsx` | Renders country selection cards with flag icons, checkboxes, and a "Continue" button. Validates that the user selects the required number of countries (5 or 6). |
+| **Footer** | `Footer/Footer.jsx` | Simple footer displaying copyright and current year. |
+| **Form** | `Form/Form.jsx` | Reusable form component. Accepts field definitions, submit handler, error state, password visibility toggle, and "remember me" checkbox. |
+| **Modal** | `Modal/Modal.jsx` | Generic modal component supporting three modes: plain message, confirm dialog (accept/cancel), and custom component injection. |
+| **Navigation** | `Navigation/Navigation.jsx` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. |
+| **NotFoundComponent** | `NotFoundComponent/NotFound.jsx` | 404 page that displays an error message and auto-redirects based on authentication state. |
+| **RoomPicker** | `RoomPicker/RoomPicker.jsx` | Lists the user's rooms as cards with actions: select room, edit room name, share room link, delete room. Includes room creation via password dialog. |
+
+### Views (`src/Views/`)
+
+| View | File | Responsibility |
+|---|---|---|
+| **Home** | `App/Home.jsx` | Main landing view after login. Shows room picker and join-room form if the user has selected countries; redirects to country selection otherwise. |
+| **Login** | `Login/Login.jsx` | Login form with username/password and Google OAuth. Validates credentials against the backend, stores user/token in context. |
+| **SignUp** | `CreateUser/SignUp.jsx` | Registration form with username, email, password, and Google OAuth. Hashes the password with bcryptjs before sending. |
+| **UserDetails** | `UserDetails/UserDetails.jsx` | User profile view. Displays avatar and allows country selection via `CountryPicker` inside a `Collapsible`. Includes account deletion button. |
+| **CreateRoom** | `CreateRoom/CreateRoom.jsx` | Room creation form (name + password). Hashes the room password with bcryptjs before sending to the API. |
+| **Room** | `Room/Room.jsx` | Active room view. Displays the `ClassificationView` for the current room. Redirects to country selection or email confirmation if needed. |
+| **Archive** | `Archive/Archive.jsx` | Historical results browser. Fetches past rooms for the user and displays classifications using `ClassificationView`. |
+| **AdminView** | `AdminView/AdminView.jsx` | Admin dashboard. Allows toggling the "refresh_enabled" flag, exporting results, changing the admin password, and creating AI model requests via an external API. |
+| **CountrySelect** | `CountrySelection/CountrySelect.jsx` | Country voting view. Validates the user's token and renders `CountryPicker`. Redirects back to home once enough countries are selected. |
+| **MissingEmail** | `MissingEmail/MissingEmail.jsx` | Email confirmation flow. Displays a form to enter an email, sends a confirmation token via the API, and validates the email token on callback. |
+
+---
+
+## 5. Routing
+
+Routes are defined in `src/App.jsx` using React Router's `<Routes>` component. All views are lazy-loaded with `React.lazy()` and wrapped in `<Suspense>`.
+
+| Route Path | View Component | Description |
+|---|---|---|
+| `/app` | `Home` | Main room selection view |
+| `/login` | `Login` | User login (username/password or Google OAuth) |
+| `/signup` | `SignUp` | New user registration |
+| `/profile` | `UserDetails` | User profile and country selection |
+| `/createroom` | `CreateRoom` | Create a new voting room |
+| `/admin` | `AdminView` | Admin panel (protected by password) |
+| `/archive` | `Archive` | Historical results |
+| `/room` | `Room` | Active room classification |
+| `/missing-email` | `MissingEmail` | Email confirmation and entry |
+| `/country-select` | `CountrySelect` | Country voting |
+| `/confirm-email` | `MissingEmail` | Email confirmation callback |
+| `*` | `NotFound` | 404 fallback with auto-redirect |
+
+---
+
+## 6. State Management
+
+The application uses a single React Context (`AppContext`) defined in `src/Storage/AppContext.jsx`.
+
+### State Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `user_logged` | `object \| false` | Current logged-in user data (id, username, email, countries, rooms, image, token) |
+| `x_token` | `string` | Bearer token for API authentication |
+| `songs` | `array` | List of countries/songs for the current year (fetched from `/countries`) |
+| `current_room` | `object \| undefined` | Active room data (`{ current: roomData }` or `undefined`) |
+| `selection` | `object` | Country selection state (`{ current: [countryIds] }`) |
+| `remember_user` | `boolean` | Whether to persist session in localStorage (vs. sessionStorage only) |
+| `modal` | `object` | Modal state (`{ visible, message, status, confirm, component, onclick, onaccept, onaccept_data }`) |
+| `updatable` | `object` | Admin updatable settings (refresh_enabled, master_password, etc.) |
+
+### Context Setters
+
+Each state field has a corresponding setter function exposed on the context: `setUserLogged`, `setXtoken`, `setSongs`, `setCurrentRoom`, `setSelection`, `setRememberUser`, `setModal`, `setUpdatable`, and the special `closeSession` handler that resets all state and clears localStorage.
+
+### Persistence
+
+- When `remember_user` is `true`: context is serialized to both `localStorage` and `sessionStorage` under the key `"app-context"`.
+- When `remember_user` is `false`: context is serialized only to `sessionStorage`.
+- On app load, `localStorage` is checked first; if empty, `sessionStorage` is used as fallback.
+- Songs are auto-fetched via `useGetSongs` when `x_token` exists and `songs` is empty.
+
+### Provider Wrapping
+
+In `src/index.jsx`, the app is wrapped as:
+
+```
+GoogleOAuthProvider → AppContextProvider → BrowserRouter → Layout → App
+```
+
+---
+
+## 7. CLI Subsystem
+
+The CLI subsystem (TypeScript) provides terminal-based tools for managing notes and features.
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `add <title> [--body <body>]` | Add a new note with auto-incrementing ID |
+| `list` | List all notes (id, created_at, title) |
+| `show <id>` | Show a note's full details by ID |
+| `delete <id>` | Delete a note by ID |
+| `search <query>` | Search notes by keyword (matches title or body) |
+| `recent [--limit N]` | List the N most recent notes (default: 5) |
+| `edit <id> [--title] [--body]` | Edit an existing note's fields |
+| `feature-add <name> [--title] [--description] [--acceptance] [--sdd]` | Add a new feature to `feature_list.json` |
+
+### Data Models
+
+**NoteData** (in `src/notes.ts`):
+```typescript
+interface NoteData {
+  id: number;
+  title: string;
+  body: string;
+  created_at: string;  // ISO 8601 without milliseconds
+}
+```
+
+- `NoteError` — base error class for note operations
+- `NoteNotFound` — thrown when a note is not found
+
+**Feature** (in `src/features.ts`):
+```typescript
+interface Feature {
+  id: number;
+  name: string;
+  title: string;
+  description: string;
+  acceptance: string[];
+  sdd?: boolean;
+  status: "pending" | "spec_ready" | "in_progress" | "done" | "blocked";
+}
+```
+
+- `FeatureError` — base error class for feature operations
+- `DuplicateFeatureError` — thrown when a feature with the same name already exists
+
+### Storage Layer (`src/storage.ts`)
+
+- Uses atomic file writes: data is written to a temporary file (`.notes_<uuid>.json`) and then renamed to the target path.
+- `load()` reads from `.notes.json` (or `NOTES_FILE` env var) and returns `[]` if the file doesn't exist.
+- `save()` serializes to JSON with 2-space indentation, writes atomically via `writeFile` → `rename`.
+- Feature operations reuse `load()`/`save()` targeting `feature_list.json`.
+
+### Interactive Prompting (`src/prompts.ts`)
+
+- `prompt(question, defaultValue?)` — prompts for a single string value via `readline`.
+- `promptRequired(question)` — loops until a non-empty answer is provided.
+- `promptList(question)` — prompts for a comma-separated list of strings.
+
+---
+
+## 8. API Integration
+
+### Base URL
+
+The backend API base URL is sourced from the `VITE_REACT_APP_BASEURL` environment variable, accessed at runtime as `import.meta.env.VITE_REACT_APP_BASEURL` and exported through `src/config/config.js`.
+
+### Authentication Flow
+
+1. Client generates a salted bcrypt hash of the `VITE_REACT_APP_AUTH_P` secret.
+2. Client sends a `GET` request to `/getAuthToken` with the hash in the `Authorization` header.
+3. The backend validates the hash and returns a bearer token.
+4. The token is stored in AppContext as `x_token` and sent in subsequent requests as the `Bearer` header.
+5. For user login, the password is reversed client-side before being sent to `/users/login`.
+
+### Known API Endpoint Patterns
+
+| Endpoint Pattern | Method | Used In |
+|---|---|---|
+| `/users/login` | POST | Login view |
+| `/users/google-login` | POST | Login & SignUp views |
+| `/users/signup` | POST | SignUp view |
+| `/users/:id` | GET, PUT | useUpdateUserData, MissingEmail, UserDetails, RoomPicker |
+| `/users/validateToken/:userId` | GET | useValidateToken |
+| `/users/updateUserEmail/:userId` | POST | useValidateEmail |
+| `/users/validateEmailSent/:userId` | GET | MissingEmail |
+| `/countries` | GET | useGetSongs (songs/countries list) |
+| `/countries/refresh/:year` | GET | Layout (point refresh for admin) |
+| `/rooms/:roomId/:userId` | GET, PUT | Layout, RoomPicker (room data) |
+| `/rooms/login` | POST | Home view (join room) |
+| `/rooms/verifyRoomToken/:userId` | POST | Layout (join room via token) |
+| `/archive/users/:userId` | GET | Archive view |
+| `/archive/room/:roomId/:userId` | GET | Archive view |
+| `/rooms/archive/export/:year` | GET | AdminView |
+| `/getAuthToken` | GET | useGetAuthToken |
+| `/updatable` | GET | Navigation (admin auth) |
+| `{requestsUrl}` (config-defined) | POST, DELETE | AdminView (AI model requests) |
+
+---
+
+## 9. Configuration
+
+### Environment Variables (`.env`)
+
+| Variable | Purpose |
+|---|---|
+| `VITE_REACT_APP_BASEURL` | Backend API base URL |
+| `VITE_REACT_APP_ADMIN` | Admin username for admin panel access |
+| `VITE_REACT_APP_AUTH_P` | Auth secret used to derive the bcrypt hash for `/getAuthToken` |
+| `VITE_REACT_APP_P_KEY` | Additional key (currently not used in source) |
+| `VITE_REACT_APP_JOIN_ROOM` | Join room URL pattern (`/join-room?roomAuth`) |
+| `VITE_REACT_APP_CONFIRM_EMAIL_URL` | Email confirmation URL pattern (`/confirm-email?user_id=`) |
+| `VITE_REACT_APP_JOIN_ROOM_PATH` | Join room path (`/join-room`) |
+| `VITE_REACT_APP_CLIENT_ID` | Google OAuth client ID |
+| `VITE_REACT_APP_REQUESTS_URL` | URL path for AI model requests |
+| `VITE_REACT_APP_REQUESTS_BASE_URL` | URL path for AI model request deletion |
+
+### Runtime Config Object (`src/config/config.js`)
+
+```javascript
+{
+  env: import.meta.env.NODE_ENV || 'dev',
+  isProd: import.meta.env.NODE_ENV === 'production',
+  baseUrl: import.meta.env.VITE_REACT_APP_BASEURL,
+  appAdmin: import.meta.env.VITE_REACT_APP_ADMIN,
+  authP: import.meta.env.VITE_REACT_APP_AUTH_P,
+  key: import.meta.env.VITE_REACT_APP_P_KEY,
+  defProfilePicUrl: 'https://ui-avatars.com/api/',
+  joinRoomLink: import.meta.env.VITE_REACT_APP_JOIN_ROOM,
+  confirmemailLink: import.meta.env.VITE_REACT_APP_CONFIRM_EMAIL_URL,
+  joinRoomPath: import.meta.env.VITE_REACT_APP_JOIN_ROOM_PATH,
+  clientID: import.meta.env.VITE_REACT_APP_CLIENT_ID,
+  requestsUrl: import.meta.env.VITE_REACT_APP_REQUESTS_URL,
+  requestsBaseUrl: import.meta.env.VITE_REACT_APP_REQUESTS_BASE_URL
+}
+```
+
+### PWA Manifest
+
+Defined inline in `vite.config.js` via `vite-plugin-pwa`:
+
+- **name**: EuroContest
+- **short_name**: EuroContest
+- **start_url**: `/`
+- **display**: `fullscreen`
+- **theme_color**: `#02025e`
+- **background_color**: `#ff0088`
+- **icons**: 128×128 and 512×512 PNGs in `public/`
+
+---
+
+## 10. Utilities
+
+All utility modules are in `src/utils/` and are named with a `use` prefix, though they are plain async functions (not React hooks).
+
+| Module | Export | Description |
+|---|---|---|
+| `useGetAuthToken.js` | `default` | Generates a bcrypt-salted hash from the auth secret and calls `/getAuthToken`. Stores the returned token in AppContext. |
+| `useGetSongs.js` | `default` | Fetches the countries/songs list from `/countries` using the current bearer token. |
+| `useUpdateUserData.js` | `default` | Refreshes user data from `/users/:id` and navigates to `/app`. |
+| `useHandleCloseSession.js` | `default` | Calls `context.closeSession()` to clear all state and localStorage. |
+| `useNavigateWithCallback.js` | `default` | Navigates to a destination, appending the current `callback_url` query parameter if present. |
+| `useValidateEmail.js` | `default` | Posts an email confirmation token to `/users/updateUserEmail/:userId`. Returns `{ result, data }`. |
+| `useValidateToken.js` | `default` | Validates the current auth token via `/users/validateToken/:userId`. Returns `isValidToken` boolean. |
+| `regexUtils.js` | `validateRegex`, `validateEmailRegex`, `validateUserNameRegex`, `default` | Regex patterns and validation functions for passwords (8+ chars, digit, uppercase), emails, and usernames (5–25 chars, alphanumeric + underscore). |
+
+---
+
+## 11. Layout Shell
+
+`src/Layout.jsx` wraps the entire application with a consistent structure:
+
+```
+┌──────────────────────────────────┐
+│  Navigation                      │
+├──────────────────────────────────┤
+│                                  │
+│  {children}  (Route content)    │
+│                                  │
+├──────────────────────────────────┤
+│  Modal (conditional)             │
+├──────────────────────────────────┤
+│  Footer                          │
+└──────────────────────────────────┘
+```
+
+### Polling Intervals
+
+| Interval | Condition | Action |
+|---|---|---|
+| 60 seconds | `x_token` present and `current_room.current` is defined | Calls `GET /rooms/:roomId/:userId` to refresh room data |
+| 40 seconds | `x_token` present, `user_logged.username === appAdmin`, and `updatable.refresh_enabled` | Calls `GET /countries/refresh/:year` to update point data (admin only) |
+
+### Auth Guard
+
+Layout checks `context.user_logged` on mount. If the user is not logged in, it navigates to `/login` (or `/login?callback_url=...` if the current URL contains `callback_url` or the confirm-email link).
+
+### Modal Rendering
+
+Three modal modes are rendered conditionally:
+1. **Confirm modal**: `modal.visible && modal.confirm && !modal.component` — shows accept/cancel buttons
+2. **Component modal**: `modal.visible && modal.component` — renders a custom React component
+3. **Message modal**: `modal.visible && !modal.confirm && !modal.component` — shows a simple status message
+
+---
+
+## 12. Testing Strategy
+
+| Aspect | Detail |
+|---|---|
+| **Test runner** | Vitest (configured in `vitest.config.ts`, environment: `node`) |
+| **Test location** | All tests live in the `tests/` directory at the project root |
+| **Convention** | One test file per source module: `notes.test.ts`, `storage.test.ts`, `features.test.ts`, `cli.test.ts`, `cli_features.test.ts` |
+| **Test isolation** | Tests use real temporary files (no mocks for file system). Each test creates a temp file and cleans up after itself |
+| **CLI integration tests** | `cli.test.ts` and `cli_features.test.ts` use `child_process.spawnSync` to invoke the CLI as a subprocess for end-to-end verification |
+| **Run command** | `npm test` (maps to `vitest run`) |
+| **TypeScript** | Tests are written in TypeScript (`tsconfig.json` with `strict: true`) |
+
+---
+
+## 13. Build & Deployment
+
+### npm Scripts
+
+| Script | Command | Purpose |
+|---|---|---|
+| `dev` | `vite` | Start development server with HMR |
+| `build` | `vite build` | Production build (output to `build/`) |
+| `serve` | `vite preview` | Preview the production build locally |
+| `lint` | `eslint src --ext .js` | Lint JavaScript source files |
+| `lint:fix` | `eslint src --ext .js -- --fix` | Lint and auto-fix |
+| `test` | `vitest run` | Run test suite |
+
+### Docker Setup
+
+**Dockerfile** (multi-stage):
+
+1. **base** — `node:18.15.0-alpine`, sets `WORKDIR /usr/src/app`
+2. **deps** — Installs production dependencies only (`npm ci --omit=dev`)
+3. **build** — Installs all dependencies, copies source, injects secrets via `--mount=type=secret,id=my_env`, runs `npm run build`, removes `.env.local`
+4. **serve** — `nginx:1.19.0`, copies the build output to `/usr/share/nginx/html`
+
+**compose.yaml**:
+
+- Defines a single `app` service built from the Dockerfile
+- Mounts `.env` as a Docker secret (`my_env`)
+- Sets `NODE_ENV=production`
+- Exposes port `8080:80`
+
+### PWA Build Configuration
+
+Configured in `vite.config.js` via `vite-plugin-pwa`:
+
+- **registerType**: `autoUpdate` (service worker auto-updates)
+- **devOptions**: PWA enabled in dev mode
+- **manifest**: Defined inline (name, icons, theme colors, display mode)
+
+The PWA manifest is linked from `index.html` as `/manifest.webmanifest`, and the plugin generates the service worker at build time.
+
+---
+
+## 14. Architectural Concerns
+
+The following issues are observable in the current codebase:
+
+### Mixed TypeScript/JavaScript in `src/`
+
+The project uses TypeScript (`cli.ts`, `notes.ts`, `storage.ts`, `features.ts`, `prompts.ts`) for the CLI subsystem alongside JavaScript (`.jsx`, `.js`) for the React layer. There is no shared type system between the two; the TS files target `nodenext` modules and are not compiled for browser use.
+
+### Inconsistent CSS Naming
+
+Component CSS files use three different naming conventions:
+- PascalCase with `.Component.css` suffix: `CountryPicker.Component.css`, `Form.Component.css`, `Home.Component.css`
+- camelCase with `.component.css` suffix: `AdminPanel.component.css`, `Collapsible.component.css`, `Footer.component.css`, `Navigation.component.css`, `Modal.component.css`
+- Truncated/typo naming: `AdminView.componen.css` (missing `t`), `Classification.Component.css` (inconsistent capitalization)
+
+### Utility Modules Named as Hooks but Not Using React Hooks API
+
+All utility modules in `src/utils/` use the `use` prefix (e.g., `useGetAuthToken`, `useGetSongs`, `useUpdateUserData`) but are plain async functions, not custom React hooks. They do not call any React hooks internally and are invoked without following the Rules of Hooks.
+
+### API Calls in Layout and Components Instead of a Service Layer
+
+Backend API calls are made directly from:
+- `Layout.jsx` (room data polling, point refresh, room token verification)
+- `Navigation.jsx` (admin authentication via `/updatable`)
+- `Home.jsx` (room login)
+- `Login.jsx` (user authentication, Google OAuth)
+- `SignUp.jsx` (user registration, Google OAuth)
+- `AdminView.jsx` (updatable settings, archive export, AI model requests)
+- `MissingEmail.jsx` (email update and confirmation)
+- `RoomPicker.jsx` (room data updates, room operations)
+
+There is no centralized API service layer; each component imports `axios` directly and constructs API calls inline.
+
+---
+
+## 15. Relationship to `docs/architecture.md`
+
+This `ARCHITECTURE.md` is a **descriptive reference** — it documents what the codebase **currently is**. It is located at the project root for quick discovery.
+
+`docs/architecture.md` is a **prescriptive policy** — it defines the rules the project **should follow** (atomic persistence, no mocks, no new deps, stateless CLI, etc.).
+
+Both files coexist and serve complementary purposes. Updating one does not require updating the other, though they should remain consistent over time.

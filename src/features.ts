@@ -29,7 +29,7 @@ const FEATURE_LIST_PATH = "feature_list.json";
 
 export async function loadFeatures(): Promise<Feature[]> {
   try {
-    const data = await load(FEATURE_LIST_PATH) as any;
+    const data = (await load(FEATURE_LIST_PATH)) as any;
     return data.features || [];
   } catch (error) {
     return [];
@@ -37,7 +37,7 @@ export async function loadFeatures(): Promise<Feature[]> {
 }
 
 export async function saveFeatures(features: Feature[]): Promise<void> {
-  const data = await load(FEATURE_LIST_PATH) as any;
+  const data = (await load(FEATURE_LIST_PATH)) as any;
   data.features = features;
   await save(data, FEATURE_LIST_PATH);
 }
@@ -50,13 +50,13 @@ export async function addFeature(featureData: {
   sdd?: boolean;
 }): Promise<Feature> {
   const features = await loadFeatures();
-  
-  if (features.some(f => f.name === featureData.name)) {
+
+  if (features.some((f) => f.name === featureData.name)) {
     throw new DuplicateFeatureError(featureData.name);
   }
 
   const maxId = features.reduce((max, f) => (f.id > max ? f.id : max), 0);
-  
+
   const newFeature: Feature = {
     id: maxId + 1,
     name: featureData.name,
@@ -64,11 +64,11 @@ export async function addFeature(featureData: {
     description: featureData.description,
     acceptance: featureData.acceptance,
     sdd: featureData.sdd ?? true,
-    status: "pending"
+    status: "pending",
   };
 
   features.push(newFeature);
   await saveFeatures(features);
-  
+
   return newFeature;
 }

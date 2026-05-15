@@ -44,7 +44,7 @@
     "serve": "vite preview",
     "lint": "eslint src --ext .js",
     "lint:fix": "npm run lint -- --fix",
-    "test": "react-scripts test",
+    "test": "vitest run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -66,10 +66,10 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^9.21.0",
-    "eslint-plugin-react": "^7.37.4",
     "@types/node": "^25.8.0",
     "commander": "^14.0.3",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react": "^7.37.4",
     "tsx": "^4.22.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
