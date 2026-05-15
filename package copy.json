@@ -1,0 +1,33 @@
+{
+  "name": "harness-sdd",
+  "version": "1.0.0",
+  "description": "Proyecto de ejemplo que demuestra los principios de **Harness Engineering** aplicados a un CLI minimalista de notas en Python.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "cli": "tsx src/cli.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betta-tech/harness-sdd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/betta-tech/harness-sdd/issues"
+  },
+  "homepage": "https://github.com/betta-tech/harness-sdd#readme",
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "commander": "^14.0.3",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.6"
+  }
+}
