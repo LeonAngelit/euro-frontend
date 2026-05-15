@@ -6,7 +6,6 @@ import useValidateToken from "../../utils/useValidateToken";
 import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 import config from "../../config/config";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
-import useGetSongs from "../../utils/useGetSongs";
 
 const CountrySelect = () => {
   const context = useContext(AppContext);
@@ -21,8 +20,6 @@ const CountrySelect = () => {
         useHandleCloseSession(context);
         useNavigateWithCallback(navigate, "/login");
       }
-      const songs = await useGetSongs(context);
-      context.setSongs(songs);
     }
     validateUserToken();
   }, []);

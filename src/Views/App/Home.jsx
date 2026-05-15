@@ -4,7 +4,7 @@ import AppContext from "../../Storage/AppContext";
 import { Link, useNavigate } from "react-router-dom";
 import useHandleCloseSession from "../../utils/useHandleCloseSession";
 import useValidateToken from "../../utils/useValidateToken";
-import useGetSongs from "../../utils/useGetSongs";
+
 import { validateRegex, validateUserNameRegex } from "../../utils/regexUtils";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
@@ -18,7 +18,7 @@ import useNavigateWithCallback from "../../utils/useNavigateWithCallback";
 const Home = () => {
 	const context = useContext(AppContext);
 	const navigate = useNavigate();
-	const [songs, setSongs] = useState(context.songs);
+
 	const passwordRef = useRef(null);
 	const roomNameRef = useRef(null);
 	const [error, setError] = useState(false);
@@ -80,14 +80,7 @@ const Home = () => {
 			})();
 		}, 3600000);
 	}, []);
-	useEffect(() => {
-		if (context.x_token) {
-			initializeSongs();
-		}
-	}, []);
-	useEffect(() => {
-		context.setSongs(songs);
-	}, [songs]);
+
 
 	useEffect(() => {
 		setRooms(context.user_logged?.rooms)
@@ -168,12 +161,7 @@ const Home = () => {
 			});
 	}
 
-	async function initializeSongs() {
-		if (!songs) {
-			const songs = await useGetSongs(context);
-			setSongs(songs);
-		}
-	}
+
 
 	return (
 		<>

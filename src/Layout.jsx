@@ -18,13 +18,12 @@ function Layout({ children }) {
   const [modal, setModal] = useState(context.modal);
   const RoomIntervalRef = useRef(null);
   const navigate = useNavigate();
-  const [targetCount, setTargetCount] = useState(0);
+  const [targetCount, setTargetCount] = useState(context.songs?.length > 5 ? 6 : 5);
 
   useEffect(() => {
-    const songs = useGetSongs(context);
-    context.setSongs(songs);
-    setTargetCount(songs?.length > 5 ? 6 : 5);
-  }, [context.user_logged]);
+    setTargetCount(context.songs?.length > 5 ? 6 : 5);
+  }, [context.songs]);
+
 
   async function updatePointRequest() {
     await axios

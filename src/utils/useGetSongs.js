@@ -1,24 +1,22 @@
 import axios from "axios";
 import config from "../config/config";
 
-async function useGetSongs(context) {
-	
-		try {
-			const response = await axios.get(
-				`${config.baseUrl}countries`,
-				{
-					headers: {
-						Accept: "application/json",
-						Bearer: context.x_token,
-					},
-				}
-			);
-			if (response.status == 200) {
-				return response.data;
-			}
-		} catch (error) {
-			return error;
-		}
+async function getSongs(xToken) {
+  try {
+    const response = await axios.get(`${config.baseUrl}countries`, {
+      headers: {
+        Accept: "application/json",
+        Bearer: xToken,
+      },
+    });
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching songs:", error);
+    return [];
+  }
 }
 
-export default useGetSongs;
+export default getSongs;
+

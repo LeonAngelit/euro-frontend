@@ -1,6 +1,7 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import React from "react";
-import PropTypes, { node } from "prop-types";
+import PropTypes from "prop-types";
+import getSongs from "../utils/useGetSongs";
 
 let initialAppContext;
 window.localStorage.getItem("app-context")
@@ -31,9 +32,9 @@ window.localStorage.getItem("app-context")
 const AppContext = createContext(initialAppContext);
 
 export function AppContextProvider({ children }) {
-  const [rememberUser, setRememberUser] = useState(initialAppContext.token);
+  const [rememberUser, setRememberUser] = useState(initialAppContext.remember_user);
   const [userLogged, setUserLogged] = useState(initialAppContext.user_logged);
-  const [songs, setSongs] = useState(initialAppContext.songs);
+  const [songs, setSongs] = useState(initialAppContext.songs || []);
   const [modal, setModal] = useState(initialAppContext.modal);
   const [selection, setSelection] = useState(initialAppContext.selection);
   const [xToken, setXtoken] = useState(initialAppContext.x_token);
@@ -41,6 +42,16 @@ export function AppContextProvider({ children }) {
   const [currentRoom, setCurrentRoom] = useState(
     initialAppContext.current_room
   );
+
+  useEffect(() => {
+    if (xToken && (songs.length === 0)) {
+      getSongs(xToken).then((data) => {
+        if (Array.isArray(data)) {
+          setSongs(data);
+        }
+      });
+    }
+  }, [xToken, songs.length]);
 
   function setRememberUserHandler(remember) {
     setRememberUser(remember);

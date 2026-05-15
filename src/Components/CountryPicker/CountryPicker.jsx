@@ -8,17 +8,16 @@ import { IconContext } from "react-icons";
 import AppContext from "../../Storage/AppContext";
 import axios from "axios";
 import config from "../../config/config";
-import useGetSongs from "../../utils/useGetSongs";
+
 const CountryPicker = (props) => {
 	const [continuar, setContinuar] = useState(false);
-	const [songs, setSongs] = useState(props.countries);
-
 	const context = useContext(AppContext);
+	const songs = context.songs;
 	const targetCount = (songs && songs.length > 5) ? 6 : 5;
 
 	useEffect(() => {
 		setContinuar(context.selection.current.length == targetCount);
-	}, [songs, context.selection.current.length]);
+	}, [songs, context.selection.current.length, targetCount]);
 
 	async function handleContinue() {
 		if (context.selection.current.length == targetCount) {
@@ -126,21 +125,7 @@ const CountryPicker = (props) => {
 		validateSelection();
 	}
 
-		useEffect(() => {
-			if (context.x_token) {
-				initializeSongs();
-			}
-		}, []);
-	
-		useEffect(() => {
-			context.setSongs(songs);
-		}, [songs]);
-		
-	
-		async function initializeSongs() {
-			const songs = await useGetSongs(context);
-			setSongs(songs);
-		}
+
 	return (
 		<>
 			<div className="countries-container">
