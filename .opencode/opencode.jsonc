@@ -9,6 +9,7 @@
   },
   "instructions": [
     "After editing or writing files, run npm test -- --reporter=dot 2>&1 | tail -5",
+    "Before closing the session, run ./init.sh > /tmp/harness_init.log 2>&1 && echo '[harness] init.sh OK' || (echo '[harness] init.sh FAILED — check /tmp/harness_init.log before closing' && cat /tmp/harness_init.log | tail -20)",
   ],
   "mcp": {
     "context-mode": {

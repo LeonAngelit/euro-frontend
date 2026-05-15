@@ -7,51 +7,33 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@react-oauth/google": "^0.12.1",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@fortawesome/vue-fontawesome": "^3.1",
+    "@iconify/vue": "^4.3",
+    "@vitejs/plugin-vue": "^5.2",
     "axios": "^1.7.9",
-    "bcrypt-nodejs": "^0.0.3",
-    "bcryptjs": "^3.0.2",
-    "browser": "^0.2.6",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.7",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.2.3",
     "flag-icons": "^7.3.2",
-    "form-data": "^4.0.2",
-    "fs": "^0.0.1-security",
-    "nodemon": "^3.1.9",
-    "path": "^0.12.7",
+    "pinia": "^2.2",
+    "pinia-plugin-persistedstate": "^3.2.3",
     "process": "^0.11.10",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.2.0",
     "stream-browserify": "^3.0.0",
     "vite": "^6.2.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-plugin-pwa": "^0.21.1",
-    "web-vitals": "^4.2.4"
+    "vue": "^3.5",
+    "vue-router": "^4.4",
+    "vue3-google-login": "^2.1"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint src --ext .js",
+    "lint": "eslint src --ext .ts,.vue",
     "lint:fix": "npm run lint -- --fix",
-    "test": "vitest run",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "test": "vitest run"
   },
   "browserslist": {
     "production": [
@@ -67,11 +49,13 @@
   },
   "devDependencies": {
     "@types/node": "^25.8.0",
+    "@vue/test-utils": "^2.4",
     "commander": "^14.0.3",
     "eslint": "^9.21.0",
-    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-vue": "^9.28",
     "tsx": "^4.22.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.6",
+    "vue-tsc": "^2.1"
   }
 }

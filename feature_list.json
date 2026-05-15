@@ -37,7 +37,39 @@
         "The project should be able to be deployed to production"
       ],
       "sdd": true,
-      "status": "pending"
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "dev_execution_fix",
+      "title": "Fix dev execution",
+      "description": "Fix dev execution when running npm run dev",
+      "acceptance": [
+        "The project should be able to run locally when running npm run dev",
+        "There shouldn't be errors in terminal when running npm run dev",
+        "There shouldn't be errors in browser when running npm run dev",
+        "There shouldn't be any typescript errors in the project",
+        "All the existing tests should pass",
+        "there should be test to check that the project builds correctly",
+        "The ARCHITECTURE.md file should be updated"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "remove_bcrypt_client",
+      "title": "Remove bcrypt client",
+      "description": "Remove bcrypt dependency and usage from the client side project",
+      "acceptance": [
+        "The project should not use bcrypt",
+        "The project should not have any typescript errors",
+        "All the hash logic should be moved to /Documentos/euroncontest-api project to keep the logic working",
+        "All the endpoints that use hash logic should be updated",
+        "The backend should handle the hash logic"
+      ],
+      "sdd": true,
+      "status": "done"
     }
   ]
 }

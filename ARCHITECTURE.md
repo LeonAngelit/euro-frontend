@@ -8,7 +8,7 @@
 
 ## 1. Project Overview
 
-**Eurocontest App** is a React single-page application (SPA) for the Eurovision Song Contest voting and room system. It is a client-side application that communicates with a separate REST API backend. The project also includes a CLI subsystem (written in TypeScript) for notes and feature management.
+**Eurocontest App** is a Vue 3 single-page application (SPA) for the Eurovision Song Contest voting and room system. It is a client-side application that communicates with a separate REST API backend. The project also includes a CLI subsystem (written in TypeScript) for notes and feature management.
 
 The SPA allows users to:
 - Register and log in (username/password or Google OAuth)
@@ -25,19 +25,20 @@ The CLI subsystem provides commands for managing notes and features via the term
 
 | Layer | Technology | Notes |
 |---|---|---|
-| UI Framework | React 18 (JSX) | Functional components with hooks |
+| UI Framework | Vue 3 (Composition API, `<script setup>`) | Single-file components with TypeScript |
 | Build Tool | Vite | `vite.config.js` |
 | CLI & Data Layer | TypeScript | `src/cli.ts`, `src/notes.ts`, `src/storage.ts`, `src/features.ts`, `src/prompts.ts` |
-| UI Layer | JavaScript (ES modules) | All `.jsx` and `.js` files under `src/` |
-| Routing | react-router-dom v7 | `BrowserRouter` + `Routes` in `App.jsx` |
-| Authentication | @react-oauth/google | Google OAuth provider wrapping the app |
+| UI Layer | TypeScript + Vue SFCs | All `.vue` and `.ts` files under `src/` |
+| Routing | vue-router | `createRouter` in `src/router/index.ts` |
+| State Management | Pinia | `src/stores/app.ts` with persisted state plugin |
+| Authentication | vue3-google-login | Google OAuth provider wrapping the app |
 | HTTP Client | axios | Used for all backend API calls |
 | Password Hashing | bcryptjs | Client-side salted hashing for auth flow |
 | CLI Framework | Commander.js | `program.command()` pattern in `cli.ts` |
 | Testing | Vitest | Configured in `vitest.config.ts` with node environment |
 | PWA Support | vite-plugin-pwa | Service worker + manifest in `vite.config.js` |
-| Icons | react-icons, @fortawesome/react-fontawesome, flag-icons | Visual elements |
-| Polyfills | vite-plugin-node-polyfills, @esbuild-plugins/node-globals-polyfill | Buffer, process, crypto for browser |
+| Icons | @iconify/vue, @fortawesome/vue-fontawesome, flag-icons | Visual elements |
+| Polyfills | vite-plugin-node-polyfills, buffer | Buffer polyfill for browser |
 
 ---
 
@@ -46,17 +47,25 @@ The CLI subsystem provides commands for managing notes and features via the term
 ```
 euro-frontend/
 ├── src/
-│   ├── App.jsx                    # Route definitions (React Routes)
-│   ├── Layout.jsx                 # Layout shell: Navigation → content → Modal → Footer
-│   ├── index.jsx                  # App bootstrap, context providers, Google OAuth
+│   ├── App.vue                    # Root component
+│   ├── main.ts                    # App bootstrap, Pinia, router, FontAwesome, Google OAuth, Buffer polyfill
+│   ├── router/
+│   │   └── index.ts                # Route definitions (vue-router)
+│   ├── stores/
+│   │   └── app.ts                 # Pinia store (global state with persisted state plugin)
+│   ├── composables/
+│   │   ├── useUpdateUserData.ts    # Refreshes user data from API
+│   │   ├── useHandleCloseSession.ts # Clears session state
+│   │   ├── useNavigateWithCallback.ts # Navigate with optional callback URL
+│   │   ├── useValidateEmail.ts     # Validates email confirmation token
+│   │   └── useValidateToken.ts     # Validates current auth token
 │   ├── index.css                  # Global styles
 │   ├── cli.ts                     # CLI entry point (Commander.js program)
 │   ├── notes.ts                   # Note domain model (NoteData, Note, NoteError, NoteNotFound)
 │   ├── storage.ts                 # Atomic JSON file read/write for notes & features
 │   ├── features.ts                # Feature data model and management logic
 │   ├── prompts.ts                 # Interactive CLI prompting (readline)
-│   ├── reportWebVitals.js        # Web Vitals reporter (CLS, FID, FCP, LCP, TTFB)
-│   ├── Components/
+│   ├── components/
 │   │   ├── AdminPanel/            # Password dialog for admin access
 │   │   ├── ClassificationView/    # Room classification/ranking display
 │   │   ├── Collapsible/           # Expandable/collapsible section wrapper
@@ -65,9 +74,9 @@ euro-frontend/
 │   │   ├── Form/                  # Reusable form component with field rendering
 │   │   ├── Modal/                 # Generic modal (message, confirm, or custom component)
 │   │   ├── Navigation/           # Top navigation bar with user menu
-│   │   ├── NotFoundComponent/     # 404 page with auto-redirect
+│   │   ├── NotFound/              # 404 page with auto-redirect
 │   │   └── RoomPicker/            # Room selection, editing, and management cards
-│   ├── Views/
+│   ├── views/
 │   │   ├── App/                   # Home — main room selection view
 │   │   ├── AdminView/             # Admin panel — updatable settings, export, AI requests
 │   │   ├── Archive/               # Historical room results browser
@@ -78,20 +87,15 @@ euro-frontend/
 │   │   ├── MissingEmail/          # Email confirmation flow
 │   │   ├── Room/                  # Active room classification view
 │   │   └── UserDetails/           # User profile and country selection management
-│   ├── Storage/
-│   │   └── AppContext.jsx         # React Context provider (global state)
 │   ├── config/
-│   │   └── config.js              # Runtime configuration from env vars
+│   │   └── config.ts              # Runtime configuration from env vars
+│   ├── Layout.vue                 # Layout shell: Navigation → content → Modal → Footer
 │   └── utils/
-│       ├── useGetAuthToken.js      # Fetches auth token via bcrypt hash + /getAuthToken
-│       ├── useGetSongs.js          # Fetches songs (countries) from API
-│       ├── useUpdateUserData.js    # Refreshes user data from API
-│       ├── useHandleCloseSession.js # Clears session state
-│       ├── useNavigateWithCallback.js # Navigate with optional callback URL
-│       ├── useValidateEmail.js     # Validates email confirmation token
-│       ├── useValidateToken.js     # Validates current auth token
-│       └── regexUtils.js           # Regex patterns and validators for username, password, email
+│       ├── useGetAuthToken.ts      # Fetches auth token via bcrypt hash + /getAuthToken
+│       ├── useGetSongs.ts          # Fetches songs (countries) from API
+│       └── regexUtils.ts           # Regex patterns and validators for username, password, email
 ├── tests/
+│   ├── build.test.ts              # Build verification test (vite build exit code 0)
 │   ├── cli.test.ts                # Integration tests for CLI commands
 │   ├── cli_features.test.ts       # Tests for the feature-add CLI command
 │   ├── features.test.ts           # Unit tests for features.ts
@@ -129,41 +133,41 @@ euro-frontend/
 
 ## 4. Component Architecture
 
-### Components (`src/Components/`)
+### Components (`src/components/`)
 
 | Component | File | Responsibility |
 |---|---|---|
-| **AdminPanel** | `AdminPanel/AdminPanel.jsx` | Password dialog overlay for admin access. Wraps the `Form` component with a password field and close button. |
-| **ClassificationView** | `ClassificationView/Classification.jsx` | Displays a ranked list of room participants with their country selections, scores, and animated card layout. Supports winner/last-place highlighting and auto-refresh. |
-| **Collapsible** | `Collapsible/Collapsible.jsx` | Wrapper component that toggles visibility of its children. Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
-| **CountryPicker** | `CountryPicker/CountryPicker.jsx` | Renders country selection cards with flag icons, checkboxes, and a "Continue" button. Validates that the user selects the required number of countries (5 or 6). |
-| **Footer** | `Footer/Footer.jsx` | Simple footer displaying copyright and current year. |
-| **Form** | `Form/Form.jsx` | Reusable form component. Accepts field definitions, submit handler, error state, password visibility toggle, and "remember me" checkbox. |
-| **Modal** | `Modal/Modal.jsx` | Generic modal component supporting three modes: plain message, confirm dialog (accept/cancel), and custom component injection. |
-| **Navigation** | `Navigation/Navigation.jsx` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. |
-| **NotFoundComponent** | `NotFoundComponent/NotFound.jsx` | 404 page that displays an error message and auto-redirects based on authentication state. |
-| **RoomPicker** | `RoomPicker/RoomPicker.jsx` | Lists the user's rooms as cards with actions: select room, edit room name, share room link, delete room. Includes room creation via password dialog. |
+| **AdminPanel** | `AdminPanel/AdminPanel.vue` | Password dialog overlay for admin access. Wraps the `Form` component with a password field and close button. |
+| **ClassificationView** | `ClassificationView/ClassificationView.vue` | Displays a ranked list of room participants with their country selections, scores, and animated card layout. Supports winner/last-place highlighting and auto-refresh. |
+| **Collapsible** | `Collapsible/Collapsible.vue` | Wrapper component that toggles visibility of its children. Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
+| **CountryPicker** | `CountryPicker/CountryPicker.vue` | Renders country selection cards with flag icons, checkboxes, and a "Continue" button. Validates that the user selects the required number of countries (5 or 6). |
+| **Footer** | `Footer/Footer.vue` | Simple footer displaying copyright and current year. |
+| **Form** | `Form/Form.vue` | Reusable form component. Accepts field definitions, submit handler, error state, password visibility toggle, and "remember me" checkbox. |
+| **Modal** | `Modal/Modal.vue` | Generic modal component supporting three modes: plain message, confirm dialog (accept/cancel), and custom component injection. |
+| **Navigation** | `Navigation/Navigation.vue` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. |
+| **NotFound** | `NotFound/NotFound.vue` | 404 page that displays an error message and auto-redirects based on authentication state. |
+| **RoomPicker** | `RoomPicker/RoomPicker.vue` | Lists the user's rooms as cards with actions: select room, edit room name, share room link, delete room. Includes room creation via password dialog. |
 
-### Views (`src/Views/`)
+### Views (`src/views/`)
 
 | View | File | Responsibility |
 |---|---|---|
-| **Home** | `App/Home.jsx` | Main landing view after login. Shows room picker and join-room form if the user has selected countries; redirects to country selection otherwise. |
-| **Login** | `Login/Login.jsx` | Login form with username/password and Google OAuth. Validates credentials against the backend, stores user/token in context. |
-| **SignUp** | `CreateUser/SignUp.jsx` | Registration form with username, email, password, and Google OAuth. Hashes the password with bcryptjs before sending. |
-| **UserDetails** | `UserDetails/UserDetails.jsx` | User profile view. Displays avatar and allows country selection via `CountryPicker` inside a `Collapsible`. Includes account deletion button. |
-| **CreateRoom** | `CreateRoom/CreateRoom.jsx` | Room creation form (name + password). Hashes the room password with bcryptjs before sending to the API. |
-| **Room** | `Room/Room.jsx` | Active room view. Displays the `ClassificationView` for the current room. Redirects to country selection or email confirmation if needed. |
-| **Archive** | `Archive/Archive.jsx` | Historical results browser. Fetches past rooms for the user and displays classifications using `ClassificationView`. |
-| **AdminView** | `AdminView/AdminView.jsx` | Admin dashboard. Allows toggling the "refresh_enabled" flag, exporting results, changing the admin password, and creating AI model requests via an external API. |
-| **CountrySelect** | `CountrySelection/CountrySelect.jsx` | Country voting view. Validates the user's token and renders `CountryPicker`. Redirects back to home once enough countries are selected. |
-| **MissingEmail** | `MissingEmail/MissingEmail.jsx` | Email confirmation flow. Displays a form to enter an email, sends a confirmation token via the API, and validates the email token on callback. |
+| **Home** | `App/Home.vue` | Main landing view after login. Shows room picker and join-room form if the user has selected countries; redirects to country selection otherwise. |
+| **Login** | `Login/Login.vue` | Login form with username/password and Google OAuth. Validates credentials against the backend, stores user/token in Pinia store. |
+| **SignUp** | `CreateUser/SignUp.vue` | Registration form with username, email, password, and Google OAuth. Hashes the password with bcryptjs before sending. |
+| **UserDetails** | `UserDetails/UserDetails.vue` | User profile view. Displays avatar and allows country selection via `CountryPicker` inside a `Collapsible`. Includes account deletion button. |
+| **CreateRoom** | `CreateRoom/CreateRoom.vue` | Room creation form (name + password). Hashes the room password with bcryptjs before sending to the API. |
+| **Room** | `Room/Room.vue` | Active room view. Displays the `ClassificationView` for the current room. Redirects to country selection or email confirmation if needed. |
+| **Archive** | `Archive/Archive.vue` | Historical results browser. Fetches past rooms for the user and displays classifications using `ClassificationView`. |
+| **AdminView** | `AdminView/AdminView.vue` | Admin dashboard. Allows toggling the "refresh_enabled" flag, exporting results, changing the admin password, and creating AI model requests via an external API. |
+| **CountrySelect** | `CountrySelection/CountrySelect.vue` | Country voting view. Validates the user's token and renders `CountryPicker`. Redirects back to home once enough countries are selected. |
+| **MissingEmail** | `MissingEmail/MissingEmail.vue` | Email confirmation flow. Displays a form to enter an email, sends a confirmation token via the API, and validates the email token on callback. |
 
 ---
 
 ## 5. Routing
 
-Routes are defined in `src/App.jsx` using React Router's `<Routes>` component. All views are lazy-loaded with `React.lazy()` and wrapped in `<Suspense>`.
+Routes are defined in `src/router/index.ts` using vue-router's `createRouter` with `createWebHistory`. All views are lazy-loaded with dynamic `import()` and wrapped in `<Suspense>`.
 
 | Route Path | View Component | Description |
 |---|---|---|
@@ -184,7 +188,7 @@ Routes are defined in `src/App.jsx` using React Router's `<Routes>` component. A
 
 ## 6. State Management
 
-The application uses a single React Context (`AppContext`) defined in `src/Storage/AppContext.jsx`.
+The application uses Pinia for state management, defined in `src/stores/app.ts`. The store is persisted to `localStorage`/`sessionStorage` via `pinia-plugin-persistedstate`.
 
 ### State Fields
 
@@ -205,17 +209,17 @@ Each state field has a corresponding setter function exposed on the context: `se
 
 ### Persistence
 
-- When `remember_user` is `true`: context is serialized to both `localStorage` and `sessionStorage` under the key `"app-context"`.
-- When `remember_user` is `false`: context is serialized only to `sessionStorage`.
+- When `remember_user` is `true`: the Pinia store is serialized to both `localStorage` and `sessionStorage` under the key `"app-context"`.
+- When `remember_user` is `false`: the Pinia store is serialized only to `sessionStorage`.
 - On app load, `localStorage` is checked first; if empty, `sessionStorage` is used as fallback.
 - Songs are auto-fetched via `useGetSongs` when `x_token` exists and `songs` is empty.
 
 ### Provider Wrapping
 
-In `src/index.jsx`, the app is wrapped as:
+In `src/main.ts`, the app is wrapped as:
 
 ```
-GoogleOAuthProvider → AppContextProvider → BrowserRouter → Layout → App
+Pinia (with persisted state plugin) → Vue App → Router → Google OAuth plugin
 ```
 
 ---
@@ -339,9 +343,9 @@ The backend API base URL is sourced from the `VITE_REACT_APP_BASEURL` environmen
 | `VITE_REACT_APP_REQUESTS_URL` | URL path for AI model requests |
 | `VITE_REACT_APP_REQUESTS_BASE_URL` | URL path for AI model request deletion |
 
-### Runtime Config Object (`src/config/config.js`)
+### Runtime Config Object (`src/config/config.ts`)
 
-```javascript
+```typescript
 {
   env: import.meta.env.NODE_ENV || 'dev',
   isProd: import.meta.env.NODE_ENV === 'production',
@@ -375,24 +379,24 @@ Defined inline in `vite.config.js` via `vite-plugin-pwa`:
 
 ## 10. Utilities
 
-All utility modules are in `src/utils/` and are named with a `use` prefix, though they are plain async functions (not React hooks).
+All utility and composable modules are in `src/utils/` and `src/composables/`. The `use` prefix follows the Vue composable convention.
 
 | Module | Export | Description |
 |---|---|---|
-| `useGetAuthToken.js` | `default` | Generates a bcrypt-salted hash from the auth secret and calls `/getAuthToken`. Stores the returned token in AppContext. |
-| `useGetSongs.js` | `default` | Fetches the countries/songs list from `/countries` using the current bearer token. |
-| `useUpdateUserData.js` | `default` | Refreshes user data from `/users/:id` and navigates to `/app`. |
-| `useHandleCloseSession.js` | `default` | Calls `context.closeSession()` to clear all state and localStorage. |
-| `useNavigateWithCallback.js` | `default` | Navigates to a destination, appending the current `callback_url` query parameter if present. |
-| `useValidateEmail.js` | `default` | Posts an email confirmation token to `/users/updateUserEmail/:userId`. Returns `{ result, data }`. |
-| `useValidateToken.js` | `default` | Validates the current auth token via `/users/validateToken/:userId`. Returns `isValidToken` boolean. |
-| `regexUtils.js` | `validateRegex`, `validateEmailRegex`, `validateUserNameRegex`, `default` | Regex patterns and validation functions for passwords (8+ chars, digit, uppercase), emails, and usernames (5–25 chars, alphanumeric + underscore). |
+| `composables/useGetAuthToken.ts` | `default` | Generates a bcrypt-salted hash from the auth secret and calls `/getAuthToken`. Stores the returned token in the Pinia store. |
+| `composables/useGetSongs.ts` | `default` (exported as composable) | Fetches the countries/songs list from `/countries` using the current bearer token. |
+| `composables/useUpdateUserData.ts` | `default` | Refreshes user data from `/users/:id` and navigates to `/app`. |
+| `composables/useHandleCloseSession.ts` | `default` | Calls the Pinia store's `closeSession()` to clear all state and localStorage. |
+| `composables/useNavigateWithCallback.ts` | `default` | Navigates to a destination, appending the current `callback_url` query parameter if present. |
+| `composables/useValidateEmail.ts` | `default` | Posts an email confirmation token to `/users/updateUserEmail/:userId`. Returns `{ result, data }`. |
+| `composables/useValidateToken.ts` | `default` | Validates the current auth token via `/users/validateToken/:userId`. Returns `isValidToken` boolean. |
+| `utils/regexUtils.ts` | `validateRegex`, `validateEmailRegex`, `validateUserNameRegex`, `default` | Regex patterns and validation functions for passwords (8+ chars, digit, uppercase), emails, and usernames (5–25 chars, alphanumeric + underscore). |
 
 ---
 
 ## 11. Layout Shell
 
-`src/Layout.jsx` wraps the entire application with a consistent structure:
+`src/Layout.vue` wraps the entire application with a consistent structure:
 
 ```
 ┌──────────────────────────────────┐
@@ -434,11 +438,12 @@ Three modal modes are rendered conditionally:
 |---|---|
 | **Test runner** | Vitest (configured in `vitest.config.ts`, environment: `node`) |
 | **Test location** | All tests live in the `tests/` directory at the project root |
-| **Convention** | One test file per source module: `notes.test.ts`, `storage.test.ts`, `features.test.ts`, `cli.test.ts`, `cli_features.test.ts` |
+| **Convention** | One test file per source module: `notes.test.ts`, `storage.test.ts`, `features.test.ts`, `cli.test.ts`, `cli_features.test.ts`, `build.test.ts` |
 | **Test isolation** | Tests use real temporary files (no mocks for file system). Each test creates a temp file and cleans up after itself |
 | **CLI integration tests** | `cli.test.ts` and `cli_features.test.ts` use `child_process.spawnSync` to invoke the CLI as a subprocess for end-to-end verification |
+| **Build verification** | `build.test.ts` uses `spawnSync` to invoke `vite build` and asserts exit code 0, ensuring the production build always succeeds |
 | **Run command** | `npm test` (maps to `vitest run`) |
-| **TypeScript** | Tests are written in TypeScript (`tsconfig.json` with `strict: true`) |
+| **TypeScript** | Tests are written in TypeScript (`tsconfig.json` with `strict: true`, `types: ["vue", "node"]`) |
 
 ---
 
@@ -487,10 +492,6 @@ The PWA manifest is linked from `index.html` as `/manifest.webmanifest`, and the
 
 The following issues are observable in the current codebase:
 
-### Mixed TypeScript/JavaScript in `src/`
-
-The project uses TypeScript (`cli.ts`, `notes.ts`, `storage.ts`, `features.ts`, `prompts.ts`) for the CLI subsystem alongside JavaScript (`.jsx`, `.js`) for the React layer. There is no shared type system between the two; the TS files target `nodenext` modules and are not compiled for browser use.
-
 ### Inconsistent CSS Naming
 
 Component CSS files use three different naming conventions:
@@ -498,21 +499,21 @@ Component CSS files use three different naming conventions:
 - camelCase with `.component.css` suffix: `AdminPanel.component.css`, `Collapsible.component.css`, `Footer.component.css`, `Navigation.component.css`, `Modal.component.css`
 - Truncated/typo naming: `AdminView.componen.css` (missing `t`), `Classification.Component.css` (inconsistent capitalization)
 
-### Utility Modules Named as Hooks but Not Using React Hooks API
+### Composables Named with `use` Prefix
 
-All utility modules in `src/utils/` use the `use` prefix (e.g., `useGetAuthToken`, `useGetSongs`, `useUpdateUserData`) but are plain async functions, not custom React hooks. They do not call any React hooks internally and are invoked without following the Rules of Hooks.
+Composables in `src/composables/` and utility modules in `src/utils/` use the `use` prefix (e.g., `useUpdateUserData`, `useHandleCloseSession`, `useValidateToken`) following the Vue composable convention. Most are plain async functions rather than true Vue composables (they don't call Vue APIs like `ref()` or `reactive()` internally).
 
 ### API Calls in Layout and Components Instead of a Service Layer
 
 Backend API calls are made directly from:
-- `Layout.jsx` (room data polling, point refresh, room token verification)
-- `Navigation.jsx` (admin authentication via `/updatable`)
-- `Home.jsx` (room login)
-- `Login.jsx` (user authentication, Google OAuth)
-- `SignUp.jsx` (user registration, Google OAuth)
-- `AdminView.jsx` (updatable settings, archive export, AI model requests)
-- `MissingEmail.jsx` (email update and confirmation)
-- `RoomPicker.jsx` (room data updates, room operations)
+- `Layout.vue` (room data polling, point refresh, room token verification)
+- `Navigation.vue` (admin authentication via `/updatable`)
+- `Home.vue` (room login)
+- `Login.vue` (user authentication, Google OAuth)
+- `SignUp.vue` (user registration, Google OAuth)
+- `AdminView.vue` (updatable settings, archive export, AI model requests)
+- `MissingEmail.vue` (email update and confirmation)
+- `RoomPicker.vue` (room data updates, room operations)
 
 There is no centralized API service layer; each component imports `axios` directly and constructs API calls inline.
 
