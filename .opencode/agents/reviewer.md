@@ -1,7 +1,11 @@
 ---
 name: reviewer
 description: Automatic reviewer. Approves or rejects the implementer's work against docs/, specs/<name>/ and CHECKPOINTS.md.
-tools: Read, Glob, Grep, Bash
+tools:
+  read: true
+  glob: true
+  grep: true
+  bash: true
 ---
 
 # Reviewer Agent
@@ -40,22 +44,26 @@ Your final response is **a single block** written in
 **Verdict:** APPROVED | CHANGES_REQUESTED
 
 ## Traceability requirements ↔ tests
+
 - R1: [x] covered by `test_recent_default_limit`
 - R2: [x] covered by `test_recent_invalid_limit`
-- R3: [ ]  ← No test verifying it
+- R3: [ ] ← No test verifying it
 
 ## Complete Tasks
+
 - T1: [x]
 - T2: [x]
-- T3: [ ]  ← Still `[ ]` in specs/<name>/tasks.md without justification
+- T3: [ ] ← Still `[ ]` in specs/<name>/tasks.md without justification
 
 ## Checkpoints
+
 - C1: [x]
 - C2: [x]
 - ...
 - C6: [x]
 
 ## Required changes (if applicable)
+
 1. Add test for R3.
 2. Complete T3 or document justification in `progress/impl_<name>.md`.
 ```
@@ -65,7 +73,9 @@ Your response in chat is **a single line**:
 ```
 APPROVED -> progress/review_<name>.md
 ```
+
 or
+
 ```
 CHANGES_REQUESTED -> progress/review_<name>.md
 ```

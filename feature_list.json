@@ -11,167 +11,30 @@
   "features": [
     {
       "id": 1,
-      "name": "storage_layer",
-      "title": "JSON Storage Layer",
-      "description": "Atomic read/write of notes in a JSON file. Creates the file if it doesn't exist.",
+      "name": "project_architecture_analysis",
+      "title": "project architecture analysis",
+      "description": "Analyze the current project structure and output in the ARCHITECTURE.md file",
       "acceptance": [
-        "src/storage.ts exists with load() and save(notes) functions",
-        "save() is atomic (write to temporary file + rename)",
-        "load() returns [] if the file does not exist",
-        "tests/storage.test.ts covers the 3 previous cases"
+        "The ARCHITECTURE.md file should be updated or created",
+        "The file should include all the relevant details about project architecture",
+        "The file should provide useful information to consult when applying changes in the project"
       ],
-      "status": "done"
+      "sdd": true,
+      "status": "pending"
     },
     {
       "id": 2,
-      "name": "note_model",
-      "title": "Note Model",
-      "description": "Immutable structure representing a note with id, title, body, created_at.",
+      "name": "vue_migration",
+      "title": "Vue Migration",
+      "description": "Migrate the project to use Vue 3 and typescript with vite instead of react",
       "acceptance": [
-        "src/notes.ts exists with Note class/interface",
-        "Note.new(title, body) generates incremental id and created_at in ISO 8601",
-        "tests/notes.test.ts validates creation and serialization"
-      ],
-      "status": "done"
-    },
-    {
-      "id": 3,
-      "name": "cli_add_list",
-      "title": "add and list CLI Commands",
-      "description": "Allows adding a note and listing all existing notes.",
-      "acceptance": [
-        "`npx tsx src/cli.ts add 'title' --body 'text'` prints the created id",
-        "`npx tsx src/cli.ts list` prints one line per note: `<id>  <created_at>  <title>`",
-        "tests/cli.test.ts covers both commands with a temporary file"
-      ],
-      "status": "done"
-    },
-    {
-      "id": 4,
-      "name": "cli_show_delete",
-      "title": "show and delete CLI Commands",
-      "description": "Allows viewing and deleting notes by id.",
-      "acceptance": [
-        "`npx tsx src/cli.ts show <id>` prints title, date and body",
-        "`npx tsx src/cli.ts delete <id>` deletes and confirms with a message",
-        "Both commands return exit code != 0 if the id does not exist",
-        "tests/cli.test.ts covers success and failure"
-      ],
-      "status": "done"
-    },
-    {
-      "id": 5,
-      "name": "cli_search",
-      "title": "search Command",
-      "description": "Search by substring in title or body (case-insensitive).",
-      "acceptance": [
-        "`npx tsx src/cli.ts search 'word'` lists the notes containing the word",
-        "If no matches, exit code 1 and clear message",
-        "tests/cli.test.ts covers match, no-match, and case-insensitivity"
-      ],
-      "status": "done"
-    },
-    {
-      "id": 6,
-      "name": "cli_edit",
-      "title": "edit Command",
-      "description": "Allows modifying the title and/or body of an existing note by id.",
-      "acceptance": [
-        "`npx tsx src/cli.ts edit <id> --title 'new'` updates only the title",
-        "`npx tsx src/cli.ts edit <id> --body 'new'` updates only the body",
-        "Passing both flags updates both fields in the same call",
-        "If no flag is passed, exit code != 0 and clear message",
-        "If id does not exist, exit code != 0 and message in stderr",
-        "tests/cli.test.ts covers success (each flag and combined), non-existent id, and absence of flags"
-      ],
-      "status": "done"
-    },
-    {
-      "id": 7,
-      "name": "cli_recent",
-      "title": "recent Command",
-      "description": "Lists the N most recent notes, sorted by created_at descending.",
-      "acceptance": [
-        "`npx tsx src/cli.ts recent` lists the 5 most recent notes by default",
-        "`npx tsx src/cli.ts recent --limit 10` allows changing the number",
-        "Sorting is by `created_at` from most recent to oldest",
-        "Each line follows the format `<id>\\t<created_at>\\t<title>` (same as `list`)",
-        "If there are no notes, exit code 0 and prints nothing (consistent with `list`)",
-        "If `--limit` is <= 0, exit code != 0 and clear message in stderr",
-        "tests/cli.test.ts covers: default order, custom limit, empty file, invalid limit"
-      ],
-      "sdd": true,
-      "status": "done"
-    },
-    {
-      "id": 8,
-      "name": "migrate_agents_to_opencode",
-      "title": "Migrate agents to OpenCode",
-      "description": "Migrate the project to use OpenCode instead of Claude.",
-      "acceptance": [
-        "OpenCode provider is used instead of Claude Code",
-        "AGENTS.md reflects this change",
-        "OpenCode can read properly all the instructions that are currently inside .opencode folder"
-      ],
-      "sdd": true,
-      "status": "done"
-    },
-    {
-      "id": 9,
-      "name": "cli_count",
-      "title": "count Command",
-      "description": "Shows how many notes are stored.",
-      "acceptance": [
-        "`npx tsx src/cli.ts count` prints a single integer: the total number of notes",
-        "If no notes, prints `0`",
-        "The command does not modify the notes file",
-        "tests/cli.test.ts covers: empty file and file with several notes"
-      ],
-      "sdd": true,
-      "status": "pending"
-    },
-    {
-      "id": 10,
-      "name": "cli_export",
-      "title": "Markdown export Command",
-      "description": "Exports all notes to a human-readable Markdown file.",
-      "acceptance": [
-        "`npx tsx src/cli.ts export <path>` writes all notes in `<path>` in Markdown format",
-        "Each note appears as a section with level 2 title (`## <title>`), a line with `created_at`, and the body as a paragraph",
-        "Notes are sorted by `id` ascending in the export",
-        "If destination path already exists, exit code != 0 and clear message in stderr (do not overwrite by default)",
-        "Passing `--force` allows overwriting an existing file",
-        "tests/cli.test.ts covers: export to new path, attempt to overwrite without `--force`, overwrite with `--force`"
-      ],
-      "sdd": true,
-      "status": "pending"
-    },
-    {
-      "id": 11,
-      "name": "cli_stats",
-      "title": "stats Command",
-      "description": "Shows aggregated statistics about stored notes.",
-      "acceptance": [
-        "`npx tsx src/cli.ts stats` prints: total number of notes, oldest note date, newest note date, average body length (integer, in characters)",
-        "Format is one `key: value` pair per line",
-        "If no notes, exit code 0 and a single message `no notes` to stdout",
-        "The command does not modify the notes file",
-        "tests/cli.test.ts covers: empty file, file with a single note, file with several notes"
-      ],
-      "sdd": true,
-      "status": "pending"
-    },
-    {
-      "id": 12,
-      "name": "cli_clear",
-      "title": "clear Command (destructive)",
-      "description": "Deletes all notes from the file. Requires explicit confirmation via flag.",
-      "acceptance": [
-        "`npx tsx src/cli.ts clear` WITHOUT `--yes` prints a confirmation message, does NOT delete anything and exits with exit code != 0",
-        "`npx tsx src/cli.ts clear --yes` deletes all notes and confirms with a message like `deleted N notes`",
-        "After a successful clear, `list` prints nothing",
-        "If notes file did not exist, `clear --yes` exits with exit code 0 and reports `deleted 0 notes`",
-        "tests/cli.test.ts covers: without `--yes` (non-destructive), with `--yes` and notes present, with `--yes` and empty file"
+        "The project should be migrated to use Vue 3 and typescript with vite",
+        "All the existing integrations with the backend should work as they are currently working",
+        "The UI should look and feel the same as the current UI",
+        "All the local storage and context/state should be kept using vue tools and best practices",
+        "All the existing tests should pass",
+        "The project should be able to be built and run locally",
+        "The project should be able to be deployed to production"
       ],
       "sdd": true,
       "status": "pending"

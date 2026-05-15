@@ -1,7 +1,13 @@
 ---
 name: implementer
 description: Worker. Implements ONE feature according to its approved spec. Writes code, writes tests and self-verifies.
-tools: Read, Write, Edit, Glob, Grep, Bash
+tools:
+  read: true
+  write: true
+  edit: true
+  glob: true
+  grep: true
+  bash: true
 ---
 
 # Implementer Agent
