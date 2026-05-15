@@ -11,6 +11,7 @@ const Classification = (props) => {
     props.room.users ?? props.room?.room?.users,
   );
   const [animate, setAnimate] = useState(false);
+  const targetCount = context.songs?.length > 5 ? 6 : 5;
 
   useEffect(() => {
     setTimeout(() => {
@@ -27,7 +28,9 @@ const Classification = (props) => {
   useEffect(() => {
     if (context.current_room != undefined) {
       let users = props.room.users ?? props.room.room.users;
-      let usersTemp = users.filter((element) => element.countries.length >= 5);
+      let usersTemp = users.filter(
+        (element) => element.countries.length >= targetCount,
+      );
       setUsers(usersTemp);
       setAnimate(props.animate);
     }
@@ -39,7 +42,7 @@ const Classification = (props) => {
         <h2>{props.room.name ?? props.room?.room?.name}</h2>
       </div>
       {users.map((user) => {
-        if (user.countries.length >= 5) {
+        if (user.countries.length >= targetCount) {
           return (
             <div
               className={
