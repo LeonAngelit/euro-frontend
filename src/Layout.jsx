@@ -9,6 +9,7 @@ import config from "./config/config";
 import useUpdateuserData from "./utils/useUpdateUserData.js";
 import Modal from "./Components/Modal/Modal";
 import useNavigateWithCallback from "./utils/useNavigateWithCallback.js";
+import useGetSongs from "./utils/useGetSongs.js";
 
 function Layout({ children }) {
   const d = new Date();
@@ -17,7 +18,13 @@ function Layout({ children }) {
   const [modal, setModal] = useState(context.modal);
   const RoomIntervalRef = useRef(null);
   const navigate = useNavigate();
-  const targetCount = context.songs?.length > 5 ? 6 : 5;
+  const [targetCount, setTargetCount] = useState(0);
+
+  useEffect(() => {
+    const songs = useGetSongs(context);
+    context.setSongs(songs);
+    setTargetCount(songs?.length > 5 ? 6 : 5);
+  }, [context.user_logged]);
 
   async function updatePointRequest() {
     await axios
