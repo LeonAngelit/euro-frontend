@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '../../stores/app'
+import { useAppStore, type User } from '../../stores/app'
 import useHandleCloseSession from '../../composables/useHandleCloseSession'
 import useValidateToken from '../../composables/useValidateToken'
 import { validateRegex, validateUserNameRegex } from '../../utils/regexUtils'
@@ -41,9 +41,31 @@ onMounted(() => {
   if (store.currentRoom?.current) {
     router.push('/room')
   }
+  if ((store.userLogged as any)?.countries?.length < targetCount.value) {
+    store.setCurrentRoom(() => ({}))
+
+    store.setUserLogged({
+      ...(store.userLogged as User),
+      countries: [],
+
+    })
+    store.setSelection({
+      current: []
+    })
+
+    if (
+      window.location.pathname == '/join-room' ||
+      window.location.href.includes(config.confirmemailLink)
+    ) {
+      useNavigateWithCallback(router, '/country-select?callback_url=' + window.location.href)
+    } else {
+      useNavigateWithCallback(router, '/country-select')
+    }
+  }
 })
 
 watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
+
   // Guard: only evaluate redirect logic once songs are loaded
   if (!store.songs || store.songs.length === 0) return
 
@@ -172,7 +194,7 @@ async function joinRoom(event: Event) {
   margin: 0 auto;
 }
 
-.rooms-options > p {
+.rooms-options>p {
   margin-top: 1rem;
 }
 
