@@ -215,3 +215,26 @@
 - **Review:** APPROVED — all R1–R9 traceable, all T1–T12 complete
 - **Tests:** 213/213 passing (37 test files)
 - **Build:** production build succeeds
+
+---
+
+## Session: 2026-05-16 — Leader: Analyze_correct_project (full SDD cycle)
+
+- **Feature:** Analyze_correct_project (id: 10)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → review → APPROVED
+- **Spec authored in:** `specs/Analyze_correct_project/`
+- **Implementation:** Updated `ARCHITECTURE.md` (579→602 lines) to document:
+  - Form `setRef` callback pattern replacing old `Ref<HTMLInputElement>` pattern
+  - AdminPanel `refer` prop as `(el: any) => void` callback
+  - ClassificationView `isArchive` prop + `computed` users + `getCountryCode`
+  - Collapsible SVG toggle with `.rotated`/`.collapsed`/`.uncollapsed` CSS
+  - Navigation `passwordRef` callback + enhanced error handling
+  - UserDetails `updateColor`, `colorRef`, `currentCollapsed: true`
+  - AdminView `updateLinks` + corrected archive export URL
+  - CSS naming review in Architectural Concerns
+  - "Template Ref Callback Pattern" architectural concern (section 14)
+  - vitest path alias in Testing Strategy (section 12)
+- **Fix before start:** Fixed JSON syntax error (missing comma) in feature_list.json line 156
+- **Review:** APPROVED — all R1–R13 traceable, all 14 tasks complete
+- **Tests:** 213/213 passing (37 test files)

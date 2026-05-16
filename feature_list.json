@@ -153,13 +153,14 @@
       "title": "Analyze correct project",
       "description": "The vue migration had some problems, they are now fixed, review the current project, the git tracked changes and previous commit, to understand how they were fixed and include the correct implementation in ARCHITECTURE.md file",
       "acceptance": [
+        "The changes in three previous commits for fix form, fix styles and fix tests are taken into account to see the correct implementation",
         "The ARCHITECTURE.md file should be updated or created",
         "The file should include all the relevant details about project architecture",
         "The file should provide useful information to consult when applying changes in the project",
         "Tests should be updated if needed"
       ],
       "sdd": true,
-      "status": "pending"
+      "status": "done"
     }
   ]
 }

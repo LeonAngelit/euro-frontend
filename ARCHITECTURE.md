@@ -143,16 +143,18 @@ euro-frontend/
 
 | Component | File | Responsibility |
 |---|---|---|
-| **AdminPanel** | `AdminPanel/AdminPanel.vue` | Password dialog overlay for admin access. Wraps the `Form` component with a password field and close button. |
-| **ClassificationView** | `ClassificationView/ClassificationView.vue` | Displays a ranked list of room participants with their country selections, scores, and animated card layout. Supports winner/last-place highlighting and auto-refresh. |
-| **Collapsible** | `Collapsible/Collapsible.vue` | Wrapper component that toggles visibility of its children. Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
+| **AdminPanel** | `AdminPanel/AdminPanel.vue` | Password dialog overlay for admin access. Wraps the `Form` component with a password field and close button. Accepts a `refer: (el: any) => void` callback prop that is passed as `setRef` to the Form's password field, enabling the parent (Navigation) to capture the DOM element reference via a callback. |
+| **ClassificationView** | `ClassificationView/ClassificationView.vue` | Displays a ranked list of room participants with their country selections, scores, and animated card layout. Supports winner/last-place highlighting and auto-refresh. Accepts an `isArchive` prop: when true, filters users with `countries?.length > 0` instead of `countries?.length >= targetCount`. The `users` list is a `computed` property deriving from `props.room` and `store.songs`, replacing the previous `ref` + `onMounted`/`watch` pattern. Includes a `getCountryCode()` helper method for flag icon CSS class generation. |
+| **Collapsible** | `Collapsible/Collapsible.vue` | Wrapper component that toggles visibility of its children. Uses an SVG toggle button with a `.rotated` CSS class and `.collapsible-wrapper`/`.collapsible-title`/`.collapsed`/`.uncollapsed` CSS classes (instead of `v-if` toggling). Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
 | **CountryPicker** | `CountryPicker/CountryPicker.vue` | Renders country selection cards with flag icons, checkboxes, and a "Continue" button. Validates that the user selects the required number of countries (5 or 6). |
 | **Footer** | `Footer/Footer.vue` | Simple footer displaying copyright and current year. |
-| **Form** | `Form/Form.vue` | Reusable form component. Accepts field definitions (including Vue `Ref<HTMLInputElement | null>` for each field), submit handler, error state, password visibility toggle, and "remember me" checkbox. Parent components pass `ref()` objects via the `fields` prop; the Form binds DOM elements to `field.ref.value` using function ref callbacks, enabling parents to read input values via `ref.value?.value` in their submit handlers. |
+| **Form** | `Form/Form.vue` | Reusable form component. Accepts field definitions (each with a `setRef?: (el: any) => void` callback), submit handler, error state, password visibility toggle, and "remember me" checkbox. The Form template uses `:ref="(el: any) => { if (field.setRef) field.setRef(el) }"` to capture DOM element references. Parent components pass inline callbacks like `setRef: (el: any) => someRef = el` in their `fields` arrays, enabling direct access to input values via `someRef?.value` in submit handlers. |
 | **Modal** | `Modal/Modal.vue` | Generic modal component supporting three modes: plain message, confirm dialog (accept/cancel), and custom component injection. |
-| **Navigation** | `Navigation/Navigation.vue` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. |
+| **Navigation** | `Navigation/Navigation.vue` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. Uses `passwordRef` typed as `Ref<HTMLInputElement | null | undefined>` and passes it to AdminPanel via the callback `:refer="(el: any) => passwordRef = el"`. The `loginAdmin` function includes try/catch error handling with i18n translation messages (`$t('nav.wrongPassword')`). |
 | **NotFound** | `NotFound/NotFound.vue` | 404 page that displays an error message and auto-redirects based on authentication state. |
 | **RoomPicker** | `RoomPicker/RoomPicker.vue` | Lists the user's rooms as cards with actions: select room, edit room name, share room link, delete room. Includes room creation via password dialog. |
+
+> **Note on Form Consumers:** All components consuming `Form` (Home, Login, SignUp, CreateRoom, UserDetails, AdminView, Navigation) use the `setRef: (el: any) => someRef = el` callback pattern in their `fields` array to capture DOM element references. This replaces the previous pattern where `Ref` objects were passed as props.
 
 ### Views (`src/views/`)
 
@@ -161,11 +163,11 @@ euro-frontend/
 | **Home** | `App/Home.vue` | Main landing view after login. Shows room picker and join-room form if the user has selected countries; redirects to country selection otherwise. |
 | **Login** | `Login/Login.vue` | Login form with username/password and Google OAuth. Validates credentials against the backend, stores user/token in Pinia store. |
 | **SignUp** | `CreateUser/SignUp.vue` | Registration form with username, email, password, and Google OAuth. Hashes the password with bcryptjs before sending. |
-| **UserDetails** | `UserDetails/UserDetails.vue` | User profile view. Displays avatar and allows country selection via `CountryPicker` inside a `Collapsible`. Includes account deletion button. |
+| **UserDetails** | `UserDetails/UserDetails.vue` | User profile view. Displays avatar and allows country selection via `CountryPicker` inside a `Collapsible`. `currentCollapsed` defaults to `true` (country selection section collapsed by default). Includes an `updateColor` function with a `colorRef` form field using `type: 'color'`. All form fields use the `setRef: (el: any) => someRef = el` callback pattern. Includes account deletion button. |
 | **CreateRoom** | `CreateRoom/CreateRoom.vue` | Room creation form (name + password). Hashes the room password with bcryptjs before sending to the API. |
 | **Room** | `Room/Room.vue` | Active room view. Displays the `ClassificationView` for the current room. Redirects to country selection or email confirmation if needed. |
 | **Archive** | `Archive/Archive.vue` | Historical results browser. Fetches past rooms for the user and displays classifications using `ClassificationView`. |
-| **AdminView** | `AdminView/AdminView.vue` | Admin dashboard. Allows toggling the "refresh_enabled" flag, exporting results, changing the admin password, and creating AI model requests via an external API. |
+| **AdminView** | `AdminView/AdminView.vue` | Admin dashboard. Allows toggling the "refresh_enabled" flag, exporting results, changing the admin password, creating AI model requests via an external API, and updating links via the `updateLinks` button (calls `countries/updateLinks/:year`). The archive export URL is `rooms/archive/export/:year`. |
 | **CountrySelect** | `CountrySelection/CountrySelect.vue` | Country voting view. Validates the user's token and renders `CountryPicker`. Redirects back to home once enough countries are selected. |
 | **MissingEmail** | `MissingEmail/MissingEmail.vue` | Email confirmation flow. Displays a form to enter an email, sends a confirmation token via the API, and validates the email token on callback. |
 
@@ -489,10 +491,12 @@ Three modal modes are rendered conditionally:
 |---|---|
 | **Test runner** | Vitest (configured in `vitest.config.ts`, environment: `node`) |
 | **Test location** | All tests live in the `tests/` directory at the project root |
+| **Path alias** | `vitest.config.ts` configures `resolve.alias` mapping `@` → `src/`, allowing tests to import source modules using `@/components/...` or `@/views/...` |
 | **Convention** | One test file per source module: `notes.test.ts`, `storage.test.ts`, `features.test.ts`, `cli.test.ts`, `cli_features.test.ts`, `build.test.ts` |
 | **Test isolation** | Tests use real temporary files (no mocks for file system). Each test creates a temp file and cleans up after itself |
 | **CLI integration tests** | `cli.test.ts` and `cli_features.test.ts` use `child_process.spawnSync` to invoke the CLI as a subprocess for end-to-end verification |
 | **Build verification** | `build.test.ts` uses `spawnSync` to invoke `vite build` and asserts exit code 0, ensuring the production build always succeeds |
+| **Form component tests** | Tests for components using `Form` (e.g., `AdminPanelRefs.test.ts`, `UserDetails.test.ts`, `AdminView.test.ts`) use the callback pattern `setRef: (el: any) => someRef.value = el` or `refer: (el: any) => { passwordRef.value = el }` in their stubs/props, matching the current component interfaces |
 | **Run command** | `npm test` (maps to `vitest run`) |
 | **TypeScript** | Tests are written in TypeScript (`tsconfig.json` with `strict: true`, `types: ["vue", "node"]`) |
 
@@ -545,10 +549,21 @@ The following issues are observable in the current codebase:
 
 ### Inconsistent CSS Naming
 
-Component CSS files use three different naming conventions:
-- PascalCase with `.Component.css` suffix: `CountryPicker.Component.css`, `Form.Component.css`, `Home.Component.css`
-- camelCase with `.component.css` suffix: `AdminPanel.component.css`, `Collapsible.component.css`, `Footer.component.css`, `Navigation.component.css`, `Modal.component.css`
-- Truncated/typo naming: `AdminView.componen.css` (missing `t`), `Classification.Component.css` (inconsistent capitalization)
+Component CSS files use three different naming conventions, and the inconsistency persists (no consolidation toward a single convention has occurred):
+
+- PascalCase with `.Component.css` suffix (8 files):
+  `Classification.Component.css`, `CountryPicker.Component.css`, `Form.Component.css`,
+  `Home.Component.css`, `CreateRoom.Component.css`, `UserDetails.Component.css`,
+  `RoomPicker.Component.css`, `RoomNameEditForm.Component.css`
+- camelCase with `.component.css` suffix (5 files):
+  `AdminPanel.component.css`, `Collapsible.component.css`, `Footer.component.css`,
+  `Navigation.component.css`, `Modal.component.css`
+- Truncated/typo naming (1 file):
+  `AdminView.componen.css` (missing `t` in `component`)
+- Special case (1 file):
+  `App.css` (NotFoundComponent, no convention applied)
+
+Additionally, the CSS import paths reference `../../Components/` (capital C) while the source code lives under `src/components/` (lowercase c). Both resolve correctly on case-insensitive filesystems but may cause issues on case-sensitive systems.
 
 ### Composables Named with `use` Prefix
 
@@ -567,6 +582,14 @@ Backend API calls are made directly from:
 - `RoomPicker.vue` (room data updates, room operations)
 
 There is no centralized API service layer; each component imports `axios` directly and constructs API calls inline.
+
+### Template Ref Callback Pattern
+
+The `Form` component uses the `setRef?: (el: any) => void` callback pattern to capture DOM element references from its `fields` array, rather than the traditional `Ref<HTMLElement>` pattern. The Form template applies `:ref="(el: any) => { if (field.setRef) field.setRef(el) }"` on each field's `<input>` element, and parent components pass inline callbacks like `setRef: (el: any) => passwordRef = el`.
+
+**Rationale**: Passing `Ref` objects as props creates tight coupling between parent and child component APIs and makes testing harder. The callback pattern allows each parent to own its ref variable, keeps the Form component agnostic of how refs are stored, and aligns with Vue 3's recommendation for function refs.
+
+**Scope**: Every component consuming Form (see §4 — Component Architecture) follows this pattern, including Home, Login, SignUp, CreateRoom, UserDetails, AdminView, and Navigation. The `AdminPanel` component also exposes a `refer: (el: any) => void` prop that follows the same callback convention.
 
 ---
 
