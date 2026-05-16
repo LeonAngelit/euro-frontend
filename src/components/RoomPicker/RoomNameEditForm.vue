@@ -89,20 +89,15 @@ function closeEditModal() {
   <div class="edit-room-name-form">
     <form @submit.prevent="updateRoomName">
       <div class="input-container">
-        <input
-          ref="roomNameRef"
-          v-model="roomName"
-          type="text"
-          name="roomName"
-          data-testid="room-name-input"
-        />
+        <input ref="roomNameRef" v-model="roomName" type="text" name="roomName" data-testid="room-name-input" />
       </div>
       <div v-if="error.status" class="error-span">
         {{ error.message }}
       </div>
       <div class="modal-action-buttons">
-        <button type="submit" class="action-btn" data-testid="submit-room-name-btn">{{ $t('roomNameEdit.save') }}</button>
-        <button type="button" class="action-delete-btn" data-testid="cancel-edit-room-name-btn" @click="closeEditModal">{{ $t('roomNameEdit.cancel') }}</button>
+        <button type="submit" class="action-btn" data-testid="submit-room-name-btn">{{ $t('roomNameEdit.save')
+          }}</button>
+
       </div>
     </form>
   </div>

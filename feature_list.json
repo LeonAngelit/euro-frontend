@@ -161,6 +161,33 @@
       ],
       "sdd": true,
       "status": "done"
+    },
+    {
+      "id": 11,
+      "name": "fix_edit_room_name_modal_text_overflow",
+      "title": "Fix edit modal text overflow",
+      "description": "The text in the room name input and in the confirm and cancel buttons is overflowing, so the modal styles should be fixed",
+      "acceptance": [
+        "The modal displays the text input and buttons properly with no overflow",
+        "Test are still passing",
+        "The ARCHITECTURE.md file should be updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "Move_old_folder_content_to_new_folder",
+      "title": "Move old /Views and /Components content to new /views and /components",
+      "description": "The old Views and Components folders only contains styles to be referenced, move it to views  and components folders (lowercase) and delete the then unused folder Views and Components",
+      "acceptance": [
+        "All the styles are now in the same folders as the .vue files",
+        "All the style from css files, are moved directly inside <style scoped> tag for each component",
+        "The tests still passing",
+        "The ARCHITECTURE.md file should be updated if needed"
+      ],
+      "sdd": true,
+      "status": "pending"
     }
   ]
 }

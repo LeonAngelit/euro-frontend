@@ -13,6 +13,7 @@
   border-radius: 0.25rem;
   font-size: 1rem;
   box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .edit-room-name-form .error-span {
@@ -26,6 +27,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  width: 100%;
 }
 
 .edit-room-name-form .action-btn {
@@ -33,9 +35,13 @@
   color: white;
   border: none;
   border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .edit-room-name-form .action-delete-btn {
@@ -43,7 +49,10 @@
   color: #333;
   border: none;
   border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -238,3 +238,21 @@
 - **Fix before start:** Fixed JSON syntax error (missing comma) in feature_list.json line 156
 - **Review:** APPROVED — all R1–R13 traceable, all 14 tasks complete
 - **Tests:** 213/213 passing (37 test files)
+
+---
+
+## Session: 2026-05-16 — Leader: fix_edit_room_name_modal_text_overflow (full SDD cycle)
+
+- **Feature:** fix_edit_room_name_modal_text_overflow (id: 11)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → review → CHANGES_REQUESTED → fix → re-verify → done
+- **Spec authored in:** `specs/fix_edit_room_name_modal_text_overflow/`
+- **Implementation:** CSS-only fix to `src/Components/RoomPicker/RoomNameEditForm.Component.css`:
+  - T1: Added `overflow-wrap: break-word` to input for long room names (R1, R2, R8)
+  - T2: Added `width: 100%` to `.modal-action-buttons` container to override inherited 80% (R6)
+  - T3: Reduced button horizontal padding from `1rem` to `0.75rem` (R3, R4, R5, R6)
+  - T4: Added `white-space: nowrap` to buttons (R3, R4, R7)
+  - T5: Added `overflow: hidden` + `text-overflow: ellipsis` fallback on buttons (R7)
+- **Review:** CHANGES_REQUESTED — implementer accidentally removed cancel button from `.vue` file, causing 2 test failures. Fixed by reverting `.vue` file to HEAD and removing extra `width: 100%` from buttons.
+- **Final verification:** All 213 tests pass, CSS-only change, no `.vue` files modified
+- **Tests:** 213/213 passing (37 test files)
