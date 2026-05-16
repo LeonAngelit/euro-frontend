@@ -46,6 +46,33 @@ async function fetchUpdatable() {
     })
 }
 
+async function updateLinks(event: Event) {
+  event.preventDefault()
+  await axios
+    .get(`${config.baseUrl}countries/updateLinks/${new Date().getFullYear()}`, {
+      headers: {
+        Accept: 'application/json',
+        Bearer: store.xToken,
+      },
+    })
+    .then((response) => {
+      if (response.status == 200) {
+        error.value = {}
+      } else {
+        error.value = {
+          status: true,
+          message: response.data.message,
+        }
+      }
+    })
+    .catch((err) => {
+      error.value = {
+        status: true,
+        message: err.response?.data?.message,
+      }
+    })
+}
+
 async function setUpdatable(event: Event) {
   const target = event.target as HTMLElement
   let data: any = {}
@@ -112,7 +139,7 @@ async function setUpdatable(event: Event) {
 
 async function archiveResults() {
   await axios
-    .get(`${config.baseUrl}archive/results/${new Date().getFullYear()}`, {
+    .get(`${config.baseUrl}rooms/archive/export/${new Date().getFullYear()}`, {
       headers: {
         Accept: 'application/json',
         Bearer: store.xToken,
@@ -261,88 +288,54 @@ async function handleCreateRequest(event: Event) {
 <template>
   <div class="container">
     <div class="buttons-container">
-      <button
-        v-if="store.updatable?.updatable"
-        class="admin-button button-green"
-        id="updatable_countries"
-        @click="setUpdatable"
-      >
+      <button class="admin-button button-green" id="update_links" @click="updateLinks">
+        {{ $t('admin.updateLinks') }}
+      </button>
+      <button v-if="store.updatable?.updatable" class="admin-button button-green" id="updatable_countries"
+        @click="setUpdatable">
         {{ $t('admin.votingOk') }}
       </button>
-      <button
-        v-else
-        class="admin-button button-red"
-        id="updatable_countries"
-        @click="setUpdatable"
-      >
+      <button v-else class="admin-button button-red" id="updatable_countries" @click="setUpdatable">
         {{ $t('admin.votingNo') }}
       </button>
 
-      <button
-        v-if="store.updatable?.updatable_user"
-        class="admin-button button-green"
-        id="updatable_users"
-        @click="setUpdatable"
-      >
+      <button v-if="store.updatable?.updatable_user" class="admin-button button-green" id="updatable_users"
+        @click="setUpdatable">
         {{ $t('admin.registrationOk') }}
       </button>
-      <button
-        v-else
-        class="admin-button button-red"
-        id="updatable_users"
-        @click="setUpdatable"
-      >
+      <button v-else class="admin-button button-red" id="updatable_users" @click="setUpdatable">
         {{ $t('admin.registrationNo') }}
       </button>
 
-      <button
-        v-if="store.updatable?.refresh_enabled"
-        class="admin-button button-green"
-        id="updatable_refresh_enabled"
-        @click="setUpdatable"
-      >
+      <button v-if="store.updatable?.refresh_enabled" class="admin-button button-green" id="updatable_refresh_enabled"
+        @click="setUpdatable">
         {{ $t('admin.pointsOk') }}
       </button>
-      <button
-        v-else
-        class="admin-button button-red"
-        id="updatable_refresh_enabled"
-        @click="setUpdatable"
-      >
+      <button v-else class="admin-button button-red" id="updatable_refresh_enabled" @click="setUpdatable">
         {{ $t('admin.pointsNo') }}
       </button>
 
-      <button
-        class="admin-button button-blue"
-        id="archive_results"
-        @click="archiveResults"
-      >
+      <button class="admin-button button-blue" id="archive_results" @click="archiveResults">
         {{ $t('admin.exportResults') }}
       </button>
     </div>
     <Collapsible :title="$t('admin.changePassword')">
-      <Form
-        :action="setUpdatable"
-        :error="error"
-        :submitValue="$t('admin.submit')"
-        :showPassword="true"
-        :fields="[
-          {
-            name: 'password',
-            placeholder: $t('admin.passwordPlaceholder'),
-            id: 'passwordField',
-            type: 'password',
-            ref: passRef,
-          },
-          {
-            name: 'password',
-            placeholder: $t('admin.repeatPasswordPlaceholder'),
-            id: 'passwordTwoField',
-            type: 'password',
-            ref: passTwoRef,
-          },
-        ]"
-      />
+      <Form :action="setUpdatable" :error="error" :submitValue="$t('admin.submit')" :showPassword="true" :fields="[
+        {
+          name: 'password',
+          placeholder: $t('admin.passwordPlaceholder'),
+          id: 'passwordField',
+          type: 'password',
+          setRef: (el: any) => passRef = el,
+        },
+        {
+          name: 'password',
+          placeholder: $t('admin.repeatPasswordPlaceholder'),
+          id: 'passwordTwoField',
+          type: 'password',
+          setRef: (el: any) => passTwoRef = el,
+        },
+      ]" />
     </Collapsible>
     <div class="requests-container">
       <select ref="modelRef">
@@ -354,18 +347,14 @@ async function handleCreateRequest(event: Event) {
         <option value="delete">{{ $t('admin.deleteRequest') }}</option>
       </select>
       <textarea :placeholder="$t('admin.promptPlaceholder')" ref="promptRef"></textarea>
-      <Form
-        :action="handleCreateRequest"
-        :submitValue="$t('admin.submit')"
-        :fields="[
-          { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', ref: imgPathRef, required: false },
-          { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', ref: framesRef, required: false },
-          { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', ref: strengthRef, required: false },
-          { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', ref: genStepsRef, required: false },
-          { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', ref: cfgRef, required: false },
-          { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', ref: endPercentRef, required: false },
-        ]"
-      />
+      <Form :action="handleCreateRequest" :submitValue="$t('admin.submit')" :fields="[
+        { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', setRef: (el: any) => imgPathRef = el, required: false },
+        { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', setRef: (el: any) => framesRef = el, required: false },
+        { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', setRef: (el: any) => strengthRef = el, required: false },
+        { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', setRef: (el: any) => genStepsRef = el, required: false },
+        { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', setRef: (el: any) => cfgRef = el, required: false },
+        { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', setRef: (el: any) => endPercentRef = el, required: false },
+      ]" />
     </div>
   </div>
 </template>

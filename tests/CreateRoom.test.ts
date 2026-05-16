@@ -45,9 +45,9 @@ describe('CreateRoom-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Create Room',
           showPassword: true,
           fields: [
-            { name: 'username', placeholder: 'Room Name', type: 'text', ref: roomNameRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Room Name', type: 'text', setRef: (el: any) => roomNameRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },
@@ -80,9 +80,9 @@ describe('CreateRoom-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Create Room',
           showPassword: true,
           fields: [
-            { name: 'username', placeholder: 'Room Name', type: 'text', ref: roomNameRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Room Name', type: 'text', setRef: (el: any) => roomNameRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },
@@ -131,9 +131,9 @@ describe('CreateRoom-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Create Room',
           showPassword: true,
           fields: [
-            { name: 'username', placeholder: 'Room Name', type: 'text', ref: roomNameRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Room Name', type: 'text', setRef: (el: any) => roomNameRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },

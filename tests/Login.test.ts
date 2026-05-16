@@ -46,8 +46,8 @@ describe('Login-like form — ref values — R1, R2, R8, R9', () => {
           showPassword: true,
           remember: true,
           fields: [
-            { name: 'username', label: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', ref: passwordRef, required: true },
+            { name: 'username', label: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
           ],
         })
       },
@@ -89,8 +89,8 @@ describe('Login-like form — ref values — R1, R2, R8, R9', () => {
           showPassword: true,
           remember: true,
           fields: [
-            { name: 'username', label: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', ref: passwordRef, required: true },
+            { name: 'username', label: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
           ],
         })
       },
@@ -152,8 +152,8 @@ describe('Login-like form — ref values — R1, R2, R8, R9', () => {
           submitValue: 'Login',
           showPassword: true,
           fields: [
-            { name: 'username', label: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', ref: passwordRef, required: true },
+            { name: 'username', label: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'password', label: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
           ],
         })
       },

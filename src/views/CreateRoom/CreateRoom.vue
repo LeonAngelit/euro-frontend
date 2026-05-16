@@ -91,7 +91,7 @@ async function crearSala(event: Event) {
         name: 'username',
         placeholder: $t('createRoom.roomNamePlaceholder'),
         type: 'text',
-        ref: roomNameRef,
+        setRef: (el: any) => roomNameRef = el,
         required: true,
       },
       {
@@ -99,7 +99,7 @@ async function crearSala(event: Event) {
         placeholder: $t('createRoom.passwordPlaceholder'),
         type: 'password',
         id: 'passwordOne',
-        ref: passwordRef,
+        setRef: (el: any) => passwordRef = el,
         required: true,
       },
       {
@@ -107,7 +107,7 @@ async function crearSala(event: Event) {
         placeholder: $t('createRoom.repeatPasswordPlaceholder'),
         id: 'passwordTwo',
         type: 'password',
-        ref: passwordTwodRef,
+        setRef: (el: any) => passwordTwodRef = el,
         required: true,
       },
     ]" />

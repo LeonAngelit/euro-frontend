@@ -42,7 +42,7 @@ describe('MissingEmail-like form — ref values — R1, R2, R9', () => {
           error: false,
           submitValue: 'Submit Email',
           fields: [
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
           ],
         })
       },
@@ -71,7 +71,7 @@ describe('MissingEmail-like form — ref values — R1, R2, R9', () => {
           error: false,
           submitValue: 'Submit Email',
           fields: [
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
           ],
         })
       },
@@ -111,7 +111,7 @@ describe('MissingEmail-like form — ref values — R1, R2, R9', () => {
           error: false,
           submitValue: 'Submit Email',
           fields: [
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
           ],
         })
       },

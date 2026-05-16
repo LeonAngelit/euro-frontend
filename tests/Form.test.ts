@@ -220,7 +220,7 @@ describe('Form — ref value capture — R1, R3, R9', () => {
 
     const usernameRef = ref<HTMLInputElement | null>(null)
     const fields = [
-      { name: 'username', placeholder: 'Username', type: 'text', id: 'user1', ref: usernameRef, required: true },
+      { name: 'username', placeholder: 'Username', type: 'text', id: 'user1', setRef: (el: any) => usernameRef.value = el, required: true },
     ]
 
     const wrapper = mount(Form, {
@@ -258,8 +258,8 @@ describe('Form — multiple fields independent refs — R5, R9', () => {
     const nameRef = ref<HTMLInputElement | null>(null)
     const emailRef = ref<HTMLInputElement | null>(null)
     const fields = [
-      { name: 'name', placeholder: 'Name', type: 'text', id: 'name1', ref: nameRef, required: true },
-      { name: 'email', placeholder: 'Email', type: 'email', id: 'email1', ref: emailRef, required: true },
+      { name: 'name', placeholder: 'Name', type: 'text', id: 'name1', setRef: (el: any) => nameRef.value = el, required: true },
+      { name: 'email', placeholder: 'Email', type: 'email', id: 'email1', setRef: (el: any) => emailRef.value = el, required: true },
     ]
 
     const wrapper = mount(Form, {
@@ -300,7 +300,7 @@ describe('Form — password toggle preserves value — R4, R9', () => {
 
     const passwordRef = ref<HTMLInputElement | null>(null)
     const fields = [
-      { name: 'password', placeholder: 'Password', id: 'pass1', type: 'password', ref: passwordRef, required: true },
+      { name: 'password', placeholder: 'Password', id: 'pass1', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
     ]
 
     const wrapper = mount(Form, {
@@ -366,8 +366,8 @@ describe('Form — ref values after submit — R8, R9', () => {
     })
 
     const fields = [
-      { name: 'username', placeholder: 'Username', type: 'text', ref: usernameRef, required: true },
-      { name: 'password', placeholder: 'Password', id: 'pass1', type: 'password', ref: passwordRef, required: true },
+      { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => usernameRef.value = el, required: true },
+      { name: 'password', placeholder: 'Password', id: 'pass1', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
     ]
 
     const wrapper = mount(Form, {

@@ -182,7 +182,12 @@ function handleSelect(event: Event) {
               </p>
               <a :href="country.link" target="_blank" rel="noopener">
                 <div class="header-icon-container">
-                  <Icon icon="mdi:play-circle" style="color: rgb(255, 248, 0); font-size: 20px;" />
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="20px"
+                    width="20px" xmlns="http://www.w3.org/2000/svg" style="color: rgb(255, 248, 0);">
+                    <path
+                      d="M106.854 106.002a26.003 26.003 0 0 0-25.64 29.326c16 124 16 117.344 0 241.344a26.003 26.003 0 0 0 35.776 27.332l298-124a26.003 26.003 0 0 0 0-48.008l-298-124a26.003 26.003 0 0 0-10.136-1.994z">
+                    </path>
+                  </svg>
                 </div>
               </a>
             </div>

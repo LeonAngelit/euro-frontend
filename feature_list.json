@@ -5,13 +5,7 @@
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
     "require_approved_spec_to_implement": true,
-    "valid_status": [
-      "pending",
-      "spec_ready",
-      "in_progress",
-      "done",
-      "blocked"
-    ],
+    "valid_status": ["pending", "spec_ready", "in_progress", "done", "blocked"],
     "sdd_required_when": "feature has \"sdd\": true"
   },
   "features": [
@@ -152,6 +146,20 @@
       ],
       "sdd": true,
       "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "Analyze_correct_project",
+      "title": "Analyze correct project",
+      "description": "The vue migration had some problems, they are now fixed, review the current project, the git tracked changes and previous commit, to understand how they were fixed and include the correct implementation in ARCHITECTURE.md file",
+      "acceptance": [
+        "The ARCHITECTURE.md file should be updated or created",
+        "The file should include all the relevant details about project architecture",
+        "The file should provide useful information to consult when applying changes in the project",
+        "Tests should be updated if needed"
+      ],
+      "sdd": true,
+      "status": "pending"
     }
   ]
 }

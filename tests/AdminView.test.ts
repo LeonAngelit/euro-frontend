@@ -64,8 +64,8 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Submit',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef },
-            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: passTwoRef },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el },
+            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => passTwoRef.value = el },
           ],
         })
       },
@@ -98,8 +98,8 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Submit',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef },
-            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: passTwoRef },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el },
+            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => passTwoRef.value = el },
           ],
         })
       },
@@ -139,12 +139,12 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           action: vi.fn(),
           submitValue: 'Submit',
           fields: [
-            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', ref: imgPathRef, required: false },
-            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', ref: framesRef, required: false },
-            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', ref: strengthRef, required: false },
-            { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', ref: genStepsRef, required: false },
-            { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', ref: cfgRef, required: false },
-            { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', ref: endPercentRef, required: false },
+            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', setRef: (el: any) => imgPathRef.value = el, required: false },
+            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', setRef: (el: any) => framesRef.value = el, required: false },
+            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', setRef: (el: any) => strengthRef.value = el, required: false },
+            { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', setRef: (el: any) => genStepsRef.value = el, required: false },
+            { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', setRef: (el: any) => cfgRef.value = el, required: false },
+            { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', setRef: (el: any) => endPercentRef.value = el, required: false },
           ],
         })
       },
@@ -181,12 +181,12 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           action: vi.fn(),
           submitValue: 'Submit',
           fields: [
-            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', ref: imgPathRef, required: false },
-            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', ref: framesRef, required: false },
-            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', ref: strengthRef, required: false },
-            { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', ref: genStepsRef, required: false },
-            { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', ref: cfgRef, required: false },
-            { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', ref: endPercentRef, required: false },
+            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', setRef: (el: any) => imgPathRef.value = el, required: false },
+            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', setRef: (el: any) => framesRef.value = el, required: false },
+            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', setRef: (el: any) => strengthRef.value = el, required: false },
+            { name: 'genSteps', placeholder: 'genSteps', id: 'genSteps', type: 'text', setRef: (el: any) => genStepsRef.value = el, required: false },
+            { name: 'cfg', placeholder: 'cfg', id: 'cfg', type: 'text', setRef: (el: any) => cfgRef.value = el, required: false },
+            { name: 'endPercent', placeholder: 'endPercent', id: 'endPercent', type: 'text', setRef: (el: any) => endPercentRef.value = el, required: false },
           ],
         })
       },
@@ -237,8 +237,8 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Submit',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef },
-            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: passTwoRef },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el },
+            { name: 'password', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => passTwoRef.value = el },
           ],
         })
       },
@@ -285,9 +285,9 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
           action: submitAction,
           submitValue: 'Submit',
           fields: [
-            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', ref: imgPathRef, required: false },
-            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', ref: framesRef, required: false },
-            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', ref: strengthRef, required: false },
+            { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', setRef: (el: any) => imgPathRef.value = el, required: false },
+            { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', setRef: (el: any) => framesRef.value = el, required: false },
+            { name: 'strength', placeholder: 'strength', id: 'strength', type: 'text', setRef: (el: any) => strengthRef.value = el, required: false },
           ],
         })
       },
@@ -325,9 +325,8 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
       setup() {
         return () => h('div', [
           h('select', { ref: modelRef }, [
-            h('option', { value: 'clean' }, 'Clean'),
-            h('option', { value: 'image_to_video' }, 'Image to Video'),
-            h('option', { value: 'anime_to_real' }, 'Anime to Real'),
+            h('option', { value: 'model1' }, 'Model 1'),
+            h('option', { value: 'model2' }, 'Model 2'),
           ]),
           h('textarea', { ref: promptRef, placeholder: 'Prompt' }),
         ])

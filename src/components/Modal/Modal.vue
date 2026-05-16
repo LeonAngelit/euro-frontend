@@ -14,17 +14,14 @@ defineProps<ModalProps>()
 
 <template>
   <div class="modal-container">
-    <div
-      :class="
-        status == 'success'
-          ? 'modal success-modal'
-          : status == 'error'
-            ? 'modal error-modal'
-            : component
-              ? 'modal modal-component'
-              : 'modal'
-      "
-    >
+    <div :class="status == 'success'
+        ? 'modal success-modal'
+        : status == 'error'
+          ? 'modal error-modal'
+          : component
+            ? 'modal modal-component'
+            : 'modal'
+      ">
       <button class="modal-button" @click="onclick && onclick()">
         <p>X</p>
       </button>

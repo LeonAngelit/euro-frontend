@@ -115,7 +115,7 @@ async function fetchRooms() {
             {{ room.room.name }} - {{ room.year }}
           </option>
         </select>
-        <Classification :room="selectedHistoricalRoom" :animate="false" />
+        <Classification :room="selectedHistoricalRoom" :animate="false" :isArchive="true" />
       </template>
       <template v-else>
         <select @change="(e: Event) => setSelectedRoom((e.target as HTMLSelectElement).value)" class="select-css">

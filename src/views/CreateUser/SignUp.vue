@@ -144,14 +144,14 @@ async function createNewUser(event: Event) {
           name: 'username',
           placeholder: $t('signup.usernamePlaceholder'),
           type: 'text',
-          ref: userNameRef,
+          setRef: (el: any) => userNameRef = el,
           required: true,
         },
         {
           name: 'email',
           placeholder: $t('signup.emailPlaceholder'),
           type: 'email',
-          ref: emailRef,
+          setRef: (el: any) => emailRef = el,
           required: true,
         },
         {
@@ -159,7 +159,7 @@ async function createNewUser(event: Event) {
           placeholder: $t('signup.passwordPlaceholder'),
           type: 'password',
           id: 'passwordOne',
-          ref: passwordRef,
+          setRef: (el: any) => passwordRef = el,
           required: true,
         },
         {
@@ -167,7 +167,7 @@ async function createNewUser(event: Event) {
           placeholder: $t('signup.repeatPasswordPlaceholder'),
           id: 'passwordTwo',
           type: 'password',
-          ref: passwordTwodRef,
+          setRef: (el: any) => passwordTwodRef = el,
           required: true,
         },
       ]" />

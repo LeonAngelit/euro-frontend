@@ -18,7 +18,7 @@ const store = useAppStore()
 const router = useRouter()
 const preview = ref<string | null>(null)
 const error = ref<any>({})
-const currentCollapsed = ref(false)
+const currentCollapsed = ref(true)
 const passRef = ref<HTMLInputElement | null>(null)
 const pass2Ref = ref<HTMLInputElement | null>(null)
 const userNameRef = ref<HTMLInputElement | null>(null)
@@ -114,6 +114,11 @@ function updateEmail(event: Event) {
   updateUserData(event, { email: emailRef.value?.value })
 }
 
+function updateColor(event: Event) {
+  event.preventDefault()
+  updateUserData(event, { color: colorRef.value?.value })
+}
+
 function updatePassword(event: Event) {
   event.preventDefault()
   if (passRef.value?.value != pass2Ref.value?.value) {
@@ -154,19 +159,15 @@ function onImageChange(event: Event) {
 </script>
 
 <template>
-  <div class="details-container">
+  <div class="container details-container">
     <div class="section-one">
-      <Collapsible :title="$t('userDetails.selectedCountries')" :collapsed="currentCollapsed" @toggle="handleCollapsed">
-        <CountryPicker :countries="store.songs" :additionalAction="handleCollapsed" />
-      </Collapsible>
-
       <Collapsible :title="$t('userDetails.updateUsername')">
         <Form :action="updateUserName" :error="error" :submitValue="$t('userDetails.update')" :fields="[
           {
             name: 'username',
             placeholder: $t('userDetails.usernamePlaceholder'),
             type: 'text',
-            ref: userNameRef,
+            setRef: (el: any) => userNameRef = el,
             required: true,
           },
         ]" />
@@ -178,7 +179,7 @@ function onImageChange(event: Event) {
             name: 'email',
             placeholder: $t('userDetails.emailPlaceholder'),
             type: 'email',
-            ref: emailRef,
+            setRef: (el: any) => emailRef = el,
             required: true,
           },
         ]" />
@@ -192,7 +193,7 @@ function onImageChange(event: Event) {
               placeholder: $t('userDetails.passwordPlaceholder'),
               id: 'passwordField',
               type: 'password',
-              ref: passRef,
+              setRef: (el: any) => passRef = el,
               required: true,
             },
             {
@@ -200,7 +201,7 @@ function onImageChange(event: Event) {
               placeholder: $t('userDetails.repeatPasswordPlaceholder'),
               id: 'passwordTwoField',
               type: 'password',
-              ref: pass2Ref,
+              setRef: (el: any) => pass2Ref = el,
               required: true,
             },
           ]" />
@@ -212,10 +213,26 @@ function onImageChange(event: Event) {
             {
               name: 'image',
               type: 'file',
-              ref: imageRef,
+              setRef: (el: any) => imageRef = el,
               required: false,
             },
           ]" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.updateColor')">
+        <Form :action="updateColor" :error="error" :submitValue="$t('userDetails.update')" :fields="[
+          {
+            name: 'color',
+            placeholder: $t('userDetails.colorPlaceholder'),
+            type: 'color',
+            setRef: (el: any) => colorRef = el,
+            required: true,
+          },
+        ]" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.selectedCountries')" :collapsed="currentCollapsed" @toggle="handleCollapsed">
+        <CountryPicker :additionalAction="handleCollapsed" />
       </Collapsible>
     </div>
 

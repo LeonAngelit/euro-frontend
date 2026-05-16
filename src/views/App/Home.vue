@@ -38,9 +38,12 @@ async function validateUserToken() {
 
 onMounted(() => {
   validateUserToken()
+  if (store.currentRoom?.current) {
+    router.push('/room')
+  }
 })
 
-watch([targetCount, () => store.userLogged, () => store.songs], () => {
+watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
   // Guard: only evaluate redirect logic once songs are loaded
   if (!store.songs || store.songs.length === 0) return
 
@@ -56,6 +59,8 @@ watch([targetCount, () => store.userLogged, () => store.songs], () => {
     } else {
       useNavigateWithCallback(router, '/country-select')
     }
+  } else if (store.currentRoom?.current) {
+    router.push('/room')
   } else {
     if (window.location.href.includes('callback_url')) {
       window.location.href = window.location.href.split('callback_url=')[1]
@@ -136,7 +141,7 @@ async function joinRoom(event: Event) {
               name: 'roomname',
               placeholder: $t('home.roomIdPlaceholder'),
               type: 'text',
-              ref: roomNameRef,
+              setRef: (el: any) => roomNameRef = el,
               required: true,
             },
             {
@@ -144,7 +149,7 @@ async function joinRoom(event: Event) {
               placeholder: $t('home.passwordPlaceholder'),
               id: 'passwordField',
               type: 'password',
-              ref: passwordRef,
+              setRef: (el: any) => passwordRef = el,
               required: true,
             },
           ]" />

@@ -15,7 +15,7 @@ const router = useRouter()
 
 const userMenu = ref(false)
 const adminPanel = ref(false)
-const passwordRef = ref<HTMLInputElement | null>(null)
+const passwordRef = ref<HTMLInputElement | null | undefined>(null)
 const error = ref<any>({})
 
 const callbackUrl = computed(() => {
@@ -29,25 +29,44 @@ async function loginAdmin(event: Event) {
   event.preventDefault()
   const pass = passwordRef.value?.value?.split('').reverse().join('') || ''
   try {
-    const response = await axios.post(`${config.baseUrl}updatable/verify-password`, {
-      password: pass,
-    }, {
+    const response = await axios.get(`${config.baseUrl}updatable`, {
       headers: {
         Accept: 'application/json',
         Bearer: store.xToken,
       },
+    }).then(async (response) => {
+      if (response.status == 200) {
+        if (
+          pass == response.data.master_password
+        ) {
+          store.setUpdatable(response.data)
+          router.push("/admin")
+        } else {
+          error.value = {
+            status: true,
+            message: t('nav.wrongPassword'),
+          }
+        }
+      }
+      adminPanel.value = false
+      return
     })
-    if (response.status == 200) {
-      store.setUpdatable(response.data)
-      router.push('/admin')
-    }
+      .catch((error) => {
+        error.value = {
+          status: true,
+          message: error.response.data.message || error,
+        }
+        adminPanel.value = false
+        return
+      });
   } catch (err: any) {
     error.value = {
       status: true,
       message: err.response?.data?.message || t('nav.wrongPassword'),
     }
+    adminPanel.value = false
+    return
   }
-  adminPanel.value = false
 }
 
 function handleMenu(event: Event) {
@@ -132,7 +151,7 @@ function handleLeaveRoom() {
         </li>
       </ul>
     </div>
-    <AdminPanel v-if="adminPanel" :action="loginAdmin" :refer="passwordRef" :error="error"
+    <AdminPanel v-if="adminPanel" :action="loginAdmin" :refer="(el: any) => passwordRef = el" :error="error"
       :close="() => (adminPanel = false)" />
   </header>
 </template>

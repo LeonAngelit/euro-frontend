@@ -47,10 +47,10 @@ describe('SignUp-like form — ref values — R1, R2, R5, R9', () => {
           showPassword: true,
           remember: true,
           fields: [
-            { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },
@@ -85,10 +85,10 @@ describe('SignUp-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Register',
           showPassword: true,
           fields: [
-            { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },
@@ -141,10 +141,10 @@ describe('SignUp-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Register',
           showPassword: true,
           fields: [
-            { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
-            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', ref: passwordRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', ref: passwordTwodRef, required: true },
+            { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordOne', type: 'password', setRef: (el: any) => passwordRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwo', type: 'password', setRef: (el: any) => passwordTwodRef.value = el, required: true },
           ],
         })
       },

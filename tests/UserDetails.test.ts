@@ -92,7 +92,7 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           error: false,
           submitValue: 'Update Username',
           fields: [
-            { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
+            { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
           ],
         })
       },
@@ -120,7 +120,7 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           error: false,
           submitValue: 'Update Username',
           fields: [
-            { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
+            { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
           ],
         })
       },
@@ -152,7 +152,7 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           error: false,
           submitValue: 'Update Email',
           fields: [
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
           ],
         })
       },
@@ -180,7 +180,7 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           error: false,
           submitValue: 'Update Email',
           fields: [
-            { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+            { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
           ],
         })
       },
@@ -215,8 +215,8 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Update Password',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: pass2Ref, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => pass2Ref.value = el, required: true },
           ],
         })
       },
@@ -247,8 +247,8 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Update Password',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: pass2Ref, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => pass2Ref.value = el, required: true },
           ],
         })
       },
@@ -291,8 +291,8 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
           submitValue: 'Update Password',
           showPassword: true,
           fields: [
-            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef, required: true },
-            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: pass2Ref, required: true },
+            { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el, required: true },
+            { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => pass2Ref.value = el, required: true },
           ],
         })
       },
@@ -393,14 +393,14 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
             action: vi.fn(),
             submitValue: 'Update Username',
             fields: [
-              { name: 'username', placeholder: 'Username', type: 'text', ref: userNameRef, required: true },
+              { name: 'username', placeholder: 'Username', type: 'text', setRef: (el: any) => userNameRef.value = el, required: true },
             ],
           }),
           h(Form, {
             action: vi.fn(),
             submitValue: 'Update Email',
             fields: [
-              { name: 'email', placeholder: 'Email', type: 'email', ref: emailRef, required: true },
+              { name: 'email', placeholder: 'Email', type: 'email', setRef: (el: any) => emailRef.value = el, required: true },
             ],
           }),
           h(Form, {
@@ -408,8 +408,8 @@ describe('UserDetails-like form — ref values — R1, R2, R5, R9', () => {
             submitValue: 'Update Password',
             showPassword: true,
             fields: [
-              { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', ref: passRef, required: true },
-              { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', ref: pass2Ref, required: true },
+              { name: 'password', placeholder: 'Password', id: 'passwordField', type: 'password', setRef: (el: any) => passRef.value = el, required: true },
+              { name: 'password2', placeholder: 'Repeat Password', id: 'passwordTwoField', type: 'password', setRef: (el: any) => pass2Ref.value = el, required: true },
             ],
           }),
         ])
@@ -484,7 +484,7 @@ describe('UserDetails — profile sections rendering — R3, R5', () => {
     await flushPromises()
 
     // Should render the username update collapsible (Spanish locale)
-    expect(wrapper.text()).toContain('Actualizar nombre de usuario')
+    expect(wrapper.text()).toContain('Cambiar nombre de usuario: ')
   })
 
   it('test_UserDetails_rendersEmailUpdateSection — R3, R5', async () => {
@@ -517,7 +517,7 @@ describe('UserDetails — profile sections rendering — R3, R5', () => {
     await wrapper.vm.$nextTick()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Actualizar correo electrónico')
+    expect(wrapper.text()).toContain('Cambiar correo electrónico: ')
   })
 
   it('test_UserDetails_rendersPasswordUpdateSection — R3, R5', async () => {
@@ -550,7 +550,7 @@ describe('UserDetails — profile sections rendering — R3, R5', () => {
     await wrapper.vm.$nextTick()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Actualizar contraseña')
+    expect(wrapper.text()).toContain('Cambiar contraseña: ')
   })
 
   it('test_UserDetails_rendersImageUpdateSection — R3, R5', async () => {
@@ -583,7 +583,7 @@ describe('UserDetails — profile sections rendering — R3, R5', () => {
     await wrapper.vm.$nextTick()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Actualizar imagen de perfil')
+    expect(wrapper.text()).toContain('Actualizar avatar: ')
   })
 
   it('test_UserDetails_rendersAllProfileSections — R3, R5', async () => {
@@ -617,9 +617,9 @@ describe('UserDetails — profile sections rendering — R3, R5', () => {
     await flushPromises()
 
     // All four profile sections should be present (Spanish locale)
-    expect(wrapper.text()).toContain('Actualizar nombre de usuario')
-    expect(wrapper.text()).toContain('Actualizar correo electrónico')
-    expect(wrapper.text()).toContain('Actualizar contraseña')
-    expect(wrapper.text()).toContain('Actualizar imagen de perfil')
+    expect(wrapper.text()).toContain('Cambiar nombre de usuario: ')
+    expect(wrapper.text()).toContain('Cambiar correo electrónico: ')
+    expect(wrapper.text()).toContain('Cambiar contraseña: ')
+    expect(wrapper.text()).toContain('Actualizar avatar: ')
   })
 })
