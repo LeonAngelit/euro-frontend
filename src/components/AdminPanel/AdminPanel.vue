@@ -31,4 +31,37 @@ defineProps<AdminPanelProps>()
   </div>
 </template>
 
-<style src="../../Components/AdminPanel/AdminPanel.component.css"></style>
+<style scoped>
+.admin-panel {
+  display: block;
+  position: absolute;
+  width: 90%;
+  border: 1px solid var(--primary-color);
+  z-index: 99;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.background {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  z-index: 98;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+}
+
+.close-panel-button {
+  display: block;
+  width: 10%;
+  margin: 0.5rem auto;
+  background-color: var(--euro-pink);
+  border: none;
+  padding: 0.2rem;
+  border-radius: 50%;
+}
+</style>

@@ -196,20 +196,20 @@ Routes are defined in `src/router/index.ts` using vue-router's `createRouter` wi
 
 ## 6. State Management
 
-The application uses Pinia for state management, defined in `src/stores/app.ts`. The store is persisted to `localStorage`/`sessionStorage` via `pinia-plugin-persistedstate`.
+The application uses Pinia for state management, defined in `src/stores/app.ts`. The store is persisted to `localStorage`/`sessionStorage` via `pinia-plugin-persistedstate`. Persistence uses a `paths` include list that explicitly lists every top-level key **except** `modal`, ensuring ephemeral UI state (modal visibility) is never serialized to storage.
 
 ### State Fields
 
-| Field | Type | Description |
-|---|---|---|
-| `user_logged` | `object \| false` | Current logged-in user data (id, username, email, countries, rooms, image, token) |
-| `x_token` | `string` | Bearer token for API authentication |
-| `songs` | `array` | List of countries/songs for the current year (fetched from `/countries`) |
-| `current_room` | `object \| undefined` | Active room data (`{ current: roomData }` or `undefined`) |
-| `selection` | `object` | Country selection state (`{ current: [countryIds] }`) |
-| `remember_user` | `boolean` | Whether to persist session in localStorage (vs. sessionStorage only) |
-| `modal` | `object` | Modal state (`{ visible, message, status, confirm, component, onclick, onaccept, onaccept_data }`) |
-| `updatable` | `object` | Admin updatable settings (refresh_enabled, master_password, etc.) |
+| Field | Type | Persisted | Description |
+|---|---|---|---|
+| `user_logged` | `object \| false` | Yes | Current logged-in user data (id, username, email, countries, rooms, image, token) |
+| `x_token` | `string` | Yes | Bearer token for API authentication |
+| `songs` | `array` | Yes | List of countries/songs for the current year (fetched from `/countries`) |
+| `current_room` | `object \| undefined` | Yes | Active room data (`{ current: roomData }` or `undefined`) |
+| `selection` | `object` | Yes | Country selection state (`{ current: [countryIds] }`) |
+| `remember_user` | `boolean` | Yes | Whether to persist session in localStorage (vs. sessionStorage only) |
+| `modal` | `object` | **No** | Modal state (`{ visible, message, status, confirm, component, onclick, onaccept, onaccept_data }`). Excluded from persistence to prevent stale UI after refresh. |
+| `updatable` | `object` | Yes | Admin updatable settings (refresh_enabled, master_password, etc.) |
 
 ### Context Setters
 
@@ -217,6 +217,7 @@ Each state field has a corresponding setter function exposed on the context: `se
 
 ### Persistence
 
+- The store uses a `paths` include list in the persist config to explicitly select which top-level state keys are serialized. The `modal` key is intentionally omitted, ensuring ephemeral UI state (e.g., modal visibility) is never written to storage. On page refresh, `modal` always initializes as `{}`.
 - When `remember_user` is `true`: the Pinia store is serialized to both `localStorage` and `sessionStorage` under the key `"app-context"`.
 - When `remember_user` is `false`: the Pinia store is serialized only to `sessionStorage`.
 - On app load, `localStorage` is checked first; if empty, `sessionStorage` is used as fallback.
@@ -547,23 +548,9 @@ The PWA manifest is linked from `index.html` as `/manifest.webmanifest`, and the
 
 The following issues are observable in the current codebase:
 
-### Inconsistent CSS Naming
+### Inline CSS in `<style scoped>` Blocks
 
-Component CSS files use three different naming conventions, and the inconsistency persists (no consolidation toward a single convention has occurred):
-
-- PascalCase with `.Component.css` suffix (8 files):
-  `Classification.Component.css`, `CountryPicker.Component.css`, `Form.Component.css`,
-  `Home.Component.css`, `CreateRoom.Component.css`, `UserDetails.Component.css`,
-  `RoomPicker.Component.css`, `RoomNameEditForm.Component.css`
-- camelCase with `.component.css` suffix (5 files):
-  `AdminPanel.component.css`, `Collapsible.component.css`, `Footer.component.css`,
-  `Navigation.component.css`, `Modal.component.css`
-- Truncated/typo naming (1 file):
-  `AdminView.componen.css` (missing `t` in `component`)
-- Special case (1 file):
-  `App.css` (NotFoundComponent, no convention applied)
-
-Additionally, the CSS import paths reference `../../Components/` (capital C) while the source code lives under `src/components/` (lowercase c). Both resolve correctly on case-insensitive filesystems but may cause issues on case-sensitive systems.
+All component-specific CSS has been inlined directly into `<style scoped>` blocks within each `.vue` component file. The old external CSS files under `src/Components/` and `src/Views/` have been deleted. This eliminates the need for separate CSS files and resolves the case-sensitivity issue with import paths (`../../Components/` vs `../../components/`). Vue's `scoped` attribute automatically scopes all selectors to the component, preventing style conflicts.
 
 ### Composables Named with `use` Prefix
 
@@ -600,3 +587,66 @@ This `ARCHITECTURE.md` is a **descriptive reference** — it documents what the 
 `docs/architecture.md` is a **prescriptive policy** — it defines the rules the project **should follow** (atomic persistence, no mocks, no new deps, stateless CLI, etc.).
 
 Both files coexist and serve complementary purposes. Updating one does not require updating the other, though they should remain consistent over time.
+
+---
+
+## 16. Vercel Deployment
+
+The application is configured for deployment on **Vercel** via `vercel.json` at the project root. Vercel auto-detects Vite/Vue projects, but explicit configuration ensures the build output directory and SPA routing work correctly.
+
+### `vercel.json` Configuration
+
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+```
+
+| Key | Value | Purpose |
+|-----|-------|---------|
+| `buildCommand` | `npm run build` | Tells Vercel to run the Vite production build |
+| `outputDirectory` | `build` | Must match `outDir: "build"` in `vite.config.js`. Vercel defaults to `dist`; we override to `build` |
+| `rewrites` | `{ "source": "/(.*)", "destination": "/index.html" }` | SPA fallback — all routes serve `index.html` so `vue-router`'s `createWebHistory` can handle client-side routing |
+
+### SPA Rewrite Explanation
+
+The `rewrites` block implements a catch-all SPA fallback: any request to a non-root path (e.g., `/login`, `/room`, `/archive`) is served `index.html` instead of returning a 404. This is required because Vercel, like all static hosting platforms, would otherwise try to serve a file at the requested path (e.g., `/login.html`), which does not exist in a single-page application.
+
+Vercel's platform serves static assets (images, fonts, scripts, manifests) **before** applying rewrite rules, so the catch-all rewrite does not interfere with asset loading.
+
+### Build Process on Vercel
+
+1. **Install**: Vercel runs `npm install` (default install command — no override needed).
+2. **Build**: Vercel runs `npm run build` (via `buildCommand`), which executes `vite build` and outputs to `build/`.
+3. **Output**: The `build/` directory contains:
+   - `index.html` — SPA entry point
+   - `assets/` — JavaScript bundles, CSS bundles, SVG flags, and other compiled assets
+   - `manifest.webmanifest` — PWA manifest (generated by `vite-plugin-pwa`)
+   - `sw.js` / `workbox-*.js` — Service worker (generated by `vite-plugin-pwa`)
+   - `favicon.ico`, `robots.txt`, `star_icon_*.png` — Static assets from `public/`
+4. **Serve**: Vercel serves the contents of `build/` with the SPA rewrite fallback.
+
+### Environment Variables
+
+The following environment variables must be configured in the **Vercel project dashboard** (Settings → Environment Variables). They are read via `import.meta.env` at build/runtime.
+
+| Variable | Example | Purpose |
+|----------|---------|---------|
+| `VITE_REACT_APP_BASEURL` | `https://api.example.com/api/eurocontest/` | Backend API base URL |
+| `VITE_REACT_APP_ADMIN` | `admin_user` | Admin username for admin panel access |
+| `VITE_REACT_APP_AUTH_P` | `secret123` | Auth secret used to derive the bcrypt hash for `/getAuthToken` |
+| `VITE_REACT_APP_P_KEY` | `somekey` | Additional key (currently not used in source) |
+| `VITE_REACT_APP_JOIN_ROOM` | `/join-room?roomAuth` | Join room URL pattern |
+| `VITE_REACT_APP_CONFIRM_EMAIL_URL` | `/confirm-email?user_id=` | Email confirmation URL pattern |
+| `VITE_REACT_APP_JOIN_ROOM_PATH` | `/join-room` | Join room path |
+| `VITE_REACT_APP_CLIENT_ID` | `google-oauth-id` | Google OAuth client ID |
+| `VITE_REACT_APP_REQUESTS_URL` | `secret/comfy/addRequest` | URL path for AI model requests |
+| `VITE_REACT_APP_REQUESTS_BASE_URL` | `secret/comfy` | URL path for AI model request deletion |
+
+### Note on PWA Manifest
+
+The `manifest.webmanifest` file is generated by `vite-plugin-pwa` at build time and placed in the output root. Vercel serves it as a static asset. The catch-all rewrite does not intercept it because Vercel resolves static files before applying rewrites. The manifest is linked from `index.html` as `/manifest.webmanifest`.

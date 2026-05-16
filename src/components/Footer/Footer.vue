@@ -9,4 +9,20 @@
   </footer>
 </template>
 
-<style src="../../Components/Footer/Footer.component.css"></style>
+<style scoped>
+.footer {
+  display: flex;
+  max-width: 100vw;
+  height: 2.5vh;
+  background-color: var(--primary-color);
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+}
+
+.footer p {
+  color: whitesmoke;
+  font-size: .75rem;
+}
+</style>

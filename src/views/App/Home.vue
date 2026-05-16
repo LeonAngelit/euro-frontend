@@ -164,4 +164,19 @@ async function joinRoom(event: Event) {
   </div>
 </template>
 
-<style src="../../Views/App/Home.Component.css"></style>
+<style scoped>
+.rooms-options {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.rooms-options > p {
+  margin-top: 1rem;
+}
+
+.subtitle {
+  margin-bottom: 0.5rem;
+}
+</style>

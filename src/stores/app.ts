@@ -170,6 +170,7 @@ export const useAppStore = defineStore('app', () => {
   persist: {
     key: STORAGE_KEY,
     storage: appContextStorage,
+    paths: ['userLogged', 'rememberUser', 'currentRoom', 'songs', 'updatable', 'selection', 'xToken'],
   },
 })
 

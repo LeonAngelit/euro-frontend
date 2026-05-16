@@ -359,4 +359,54 @@ async function handleCreateRequest(event: Event) {
   </div>
 </template>
 
-<style src="../../Views/AdminView/AdminView.componen.css"></style>
+<style scoped>
+.buttons-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.admin-button {
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  color: whitesmoke;
+  border-radius: 0.3rem;
+}
+
+.button-green {
+  background-color: var(--success-color);
+}
+
+.button-red {
+  background-color: var(--error-color);
+}
+
+.button-blue {
+  background-color: var(--primary-color-background);
+}
+
+.requests-container {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+
+}
+
+
+.requests-container textarea, .requests-container select {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.requests-container textarea {
+  padding: .2rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  border: 1px solid var(--primary-color);
+  resize: both;
+}
+</style>

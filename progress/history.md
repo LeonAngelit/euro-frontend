@@ -256,3 +256,54 @@
 - **Review:** CHANGES_REQUESTED — implementer accidentally removed cancel button from `.vue` file, causing 2 test failures. Fixed by reverting `.vue` file to HEAD and removing extra `width: 100%` from buttons.
 - **Final verification:** All 213 tests pass, CSS-only change, no `.vue` files modified
 - **Tests:** 213/213 passing (37 test files)
+
+---
+
+## Session: 2026-05-16 — Leader: Move_old_folder_content_to_new_folder (full SDD cycle)
+
+- **Feature:** Move_old_folder_content_to_new_folder (id: 12)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → review → APPROVED
+- **Spec authored in:** `specs/Move_old_folder_content_to_new_folder/`
+- **Implementation:** Single-phase inline of all CSS into `<style scoped>` blocks:
+  - 16 `.vue` files modified: `<style src="...">` replaced with `<style scoped>` containing inlined CSS content
+  - `src/Components/NotFoundComponent/logo.svg` moved to `src/components/NotFound/logo.svg`
+  - `src/Components/` (11 subdirectories, 12 CSS files) deleted
+  - `src/Views/` (4 subdirectories, 4 CSS files) deleted
+  - `ARCHITECTURE.md` updated ("Inconsistent CSS Naming" → "Inline CSS in `<style scoped>` Blocks")
+- **Review:** APPROVED — all R1–R12 traceable, all 23 tasks complete. 2 pre-existing test failures (cancel button missing from feature #11) were fixed as part of this session (restored cancel button + removed leftover `width: 100%` from button CSS).
+- **Tests:** 213/213 passing (37 test files)
+
+---
+
+## Session: 2026-05-16 — Leader: Fix_modal_refresh_issue (full SDD cycle)
+
+- **Feature:** Fix_modal_refresh_issue (id: 13)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → blocked (spec used `omit` but plugin v3.2.3 doesn't support it) → spec corrected to use `paths` → re-launch → review → APPROVED
+- **Spec authored in:** `specs/Fix_modal_refresh_issue/`
+- **Root cause:** Pinia store persisted `modal` state via `pinia-plugin-persistedstate`. On refresh, `modal.visible=true` was restored but Vue component references and function callbacks were lost during JSON serialization, leaving an unclosable empty modal overlay.
+- **Fix:** Added `paths: ['userLogged', 'rememberUser', 'currentRoom', 'songs', 'updatable', 'selection', 'xToken']` to the persist config in `src/stores/app.ts`, explicitly listing every top-level key **except** `modal` — compatible with pinia-plugin-persistedstate v3.2.3.
+- **Blockers resolved:** Initial spec used unsupported `omit` option; corrected to `paths` include list approach after implementer reported the incompatibility.
+- **Tests:** 3 new tests added (`test_appStore_modal_notPersisted`, `test_appStore_modal_resetOnRestore`, `test_appStore_setModal_emptyClearsVisibility`) — all 216/216 passing
+- **Files modified:** `src/stores/app.ts`, `tests/appStore.test.ts`, `ARCHITECTURE.md`
+
+---
+
+## Session: 2026-05-16 — Leader: Ensure_vercel_deploy (full SDD cycle)
+
+- **Feature:** Ensure_vercel_deploy (id: 14)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → review → CHANGES_REQUESTED (R8, R9 missing tests) → fix → re-review → APPROVED
+- **Spec authored in:** `specs/Ensure_vercel_deploy/`
+- **Implementation:**
+  - T1: Updated `vercel.json` with `buildCommand: "npm run build"` and `outputDirectory: "build"`, preserving SPA rewrites
+  - T2: Created `tests/vercel.test.ts` with 8 test cases covering all 13 requirements
+  - T3: Updated `ARCHITECTURE.md` with §16 Vercel Deployment section documenting config, env vars, and build process
+  - T4–T5: `npm test` and `./init.sh` — all green
+- **Review:** CHANGES_REQUESTED — R8 and R9 lacked test coverage (no test verified ARCHITECTURE.md content)
+- **Fixes applied:**
+  - Added `test_architecture_md_has_vercel_deployment_section` for R8
+  - Added `test_architecture_md_lists_env_vars` for R9
+- **Re-review:** APPROVED — all R1–R13 traceable, all tasks complete
+- **Tests:** 224/224 passing (38 test files, +8 new tests)

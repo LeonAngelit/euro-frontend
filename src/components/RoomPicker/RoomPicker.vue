@@ -249,4 +249,86 @@ async function shareRoom(event: Event) {
   </div>
 </template>
 
-<style src="../../Components/RoomPicker/RoomPicker.Component.css"></style>
+<style scoped>
+.room-container {
+  margin-top: 1rem;
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  background-color: whitesmoke;
+}
+
+.room-icon-container {
+  display: flex;
+  background-color: whitesmoke;
+  border: none;
+  justify-content: flex-end;
+  align-items: flex-end;
+  text-decoration: none;
+  width: 90%;
+  font-weight: bold;
+}
+
+.room-icon-edit-container{
+  display: flex;
+  background-color: whitesmoke;
+  border: none;
+  justify-content: flex-start;
+  align-items: flex-end;
+  text-decoration: none;
+  width: 90%;
+  font-weight: bold;
+}
+
+.room-icon-container.room-name{
+  justify-content: flex-start;
+}
+
+.room-icon-container p {
+  font-size: 1rem;
+  text-align: center;
+
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.room-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.room-actions > button {
+  width: 40%;
+  margin-top: 0.2rem;
+  border: none;
+  background-color: var(--primary-color);
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+  color: whitesmoke;
+}
+
+.room-actions .delete-button {
+  background-color: var(--error-color);
+}
+
+
+
+
+@media (min-width: 1000px) {
+  .room-icon-container.room-name{
+    width: auto;
+  }
+  
+ }
+</style>

@@ -306,3 +306,102 @@ describe('useAppStore — persistence (custom storage)', () => {
     expect(localStorage.getItem('key2')).toBe(null)
   })
 })
+
+// ─── T2: Modal not persisted (R5) ──────────────────────────────────────
+describe('useAppStore — modal not persisted — R5', () => {
+  beforeEach(() => {
+    setActivePinia(createTestPinia())
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+
+  it('test_appStore_modal_notPersisted — R5', () => {
+    // Spy on Storage.prototype.setItem to capture all writes from the persist plugin.
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
+
+    const store = useAppStore()
+    // Mutate various states including modal
+    store.setUserLogged({ id: 1, username: 'test', email: null, image: '', countries: [], rooms: [] })
+    store.setRememberUser(true)
+    store.setCurrentRoom({ current: 'room1' })
+    store.setXToken('test-token')
+    store.setModal({ visible: true, message: 'test', status: 'success' })
+    store.setSelection({ current: [1, 2] })
+    store.setUpdatable({ refresh_enabled: true })
+
+    // The persist plugin writes to storage (via appContextStorage).
+    // Because paths excludes 'modal', the serialized state should not contain modal.
+    // Check all captured writes for any that match the STORAGE_KEY
+    let foundPersisted = false
+    for (const call of setItemSpy.mock.calls) {
+      const key = call[0] as string
+      const value = call[1] as string
+      if (key === STORAGE_KEY) {
+        foundPersisted = true
+        const parsed = JSON.parse(value)
+        expect(parsed).not.toHaveProperty('modal')
+      }
+    }
+    // If the spy didn't catch it, check both storages directly (belt-and-suspenders)
+    const localStr = localStorage.getItem(STORAGE_KEY)
+    const sessionStr = sessionStorage.getItem(STORAGE_KEY)
+    const stored = localStr || sessionStr
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      expect(parsed).not.toHaveProperty('modal')
+    }
+    setItemSpy.mockRestore()
+  })
+})
+
+// ─── T3: Modal reset on restore (R1, R3, R6) ───────────────────────────
+describe('useAppStore — modal reset on restore — R1, R3, R6', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+
+  it('test_appStore_modal_resetOnRestore — R1, R3, R6', () => {
+    // Pre-populate storage with stale state that includes modal.visible=true
+    const staleState = {
+      userLogged: { id: 1, username: 'test', email: null, image: '', countries: [], rooms: [] },
+      rememberUser: true,
+      currentRoom: { current: 'room1' },
+      xToken: 'test-token',
+      modal: { visible: true, message: 'Stale modal', status: 'success' },
+      selection: { current: [1] },
+      songs: [],
+      updatable: undefined,
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(staleState))
+
+    setActivePinia(createTestPinia())
+    const store = useAppStore()
+
+    // The modal state should have been reset to {} during store initialization
+    // because 'modal' is not in the paths include list
+    expect(store.modal.visible).toBeFalsy()
+    expect(store.modal).toEqual({})
+  })
+})
+
+// ─── T4: setModal({}) clears visibility (R7) ───────────────────────────
+describe('useAppStore — setModal({}) — R7', () => {
+  beforeEach(() => {
+    setActivePinia(createTestPinia())
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+
+  it('test_appStore_setModal_emptyClearsVisibility — R7', () => {
+    const store = useAppStore()
+    // Set modal with visible=true
+    store.setModal({ visible: true, message: 'Test', status: 'success' })
+    expect(store.modal.visible).toBe(true)
+
+    // Now clear it with empty object
+    store.setModal({})
+    expect(store.modal.visible).toBeFalsy()
+    expect(store.modal).toEqual({})
+  })
+})

@@ -41,4 +41,128 @@ defineProps<ModalProps>()
   </div>
 </template>
 
-<style src="../../Components/Modal/Modal.component.css"></style>
+<style scoped>
+#root > div.modal-container {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 80;
+}
+
+
+.modal {
+  width: 70%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 2rem;
+  font-size: 1rem;
+  position: absolute;
+  top: 101px;
+  right: 9px;
+  animation: slideIn 0.2s ease-out forwards;
+}
+
+.modal.modal-component{
+  right: 16%;
+  border: 1px solid var(--primary-color);
+  animation: none;
+}
+
+.password-container {
+  position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.modal-button {
+  position: absolute;
+  top: 5%;
+  right: 2%;
+  width: 2em;
+  height: 2em;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  width: 80%;
+}
+
+.modal-action-buttons > button {
+  width: 40%;
+}
+
+.modal-button > p {
+  font-size: 1rem;
+}
+
+.modal-button:active {
+  color: white;
+  background-color: grey;
+}
+
+.success-modal {
+  background-color: var(--success-color);
+  font-weight: bold;
+  color: black;
+}
+
+.error-modal {
+  background-color: var(--error-color);
+  font-weight: bold;
+  color: whitesmoke;
+}
+
+.action-btn,
+.action-delete-btn {
+  border: none;
+  padding: 0.2rem;
+  color: whitesmoke;
+  border-radius: 0.2rem;
+}
+
+.action-btn {
+  background-color: var(--primary-color);
+}
+.action-delete-btn {
+  background-color: var(--error-color);
+}
+.modal-container p {
+  text-align: center;
+}
+
+
+@media (min-width: 1000px) {
+
+  .modal {
+    width: 30%;
+  }
+  
+ 
+
+}
+</style>
