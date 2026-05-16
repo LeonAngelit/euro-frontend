@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router/index";
 import { Buffer } from "buffer";
 import "./index.css";
+import { i18n } from "./locales";
 
 // FontAwesome
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -25,5 +26,6 @@ const app = createApp(App);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 app.use(pinia);
 app.use(router);
+app.use(i18n);
 app.use(vue3GoogleLogin, { clientId: config.clientID });
 app.mount("#root");

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import { Icon } from '@iconify/vue'
 import AdminPanel from '../AdminPanel/AdminPanel.vue'
@@ -8,6 +9,7 @@ import useHandleCloseSession from '../../composables/useHandleCloseSession'
 import axios from 'axios'
 import config from '../../config/config'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 
@@ -25,7 +27,7 @@ const callbackUrl = computed(() => {
 
 async function loginAdmin(event: Event) {
   event.preventDefault()
-  const pass = passwordRef.value?.value || ''
+  const pass = passwordRef.value?.value?.split('').reverse().join('') || ''
   try {
     const response = await axios.post(`${config.baseUrl}updatable/verify-password`, {
       password: pass,
@@ -42,7 +44,7 @@ async function loginAdmin(event: Event) {
   } catch (err: any) {
     error.value = {
       status: true,
-      message: err.response?.data?.message || 'Contraseña incorrecta',
+      message: err.response?.data?.message || t('nav.wrongPassword'),
     }
   }
   adminPanel.value = false
@@ -87,7 +89,7 @@ function handleLeaveRoom() {
         <router-link :to="'/' + callbackUrl" class="header-text" @click="handleMenuHome">
           <div class="header-icon-container">
             <Icon icon="mdi:star" style="color: #FF0087; font-size: 40px;" />
-            <p>EuroContest</p>
+            <p>{{ $t('nav.euroContest') }}</p>
           </div>
         </router-link>
       </div>
@@ -96,8 +98,7 @@ function handleLeaveRoom() {
           <button class="profile-button" @click="handleMenu">
             <img
               :src="(store.userLogged as any)?.image ? `${(store.userLogged as any)?.image}` : `${config.defProfilePicUrl}${(store.userLogged as any)?.username}`"
-              alt="imagen de usuario"
-            />
+              :alt="$t('nav.userImage')" />
           </button>
         </div>
       </template>
@@ -106,38 +107,33 @@ function handleLeaveRoom() {
       <ul>
         <li>
           <router-link to="/profile" @click="handleClickProfile">
-            Perfil
+            {{ $t('nav.profile') }}
           </router-link>
         </li>
         <li v-if="(store.userLogged as any)?.username == config.appAdmin">
           <router-link to="/" @click="handleAdmin">
-            Admin
+            {{ $t('nav.admin') }}
           </router-link>
         </li>
         <li v-if="store.currentRoom?.current != undefined">
           <router-link to="/app" @click="handleLeaveRoom">
-            Salir de la sala
+            {{ $t('nav.leaveRoom') }}
           </router-link>
         </li>
         <li>
           <router-link to="/archive" @click="handleClickProfile">
-            Histórico de resultados
+            {{ $t('nav.archive') }}
           </router-link>
         </li>
         <li>
           <router-link to="/login" @click="handleCloseSession">
-            Cerrar sesión
+            {{ $t('nav.logout') }}
           </router-link>
         </li>
       </ul>
     </div>
-    <AdminPanel
-      v-if="adminPanel"
-      :action="loginAdmin"
-      :refer="passwordRef"
-      :error="error"
-      :close="() => (adminPanel = false)"
-    />
+    <AdminPanel v-if="adminPanel" :action="loginAdmin" :refer="passwordRef" :error="error"
+      :close="() => (adminPanel = false)" />
   </header>
 </template>
 

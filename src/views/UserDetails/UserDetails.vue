@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import CountryPicker from '../../components/CountryPicker/CountryPicker.vue'
 import Collapsible from '../../components/Collapsible/Collapsible.vue'
@@ -12,6 +13,7 @@ import useNavigateWithCallback from '../../composables/useNavigateWithCallback'
 import useValidateToken from '../../composables/useValidateToken'
 import useHandleCloseSession from '../../composables/useHandleCloseSession'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 const preview = ref<string | null>(null)
@@ -59,7 +61,7 @@ async function updateUserData(event: Event, data: any) {
       if (response.status == 200) {
         store.setModal({
           visible: true,
-          message: 'Actualización correcta',
+          message: t('layout.updateSuccess'),
           status: 'success',
           confirm: store.setModal({}),
         })
@@ -88,7 +90,7 @@ function updateUserName(event: Event) {
     !validateUserNameRegex(userNameRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales',
+        message: t('validation.invalidUsername'),
       },
     )
   ) {
@@ -103,7 +105,7 @@ function updateEmail(event: Event) {
     !validateEmailRegex(emailRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Correo electrónico no válido',
+        message: t('validation.invalidEmail'),
       },
     )
   ) {
@@ -115,14 +117,14 @@ function updateEmail(event: Event) {
 function updatePassword(event: Event) {
   event.preventDefault()
   if (passRef.value?.value != pass2Ref.value?.value) {
-    error.value = { status: true, message: 'Las contraseñas no coinciden' }
+    error.value = { status: true, message: t('validation.passwordsDontMatch') }
     return
   }
   if (
     !validateRegex(passRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula',
+        message: t('validation.invalidPassword'),
       },
     )
   ) {
@@ -154,13 +156,71 @@ function onImageChange(event: Event) {
 <template>
   <div class="details-container">
     <div class="section-one">
-      <Collapsible :title="'Países seleccionados'" :collapsed="currentCollapsed" @toggle="handleCollapsed">
+      <Collapsible :title="$t('userDetails.selectedCountries')" :collapsed="currentCollapsed" @toggle="handleCollapsed">
         <CountryPicker :countries="store.songs" :additionalAction="handleCollapsed" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.updateUsername')">
+        <Form :action="updateUserName" :error="error" :submitValue="$t('userDetails.update')" :fields="[
+          {
+            name: 'username',
+            placeholder: $t('userDetails.usernamePlaceholder'),
+            type: 'text',
+            ref: userNameRef,
+            required: true,
+          },
+        ]" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.updateEmail')">
+        <Form :action="updateEmail" :error="error" :submitValue="$t('userDetails.update')" :fields="[
+          {
+            name: 'email',
+            placeholder: $t('userDetails.emailPlaceholder'),
+            type: 'email',
+            ref: emailRef,
+            required: true,
+          },
+        ]" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.updatePassword')">
+        <Form :action="updatePassword" :error="error" :submitValue="$t('userDetails.update')" :showPassword="true"
+          :fields="[
+            {
+              name: 'password',
+              placeholder: $t('userDetails.passwordPlaceholder'),
+              id: 'passwordField',
+              type: 'password',
+              ref: passRef,
+              required: true,
+            },
+            {
+              name: 'password2',
+              placeholder: $t('userDetails.repeatPasswordPlaceholder'),
+              id: 'passwordTwoField',
+              type: 'password',
+              ref: pass2Ref,
+              required: true,
+            },
+          ]" />
+      </Collapsible>
+
+      <Collapsible :title="$t('userDetails.updateImage')">
+        <Form :action="updateImage" :error="error" :submitValue="$t('userDetails.update')" :preview="preview"
+          :onImageChange="onImageChange" :fields="[
+            {
+              name: 'image',
+              type: 'file',
+              ref: imageRef,
+              required: false,
+            },
+          ]" />
       </Collapsible>
     </div>
 
     <div class="section-two">
-      <button class="delete-user-button">Eliminar cuenta</button>
+      <button class="delete-user-button">{{ $t('userDetails.deleteAccount') }}</button>
     </div>
   </div>
 </template>

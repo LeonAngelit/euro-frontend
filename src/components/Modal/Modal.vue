@@ -32,10 +32,10 @@ defineProps<ModalProps>()
         <p>{{ message }}</p>
         <div v-if="confirm" class="modal-action-buttons">
           <button class="action-btn" @click="onaccept && onaccept()">
-            Aceptar
+            {{ $t('modal.accept') }}
           </button>
           <button class="action-delete-btn" @click="onclick && onclick()">
-            Cancelar
+            {{ $t('modal.cancel') }}
           </button>
         </div>
       </template>

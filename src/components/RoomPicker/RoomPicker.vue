@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import { Icon } from '@iconify/vue'
 import axios from 'axios'
 import config from '../../config/config'
 import useUpdateUserData from '../../composables/useUpdateUserData'
-import { validateUserNameRegex } from '../../utils/regexUtils'
+import RoomNameEditForm from './RoomNameEditForm.vue'
+
+const { t } = useI18n()
 
 interface Room {
   id: string
@@ -22,8 +25,34 @@ interface RoomPickerProps {
 const props = defineProps<RoomPickerProps>()
 const store = useAppStore()
 const router = useRouter()
-const error = ref<any>({})
-const roomNameRef = ref<HTMLInputElement | null>(null)
+const editingRoomId = ref<string | null>(null)
+
+const currentRoomName = computed(() => {
+  if (!editingRoomId.value) return ''
+  const room = props.rooms?.find(r => r.id === editingRoomId.value)
+  return room?.name || ''
+})
+
+watch(() => store.modal.visible, (visible) => {
+  if (!visible) {
+    editingRoomId.value = null
+  }
+})
+
+function openEditModal(room: Room) {
+  editingRoomId.value = room.id
+  store.setModal({
+    visible: true,
+    component: RoomNameEditForm,
+    editingRoomId: room.id,
+    currentRoomName: room.name,
+    onaccept: undefined,
+    onclick: () => {
+      editingRoomId.value = null
+      store.setModal({})
+    },
+  })
+}
 
 async function selectRoom(event: Event) {
   const button = (event.currentTarget as HTMLElement)
@@ -118,13 +147,13 @@ async function getRoomToken(roomId: string, roomName: string): Promise<string> {
       const url = `${config.joinRoomLink}roomAuth=${response.data}`
       if (navigator.share) {
         await navigator.share({
-          title: `Participa conmigo en la sala ${roomName}!`,
-          text: `Participa conmigo en la sala ${roomName}!\nHaz clic en el link para unirte a la sala:\n `,
+          title: t('roomPicker.shareTitle', { roomName }),
+          text: t('roomPicker.shareText', { roomName }),
           url: url,
         }).catch(() => '')
       } else {
         navigator.clipboard.writeText(url)
-        alert('Link copiado al portapapeles')
+        alert(t('roomPicker.linkCopied'))
       }
       return ''
     }
@@ -142,64 +171,7 @@ async function shareRoom(event: Event) {
   await getRoomToken(roomId, roomName)
 }
 
-async function updateRoomName(event: Event, roomId: string) {
-  event.preventDefault()
-  if (roomNameRef.value && !validateUserNameRegex(roomNameRef.value.value)) {
-    error.value = {
-      status: true,
-      message: 'Nombre de sala no válido',
-    }
-    return
-  }
-  const data = {
-    name: roomNameRef.value?.value,
-  }
-  try {
-    const response = await axios.put(
-      `${config.baseUrl}rooms/${roomId}/${(store.userLogged as any)?.id}`,
-      data,
-      {
-        headers: {
-          Accept: 'application/json',
-          Bearer: store.xToken,
-        },
-      },
-    )
-    if (response.status == 200) {
-      const userResponse = await axios.get(
-        `${config.baseUrl}users/${(store.userLogged as any)?.id}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            Bearer: store.xToken,
-          },
-        },
-      )
-      if (userResponse.status == 200) {
-        store.setModal({
-          visible: true,
-          message: 'Actualización correcta',
-          status: 'success',
-          confirm: store.setModal({}),
-        })
-        setTimeout(() => {
-          store.setModal({})
-        }, 5000)
-        store.setUserLogged(userResponse.data)
-      }
-    }
-  } catch (err: any) {
-    store.setModal({
-      visible: true,
-      message: err.response?.data?.message,
-      status: 'error',
-      confirm: store.setModal({}),
-    })
-    setTimeout(() => {
-      store.setModal({})
-    }, 5000)
-  }
-}
+
 </script>
 
 <template>
@@ -218,12 +190,13 @@ async function updateRoomName(event: Event, roomId: string) {
           <button
             v-if="room.adminId == (store.userLogged as any)?.id"
             :id="room.id"
+            data-testid="delete-room-btn"
             @click="(event) => {
               event.preventDefault()
               store.setModal({
                 visible: true,
                 confirm: true,
-                message: '¿Deseas eliminar la sala? Esta acción es irreversible',
+                message: t('roomPicker.deleteConfirm'),
                 onaccept: () => { deleteRoom(room.id); store.setModal({}) },
                 onclick: () => store.setModal({}),
               })
@@ -235,19 +208,29 @@ async function updateRoomName(event: Event, roomId: string) {
           <button
             v-if="room.adminId == (store.userLogged as any)?.id"
             :id="room.id"
+            data-testid="edit-room-name-btn"
+            @click="openEditModal(room)"
+            class="room-icon-edit-container"
+          >
+            <Icon icon="mdi:pencil-outline" style="color: black; font-size: 20px;" />
+          </button>
+          <button
+            v-if="room.adminId == (store.userLogged as any)?.id"
+            :id="room.id"
+            data-testid="forget-room-btn"
             @click="(event) => {
               event.preventDefault()
               store.setModal({
                 visible: true,
                 confirm: true,
-                message: '¿Deseas olvidar la sala? Podrás volver a unirte introduciendo id y contraseña en el formulario',
+                message: t('roomPicker.forgetConfirm'),
                 onaccept: () => { forgetRoom(room.id); store.setModal({}) },
                 onclick: () => store.setModal({}),
               })
             }"
             class="room-icon-edit-container"
           >
-            <Icon icon="mdi:pencil-outline" style="color: black; font-size: 20px;" />
+            <Icon icon="mdi:link-off" style="color: black; font-size: 20px;" />
           </button>
           <button
             :id="`share-${room.id}`"

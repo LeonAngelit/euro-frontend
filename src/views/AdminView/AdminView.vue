@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import axios from 'axios'
 import Form from '../../components/Form/Form.vue'
@@ -8,6 +9,7 @@ import useHandleCloseSession from '../../composables/useHandleCloseSession'
 import Collapsible from '../../components/Collapsible/Collapsible.vue'
 import config from '../../config/config'
 
+const { t } = useI18n()
 const store = useAppStore()
 const error = ref<any>({})
 const passRef = ref<HTMLInputElement | null>(null)
@@ -58,14 +60,14 @@ async function setUpdatable(event: Event) {
   }
   if (event.type == 'submit') {
     if (passRef.value?.value != passTwoRef.value?.value) {
-      error.value = { status: true, message: 'Las contraseñas no coinciden' }
+      error.value = { status: true, message: t('validation.passwordsDontMatch') }
       return
     }
     if (
       !validateRegex(passRef.value?.value || '', () =>
         error.value = {
           status: true,
-          message: 'Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula',
+          message: t('validation.invalidPassword'),
         },
       )
     ) {
@@ -86,7 +88,7 @@ async function setUpdatable(event: Event) {
         store.setUpdatable(response.data)
         store.setModal({
           visible: true,
-          message: 'Actualización correcta',
+          message: t('layout.updateSuccess'),
           status: 'success',
           confirm: store.setModal({}),
         })
@@ -265,7 +267,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_countries"
         @click="setUpdatable"
       >
-        Votación OK
+        {{ $t('admin.votingOk') }}
       </button>
       <button
         v-else
@@ -273,7 +275,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_countries"
         @click="setUpdatable"
       >
-        Votación NO
+        {{ $t('admin.votingNo') }}
       </button>
 
       <button
@@ -282,7 +284,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_users"
         @click="setUpdatable"
       >
-        Registro OK
+        {{ $t('admin.registrationOk') }}
       </button>
       <button
         v-else
@@ -290,7 +292,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_users"
         @click="setUpdatable"
       >
-        Registro NO
+        {{ $t('admin.registrationNo') }}
       </button>
 
       <button
@@ -299,7 +301,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_refresh_enabled"
         @click="setUpdatable"
       >
-        Puntos OK
+        {{ $t('admin.pointsOk') }}
       </button>
       <button
         v-else
@@ -307,7 +309,7 @@ async function handleCreateRequest(event: Event) {
         id="updatable_refresh_enabled"
         @click="setUpdatable"
       >
-        Puntos NO
+        {{ $t('admin.pointsNo') }}
       </button>
 
       <button
@@ -315,26 +317,26 @@ async function handleCreateRequest(event: Event) {
         id="archive_results"
         @click="archiveResults"
       >
-        Exportar resultados
+        {{ $t('admin.exportResults') }}
       </button>
     </div>
-    <Collapsible title="Cambiar contraseña:">
+    <Collapsible :title="$t('admin.changePassword')">
       <Form
         :action="setUpdatable"
         :error="error"
-        submitValue="Enviar"
+        :submitValue="$t('admin.submit')"
         :showPassword="true"
         :fields="[
           {
             name: 'password',
-            placeholder: 'Contraseña',
+            placeholder: $t('admin.passwordPlaceholder'),
             id: 'passwordField',
             type: 'password',
             ref: passRef,
           },
           {
             name: 'password',
-            placeholder: 'Repetir contraseña',
+            placeholder: $t('admin.repeatPasswordPlaceholder'),
             id: 'passwordTwoField',
             type: 'password',
             ref: passTwoRef,
@@ -344,17 +346,17 @@ async function handleCreateRequest(event: Event) {
     </Collapsible>
     <div class="requests-container">
       <select ref="modelRef">
-        <option value="clean">Clean request</option>
-        <option value="image_to_video">img2video request</option>
-        <option value="anime_to_real">anime to real request</option>
-        <option value="generate_image">generate image request</option>
-        <option value="upscale">upscale request</option>
-        <option value="delete">Delete request</option>
+        <option value="clean">{{ $t('admin.cleanRequest') }}</option>
+        <option value="image_to_video">{{ $t('admin.img2videoRequest') }}</option>
+        <option value="anime_to_real">{{ $t('admin.animeToRealRequest') }}</option>
+        <option value="generate_image">{{ $t('admin.generateImageRequest') }}</option>
+        <option value="upscale">{{ $t('admin.upscaleRequest') }}</option>
+        <option value="delete">{{ $t('admin.deleteRequest') }}</option>
       </select>
-      <textarea placeholder="prompt goes here" ref="promptRef"></textarea>
+      <textarea :placeholder="$t('admin.promptPlaceholder')" ref="promptRef"></textarea>
       <Form
         :action="handleCreateRequest"
-        submitValue="Enviar"
+        :submitValue="$t('admin.submit')"
         :fields="[
           { name: 'imgPath', placeholder: 'imgPath', id: 'imgPath', type: 'text', ref: imgPathRef, required: false },
           { name: 'frames', placeholder: 'frames', id: 'frames', type: 'text', ref: framesRef, required: false },

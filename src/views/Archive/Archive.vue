@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import axios from 'axios'
 import Classification from '../../components/ClassificationView/ClassificationView.vue'
@@ -9,6 +10,7 @@ import useNavigateWithCallback from '../../composables/useNavigateWithCallback'
 import useValidateToken from '../../composables/useValidateToken'
 import useHandleCloseSession from '../../composables/useHandleCloseSession'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 const historicalRooms = ref<any>(false)
@@ -46,7 +48,7 @@ async function setSelectedRoom(roomId: string) {
       if (error.response?.status == 404) {
         return {
           status: true,
-          message: 'No se han encontrado datos',
+          message: t('archive.noData'),
         }
       } else {
         return {
@@ -78,7 +80,7 @@ async function fetchRooms() {
     if (error.response?.status == 404) {
       return {
         status: true,
-        message: 'No se han encontrado datos',
+        message: t('archive.noData'),
       }
     } else {
       return {
@@ -95,7 +97,7 @@ async function fetchRooms() {
 <template>
   <div class="container">
     <template v-if="loading">
-      <p class="archive-element">Obteniendo datos...</p>
+      <p class="archive-element">{{ $t('archive.loading') }}</p>
     </template>
     <template v-else-if="historicalRooms">
       <template v-if="selectedHistoricalRoom">
@@ -103,7 +105,7 @@ async function fetchRooms() {
           @change="(e: Event) => setSelectedRoom((e.target as HTMLSelectElement).value)"
           class="select-css selected"
         >
-          <option value="">Selecciona una sala</option>
+          <option value="">{{ $t('archive.selectRoom') }}</option>
           <option
             v-for="room in historicalRooms"
             :key="room._id"
@@ -117,7 +119,7 @@ async function fetchRooms() {
       </template>
       <template v-else>
         <select @change="(e: Event) => setSelectedRoom((e.target as HTMLSelectElement).value)" class="select-css">
-          <option value="">Selecciona una sala</option>
+          <option value="">{{ $t('archive.selectRoom') }}</option>
           <option
             v-for="room in historicalRooms"
             :key="room._id"
@@ -130,7 +132,7 @@ async function fetchRooms() {
       </template>
     </template>
     <template v-else>
-      <p>No se han encontrado resultados históricos para el usuario</p>
+      <p>{{ $t('archive.noResults') }}</p>
     </template>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import { Icon } from '@iconify/vue'
 import axios from 'axios'
@@ -11,6 +12,7 @@ interface CountryPickerProps {
 }
 
 const props = defineProps<CountryPickerProps>()
+const { t } = useI18n()
 const store = useAppStore()
 
 const songs = computed(() => store.songs)
@@ -44,7 +46,7 @@ async function handleContinue() {
       if (response.status == 201) {
         store.setModal({
           visible: true,
-          message: 'Actualización correcta',
+          message: t('layout.updateSuccess'),
           status: 'success',
           confirm: store.setModal({}),
         })
@@ -73,7 +75,7 @@ async function handleContinue() {
   } else {
     store.setModal({
       visible: true,
-      message: `Tienes que elegir ${targetCount.value} países`,
+      message: t('countryPicker.mustChoose', { count: targetCount.value }),
       status: 'error',
       confirm: store.setModal({}),
     })
@@ -113,7 +115,7 @@ function handleSelect(event: Event) {
     } else {
       store.setModal({
         visible: true,
-        message: `No puedes elegir más de ${targetCount.value} países`,
+        message: t('countryPicker.cantChooseMore', { count: targetCount.value }),
         status: 'error',
         confirm: store.setModal({}),
       })
@@ -135,12 +137,14 @@ function handleSelect(event: Event) {
 <template>
   <div class="countries-container">
     <p>
-      Selecciona {{ targetCount }} países de los siguientes, es importante que el primer
-      país seleccionado sea el que creas que será el ganador, {{ targetCount == 6 ? ' el sexto seleccionado será tu apuesta para la última posición,' : '' }} podrás
-      comprobarlo porque {{ targetCount == 6 ? 'aparecerán resaltados' : 'aparecerá resaltado' }} respecto a los demás.
+      {{ $t('countryPicker.instructions', {
+        targetCount,
+        sixthText: targetCount == 6 ? $t('countryPicker.sixthText') : '',
+        highlightText: targetCount == 6 ? $t('countryPicker.highlightSixth') : $t('countryPicker.highlightFifth')
+      }) }}
     </p>
     <div class="selected-countries-container">
-      <p>Países seleccionados: </p>
+      <p>{{ $t('countryPicker.selectedCountries') }} </p>
       <div class="selected-countries">
         <p
           v-for="(countryId, index) in store.selection.current"
@@ -153,7 +157,7 @@ function handleSelect(event: Event) {
     </div>
     <div v-if="continuar" class="continue-container">
       <button type="button" @click="handleContinue">
-        Continuar
+        {{ $t('countryPicker.continue') }}
       </button>
     </div>
     <template v-if="songs">

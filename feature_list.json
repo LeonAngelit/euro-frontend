@@ -5,7 +5,13 @@
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
     "require_approved_spec_to_implement": true,
-    "valid_status": ["pending", "spec_ready", "in_progress", "done", "blocked"],
+    "valid_status": [
+      "pending",
+      "spec_ready",
+      "in_progress",
+      "done",
+      "blocked"
+    ],
     "sdd_required_when": "feature has \"sdd\": true"
   },
   "features": [
@@ -67,6 +73,82 @@
         "All the hash logic should be moved to /Documentos/euroncontest-api project to keep the logic working",
         "All the endpoints that use hash logic should be updated",
         "The backend should handle the hash logic"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "fix_unused_updateRoomName",
+      "title": "Fix unused function updateRoomName",
+      "description": "Fix unused function updateRoomName in RoomPicker.vue",
+      "acceptance": [
+        "The method should be properly called in the required place",
+        "The modal should be shown when the button is clicked",
+        "The room name should be updated when the form is submitted",
+        "Only the admin of the room should be able to update the room name"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "Implement_unit_tests",
+      "title": "Implement unit tests",
+      "description": "Identify areas with unit tests implementation needs and implement unit tests for the project",
+      "acceptance": [
+        "The project should have unit tests for all the components",
+        "The project should have unit tests for all the services",
+        "The project should have unit tests for all the composables",
+        "The project should have unit tests for all the stores",
+        "The project should have unit tests for all the utils",
+        "The project should have unit tests for all the validators",
+        "The project should have unit tests for all the types",
+        "The project should have unit tests for all the interfaces"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "Implement_i18n",
+      "title": "Implement i18n",
+      "description": "Add english translation to all the text in the project depending on the ip location. The translation files should be stored in the src/locales folder.",
+      "acceptance": [
+        "All the literals are moved to the translation files",
+        "The project should show the correct language based on user ip location",
+        "The translations should be correct",
+        "ARCHITECTURE.md should be updated if needed",
+        "Tests should be updated if needed",
+        "It should use i18n for translations"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "Fix_form_value_refs",
+      "title": "Fix form value refs",
+      "description": "The forms in the project are not working properly, i.e. username ref value is printing undefined, so no login request is performed",
+      "acceptance": [
+        "All the forms and buttons should be properly interacted by the user",
+        "All the values introduced by the user should be properly saved in the intended refs",
+        "The ARCHITECTURE.md file should be updated if neede",
+        "Tests should validate that the refs are properly saved and updated with user interaction"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 9,
+      "name": "Fix_components_rendering",
+      "title": "Fix components rendering",
+      "description": "When the user has logged in, only the header is updated with the profile picture, but no component shows in the main part, it shows blank",
+      "acceptance": [
+        "When the user is logged in, it should show either the country select or the room picker",
+        "When the user clicks profile section, it should show the sections to update profile information",
+        "ARCHITECTURE.md should be updated if needed",
+        "Tests should be updated if needed"
       ],
       "sdd": true,
       "status": "done"

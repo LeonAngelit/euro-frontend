@@ -31,6 +31,7 @@ The CLI subsystem provides commands for managing notes and features via the term
 | UI Layer | TypeScript + Vue SFCs | All `.vue` and `.ts` files under `src/` |
 | Routing | vue-router | `createRouter` in `src/router/index.ts` |
 | State Management | Pinia | `src/stores/app.ts` with persisted state plugin |
+| Internationalization | vue-i18n@9 | `src/locales/` with IP-based locale detection |
 | Authentication | vue3-google-login | Google OAuth provider wrapping the app |
 | HTTP Client | axios | Used for all backend API calls |
 | Password Hashing | bcryptjs | Client-side salted hashing for auth flow |
@@ -48,17 +49,22 @@ The CLI subsystem provides commands for managing notes and features via the term
 euro-frontend/
 ├── src/
 │   ├── App.vue                    # Root component
-│   ├── main.ts                    # App bootstrap, Pinia, router, FontAwesome, Google OAuth, Buffer polyfill
+│   ├── main.ts                    # App bootstrap, Pinia, router, i18n, FontAwesome, Google OAuth, Buffer polyfill
 │   ├── router/
 │   │   └── index.ts                # Route definitions (vue-router)
 │   ├── stores/
 │   │   └── app.ts                 # Pinia store (global state with persisted state plugin)
+│   ├── locales/
+│   │   ├── index.ts               # vue-i18n instance creation and export
+│   │   ├── es.json                # Spanish translations (default locale)
+│   │   └── en.json                # English translations
 │   ├── composables/
 │   │   ├── useUpdateUserData.ts    # Refreshes user data from API
 │   │   ├── useHandleCloseSession.ts # Clears session state
 │   │   ├── useNavigateWithCallback.ts # Navigate with optional callback URL
 │   │   ├── useValidateEmail.ts     # Validates email confirmation token
-│   │   └── useValidateToken.ts     # Validates current auth token
+│   │   ├── useValidateToken.ts     # Validates current auth token
+│   │   └── useDetectLocale.ts      # IP-based geolocation locale detection
 │   ├── index.css                  # Global styles
 │   ├── cli.ts                     # CLI entry point (Commander.js program)
 │   ├── notes.ts                   # Note domain model (NoteData, Note, NoteError, NoteNotFound)
@@ -142,7 +148,7 @@ euro-frontend/
 | **Collapsible** | `Collapsible/Collapsible.vue` | Wrapper component that toggles visibility of its children. Used for collapsible sections (e.g., "Join room" in Home, "Change password" in AdminView). |
 | **CountryPicker** | `CountryPicker/CountryPicker.vue` | Renders country selection cards with flag icons, checkboxes, and a "Continue" button. Validates that the user selects the required number of countries (5 or 6). |
 | **Footer** | `Footer/Footer.vue` | Simple footer displaying copyright and current year. |
-| **Form** | `Form/Form.vue` | Reusable form component. Accepts field definitions, submit handler, error state, password visibility toggle, and "remember me" checkbox. |
+| **Form** | `Form/Form.vue` | Reusable form component. Accepts field definitions (including Vue `Ref<HTMLInputElement | null>` for each field), submit handler, error state, password visibility toggle, and "remember me" checkbox. Parent components pass `ref()` objects via the `fields` prop; the Form binds DOM elements to `field.ref.value` using function ref callbacks, enabling parents to read input values via `ref.value?.value` in their submit handlers. |
 | **Modal** | `Modal/Modal.vue` | Generic modal component supporting three modes: plain message, confirm dialog (accept/cancel), and custom component injection. |
 | **Navigation** | `Navigation/Navigation.vue` | Top navigation bar. Shows the app logo, user avatar/menu (profile, admin, leave room, archive, logout), and conditionally renders the AdminPanel for admin authentication. |
 | **NotFound** | `NotFound/NotFound.vue` | 404 page that displays an error message and auto-redirects based on authentication state. |
@@ -219,8 +225,53 @@ Each state field has a corresponding setter function exposed on the context: `se
 In `src/main.ts`, the app is wrapped as:
 
 ```
-Pinia (with persisted state plugin) → Vue App → Router → Google OAuth plugin
+Pinia (with persisted state plugin) → Vue App → Router → i18n plugin → Google OAuth plugin
 ```
+
+---
+
+## 6b. Internationalization (i18n)
+
+The application uses `vue-i18n@9` for internationalization support with automatic locale detection based on the user's IP geolocation.
+
+### Locale Files
+
+Translation files live under `src/locales/`:
+
+| File | Purpose |
+|---|---|
+| `src/locales/index.ts` | Creates and exports the `i18n` instance with `legacy: false` (Composition API mode) |
+| `src/locales/es.json` | Spanish translations (default locale) |
+| `src/locales/en.json` | English translations |
+
+### Key Naming Convention
+
+Keys use a flat dot-namespace structure grouped by component/view:
+
+| Prefix | Scope |
+|---|---|
+| `nav.*` | Navigation component |
+| `login.*` / `signup.*` | Auth views |
+| `home.*` / `room.*` / `archive.*` | Main views |
+| `modal.*` / `form.*` | Shared components |
+| `validation.*` / `error.*` / `common.*` | Shared messages |
+
+### Locale Detection Strategy
+
+The `useDetectLocale` composable (`src/composables/useDetectLocale.ts`) resolves the user's locale on app mount:
+
+1. **localStorage check**: If `user-locale` key exists with a valid value (`es` or `en`), use it.
+2. **IP geolocation**: Call `https://ipapi.co/json/` (primary) or `https://ip-api.com/json/` (fallback) to get the country code.
+3. **Country-to-locale mapping**: Spanish-speaking countries (ES, MX, AR, CO, PE, VE, CL, EC, GT, CU, BO, DO, HN, PY, SV, NI, CR, PA, UY, GQ) map to `es`; all others map to `en`.
+4. **Fallback**: On any failure, default to `es` (Spanish).
+
+The detected locale is persisted to `localStorage` under the key `user-locale` for subsequent visits.
+
+### Usage in Components
+
+- **Templates**: Use `$t('key')` for translation calls.
+- **Script setup**: Destructure `t` from `useI18n()` and call `t('key')`.
+- **Reactive switching**: The `locale` ref from `useI18n()` is reactive; changing `locale.value` re-renders all active components.
 
 ---
 

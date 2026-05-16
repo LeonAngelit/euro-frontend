@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import axios from 'axios'
 import { validateEmailRegex } from '../../utils/regexUtils'
@@ -12,6 +13,7 @@ import useUpdateUserData from '../../composables/useUpdateUserData'
 import useValidateToken from '../../composables/useValidateToken'
 import useHandleCloseSession from '../../composables/useHandleCloseSession'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 const emailRef = ref<HTMLInputElement | null>(null)
@@ -32,7 +34,7 @@ watch(() => emailSent.value, async () => {
     if (response.result) {
       store.setModal({
         visible: true,
-        message: 'Email confirmado',
+        message: t('missingEmail.emailConfirmed'),
         status: 'success',
         confirm: store.setModal({}),
       })
@@ -91,7 +93,7 @@ async function requestEmail(event: Event) {
     !validateEmailRegex(emailRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Correo electrónico no válido',
+        message: t('validation.invalidEmail'),
       },
     )
   ) {
@@ -113,7 +115,7 @@ async function requestEmail(event: Event) {
       if (response.status == 200) {
         store.setModal({
           visible: true,
-          message: 'Email de confirmación enviado',
+          message: t('missingEmail.emailSent'),
           status: 'success',
           confirm: store.setModal({}),
         })
@@ -143,19 +145,19 @@ async function requestEmail(event: Event) {
       <template v-if="!emailSent">
         <div>
           <p style="text-align: center">
-            Tras la última actualización de la aplicación, se requiere que todos los usuarios registrados tengan una dirección de correo electrónico asociada
+            {{ $t('missingEmail.intro') }}
           </p>
           <p style="font-weight: bold; margin-top: 1rem; text-align: center">
-            Por lo que deberás introducir un email válido en el formulario más abajo para seguir usando la app 👇 Muchas gracias
+            {{ $t('missingEmail.formInstruction') }}
           </p>
           <Form
             :action="requestEmail"
             :error="error"
-            submitValue="Enviar"
+            :submitValue="$t('missingEmail.submit')"
             :fields="[
               {
                 name: 'email',
-                placeholder: 'Correo electrónico',
+                placeholder: $t('missingEmail.emailPlaceholder'),
                 type: 'email',
                 ref: emailRef,
                 required: true,
@@ -167,20 +169,20 @@ async function requestEmail(event: Event) {
       <template v-else>
         <div>
           <p style="text-align: center">
-            Revisa tu bandeja de entrada para confirmar tu correo.
+            {{ $t('missingEmail.checkInbox') }}
           </p>
           <br />
-          <p style="font-weight: bold; margin-top: 1rem; text-align: center">Si no lo encuentras, revisa la bandeja de correo no deseado.</p>
+          <p style="font-weight: bold; margin-top: 1rem; text-align: center">{{ $t('missingEmail.checkSpam') }}</p>
         </div>
       </template>
     </template>
     <template v-else>
       <div>
         <p style="text-align: center">
-          Actualización correcta, serás redirigido a la app automáticamente
+          {{ $t('missingEmail.redirectSuccess') }}
         </p>
         <br />
-        <p style="font-weight: bold; margin-top: 1rem; text-align: center">Si no eres redirigido automáticamente, recarga la página</p>
+        <p style="font-weight: bold; margin-top: 1rem; text-align: center">{{ $t('missingEmail.manualReload') }}</p>
       </div>
     </template>
   </div>

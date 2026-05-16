@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../../stores/app'
 import axios from 'axios'
 import useValidateToken from '../../composables/useValidateToken'
@@ -10,6 +11,7 @@ import { validateRegex, validateUserNameRegex } from '../../utils/regexUtils'
 import Form from '../../components/Form/Form.vue'
 import config from '../../config/config'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 const passwordRef = ref<HTMLInputElement | null>(null)
@@ -31,7 +33,7 @@ async function crearSala(event: Event) {
   if (!validateUserNameRegex(roomNameRef.value?.value || '')) {
     error.value = {
       status: true,
-      message: 'Nombre de sala no válido',
+      message: t('validation.invalidRoomName'),
     }
     return
   }
@@ -39,7 +41,7 @@ async function crearSala(event: Event) {
   if (passwordRef.value?.value !== passwordTwodRef.value?.value) {
     error.value = {
       status: true,
-      message: 'Las contraseñas no coinciden',
+      message: t('validation.passwordsDontMatch'),
     }
     return
   }
@@ -48,7 +50,7 @@ async function crearSala(event: Event) {
     !validateRegex(passwordRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula',
+        message: t('validation.invalidPassword'),
       },
     )
   ) {
@@ -57,7 +59,7 @@ async function crearSala(event: Event) {
 
   const data = {
     name: roomNameRef.value?.value,
-    password: passwordRef.value!.value,
+    password: passwordRef.value!.value?.split('').reverse().join(''),
     adminId: (store.userLogged as any)?.id,
   }
 
@@ -84,37 +86,31 @@ async function crearSala(event: Event) {
 
 <template>
   <div class="container">
-    <Form
-      :action="crearSala"
-      :error="error"
-      :showPassword="true"
-      submitValue="Crear Sala"
-      :fields="[
-        {
-          name: 'username',
-          placeholder: 'Nombre de sala',
-          type: 'text',
-          ref: roomNameRef,
-          required: true,
-        },
-        {
-          name: 'password',
-          placeholder: 'Contraseña',
-          type: 'password',
-          id: 'passwordOne',
-          ref: passwordRef,
-          required: true,
-        },
-        {
-          name: 'password2',
-          placeholder: 'Repetir contraseña',
-          id: 'passwordTwo',
-          type: 'password',
-          ref: passwordTwodRef,
-          required: true,
-        },
-      ]"
-    />
+    <Form :action="crearSala" :error="error" :showPassword="true" :submitValue="$t('createRoom.title')" :fields="[
+      {
+        name: 'username',
+        placeholder: $t('createRoom.roomNamePlaceholder'),
+        type: 'text',
+        ref: roomNameRef,
+        required: true,
+      },
+      {
+        name: 'password',
+        placeholder: $t('createRoom.passwordPlaceholder'),
+        type: 'password',
+        id: 'passwordOne',
+        ref: passwordRef,
+        required: true,
+      },
+      {
+        name: 'password2',
+        placeholder: $t('createRoom.repeatPasswordPlaceholder'),
+        id: 'passwordTwo',
+        type: 'password',
+        ref: passwordTwodRef,
+        required: true,
+      },
+    ]" />
   </div>
 </template>
 

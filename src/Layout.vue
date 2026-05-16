@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from './stores/app'
 import axios from 'axios'
 import config from './config/config'
 import useUpdateUserData from './composables/useUpdateUserData'
 import useNavigateWithCallback from './composables/useNavigateWithCallback'
+import { useDetectLocale } from './composables/useDetectLocale'
 import Navigation from './components/Navigation/Navigation.vue'
 import Footer from './components/Footer/Footer.vue'
 import Modal from './components/Modal/Modal.vue'
@@ -13,6 +15,7 @@ import Modal from './components/Modal/Modal.vue'
 const store = useAppStore()
 const router = useRouter()
 const route = useRoute()
+const { locale, t } = useI18n()
 
 const d = new Date()
 const intervalRef = ref<ReturnType<typeof setInterval> | null>(null)
@@ -65,7 +68,7 @@ function updateRoomData(roomId: string) {
     })
     .catch((error) => {
       if (error.response?.status == 404) {
-        return { status: true, message: 'Sala no encontrada' }
+        return { status: true, message: t('layout.roomNotFound') }
       } else {
         return { status: true, message: error.response?.data?.message }
       }
@@ -90,7 +93,7 @@ async function handleJoinRoomLink() {
         useUpdateUserData(store, router)
         store.setModal({
           visible: true,
-          message: 'Actualización correcta',
+          message: t('layout.updateSuccess'),
           status: 'success',
           confirm: store.setModal({}),
         })
@@ -183,6 +186,8 @@ watch(
 )
 
 onMounted(() => {
+  // Detect locale from IP geolocation
+  useDetectLocale().then(detected => { locale.value = detected })
   // Initial room poll setup
   if (store.xToken && store.currentRoom?.current != undefined) {
     roomIntervalRef.value = setInterval(() => {
@@ -206,7 +211,7 @@ onUnmounted(() => {
           <component :is="Component" />
         </template>
         <template #fallback>
-          <p>Loading...</p>
+          <p>{{ $t('layout.loading') }}</p>
         </template>
       </Suspense>
     </RouterView>

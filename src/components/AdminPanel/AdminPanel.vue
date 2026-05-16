@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { type Ref } from 'vue'
 import Form from '../Form/Form.vue'
 
 interface AdminPanelProps {
   action: (event: Event) => void
-  refer: HTMLInputElement | null
+  refer: Ref<HTMLInputElement | null>
   error: any
   close: () => void
 }
@@ -21,12 +22,12 @@ defineProps<AdminPanelProps>()
       <Form
         :action="action"
         :error="error"
-        submitValue="Entrar"
+        :submitValue="$t('adminPanel.enter')"
         :showPassword="true"
         :fields="[
           {
             name: 'password',
-            placeholder: 'Contraseña',
+            placeholder: $t('adminPanel.passwordPlaceholder'),
             id: 'passwordField',
             type: 'password',
             ref: refer,

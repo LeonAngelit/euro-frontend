@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAppStore } from '../../stores/app'
+import { ref } from 'vue' // Removed toRaw and type Ref
+import { useI18n } from 'vue-i18n'
+import { useAppStore } from '../../stores/app.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+
+const { t } = useI18n()
 
 interface FormField {
   name: string
@@ -10,7 +13,8 @@ interface FormField {
   label?: string
   id?: string
   type?: string
-  ref?: HTMLInputElement | null
+  // Use a callback function instead of passing a Ref object
+  setRef?: (el: any) => void
   required?: boolean
 }
 
@@ -50,7 +54,8 @@ function togglePassword(event: Event) {
   }
 }
 
-function handlePasswordChange(event: Event, fieldRef?: HTMLInputElement | null) {
+// Removed the unused fieldRef parameter since we only need the event target
+function handlePasswordChange(event: Event) {
   const input = event.target as HTMLInputElement
   const id = input.id || ''
   if (input.value.length > 0) {
@@ -79,48 +84,28 @@ function storeLocal(event: Event) {
         <div class="input-container">
           <label v-if="field.label" :for="field.name">{{ field.label }}</label>
           <div v-if="props.preview" class="profile-button">
-            <img :src="props.preview" alt="Profile Preview" style="width: 100px; height: 100px; border-radius: 50%;" />
+            <img :src="props.preview" :alt="t('form.profilePreview')"
+              style="width: 100px; height: 100px; border-radius: 50%;" />
           </div>
           <div v-if="field.type === 'password'" class="password-wrapper">
-            <input
-              :type="showPassword.includes(field.id || '') ? 'text' : 'password'"
-              :placeholder="field.placeholder"
-              :name="field.name"
-              :defaultValue="props.default"
-              :id="field.id || ''"
-              :ref="(el: any) => { if (field.ref && el) field.ref = el }"
-              @change="(e: Event) => handlePasswordChange(e, field.ref)"
-              :required="field.required"
-            />
-            <button
-              v-if="showPassword"
-              type="button"
-              @click="togglePassword"
-              :name="'passtoggle'"
-              :id="field.id || ''"
-            >
-              <FontAwesomeIcon
-                v-if="showButton.includes(field.id || '')"
-                :icon="showPassword.includes(field.id || '') ? faEyeSlash : faEye"
-              />
+            <input :type="showPassword.includes(field.id || '') ? 'text' : 'password'" :placeholder="field.placeholder"
+              :name="field.name" :defaultValue="props.default" :id="field.id || ''"
+              :ref="(el: any) => { if (field.setRef) field.setRef(el) }" @change="handlePasswordChange"
+              :required="field.required" />
+            <button v-if="showPassword" type="button" @click="togglePassword" :name="'passtoggle'" :id="field.id || ''">
+              <FontAwesomeIcon v-if="showButton.includes(field.id || '')"
+                :icon="showPassword.includes(field.id || '') ? faEyeSlash : faEye" />
             </button>
           </div>
-          <input
-            v-else
-            :type="field.type || 'text'"
-            :placeholder="field.placeholder"
-            :name="field.name"
-            :defaultValue="props.default"
-            :id="field.id || ''"
-            :ref="(el: any) => { if (field.ref && el) field.ref = el }"
-            @change="props.onImageChange"
-            :required="field.required"
-          />
-</div>
+          <input v-else :type="field.type || 'text'" :placeholder="field.placeholder" :name="field.name"
+            :defaultValue="props.default" :id="field.id || ''"
+            :ref="(el: any) => { if (field.setRef) field.setRef(el) }" @change="props.onImageChange"
+            :required="field.required" />
+        </div>
       </template>
       <div v-if="remember" class="checkbox-container">
         <input type="checkbox" @click="storeLocal" name="passtoggle" />
-        <label for="passtoggle">Mantener sesión</label>
+        <label for="passtoggle">{{ t('form.rememberSession') }}</label>
       </div>
       <div v-if="error?.status" class="error-span">
         {{ error.message }}
@@ -128,8 +113,8 @@ function storeLocal(event: Event) {
       <div class="submit-container">
         <input type="submit" :value="submitValue" />
       </div>
-     </form>
-   </div>
+    </form>
+  </div>
 </template>
 
 <style src="../../Components/Form/Form.Component.css"></style>

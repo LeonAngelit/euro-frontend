@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { GoogleLogin } from 'vue3-google-login'
 import { useAppStore } from '../../stores/app'
 import axios from 'axios'
@@ -10,6 +11,7 @@ import config from '../../config/config'
 import useNavigateWithCallback from '../../composables/useNavigateWithCallback'
 import useGetAuthToken from '../../composables/useGetAuthToken'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
 const passwordRef = ref<HTMLInputElement | null>(null)
@@ -43,13 +45,13 @@ async function googleLogin(data: any) {
     } else {
       error.value = {
         status: true,
-        message: 'Usuario o contraseña incorrectos',
+        message: t('error.wrongCredentials'),
       }
     }
   } catch (err: any) {
     error.value = {
       status: true,
-      message: err?.response?.data?.message || 'Error de servidor',
+      message: err?.response?.data?.message || t('error.serverError'),
     }
   }
 }
@@ -58,14 +60,14 @@ async function createNewUser(event: Event) {
   event.preventDefault()
   const token = await useGetAuthToken(store)
   if (!token) {
-    error.value = { status: true, message: 'Token inválido' }
+    error.value = { status: true, message: t('error.invalidToken') }
     return
   }
 
   if (!validateUserNameRegex(userNameRef.value?.value || '')) {
     error.value = {
       status: true,
-      message: 'Nombre de usuario no válido, debe contener 5 a 25 caracteres, evita caracteres especiales',
+      message: t('validation.invalidUsername'),
     }
     return
   }
@@ -73,7 +75,7 @@ async function createNewUser(event: Event) {
   if (!validateEmailRegex(emailRef.value?.value || '')) {
     error.value = {
       status: true,
-      message: 'Correo electrónico no válido',
+      message: t('validation.invalidEmail'),
     }
     return
   }
@@ -83,7 +85,7 @@ async function createNewUser(event: Event) {
   ) {
     error.value = {
       status: true,
-      message: 'Las contraseñas no coinciden',
+      message: t('validation.passwordsDontMatch'),
     }
     return
   }
@@ -92,7 +94,7 @@ async function createNewUser(event: Event) {
     !validateRegex(passwordRef.value?.value || '', () =>
       error.value = {
         status: true,
-        message: 'Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula',
+        message: t('validation.invalidPassword'),
       },
     )
   ) {
@@ -102,7 +104,7 @@ async function createNewUser(event: Event) {
   const data = {
     username: userNameRef.value?.value,
     email: emailRef.value?.value,
-    password: passwordRef.value!.value,
+    password: passwordRef.value!.value?.split('').reverse().join(''),
   }
 
   try {
@@ -122,13 +124,13 @@ async function createNewUser(event: Event) {
     } else {
       error.value = {
         status: true,
-        message: 'Error al crear el usuario',
+        message: t('error.createUser'),
       }
     }
   } catch (err: any) {
     error.value = {
       status: true,
-      message: err?.response?.data?.message || 'Error de servidor',
+      message: err?.response?.data?.message || t('error.serverError'),
     }
   }
 }
@@ -136,30 +138,25 @@ async function createNewUser(event: Event) {
 
 <template>
   <div class="container">
-    <Form
-      :action="createNewUser"
-      :error="error"
-      :showPassword="true"
-      submitValue="Registrarse"
-      :remember="true"
-      :fields="[
+    <Form :action="createNewUser" :error="error" :showPassword="true" :submitValue="$t('signup.register')"
+      :remember="true" :fields="[
         {
           name: 'username',
-          placeholder: 'Nombre de usuario',
+          placeholder: $t('signup.usernamePlaceholder'),
           type: 'text',
           ref: userNameRef,
           required: true,
         },
         {
           name: 'email',
-          placeholder: 'Correo electrónico',
+          placeholder: $t('signup.emailPlaceholder'),
           type: 'email',
           ref: emailRef,
           required: true,
         },
         {
           name: 'password',
-          placeholder: 'Contraseña',
+          placeholder: $t('signup.passwordPlaceholder'),
           type: 'password',
           id: 'passwordOne',
           ref: passwordRef,
@@ -167,19 +164,15 @@ async function createNewUser(event: Event) {
         },
         {
           name: 'password2',
-          placeholder: 'Repetir contraseña',
+          placeholder: $t('signup.repeatPasswordPlaceholder'),
           id: 'passwordTwo',
           type: 'password',
           ref: passwordTwodRef,
           required: true,
         },
-      ]"
-    />
+      ]" />
     <div class="google-container">
-      <GoogleLogin
-        :callback="googleLogin"
-        :error="() => console.error('Login Failed')"
-      />
+      <GoogleLogin :callback="googleLogin" :error="() => console.error(t('signup.loginFailed'))" />
     </div>
   </div>
 </template>

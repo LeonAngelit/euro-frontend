@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { GoogleLogin } from 'vue3-google-login'
-import { useAppStore } from '../../stores/app'
+import { useAppStore } from '@/stores/app.js'
 import axios from 'axios'
-import { validateEmailRegex, validateRegex, validateUserNameRegex } from '../../utils/regexUtils'
-import Form from '../../components/Form/Form.vue'
-import config from '../../config/config'
-import useNavigateWithCallback from '../../composables/useNavigateWithCallback'
-import useGetAuthToken from '../../composables/useGetAuthToken'
+import { validateEmailRegex, validateRegex, validateUserNameRegex } from '@/utils/regexUtils.js'
+import Form from '@/components/Form/Form.vue'
+import config from '@/config/config.js'
+import useNavigateWithCallback from '@/composables/useNavigateWithCallback.js'
+import useGetAuthToken from '@/composables/useGetAuthToken.js'
 
+const { t } = useI18n()
 const store = useAppStore()
 const router = useRouter()
-const passwordRef = ref<HTMLInputElement | null>(null)
-const userNameRef = ref<HTMLInputElement | null>(null)
+const passwordRef = ref<HTMLInputElement | null | undefined>(null)
+const userNameRef = ref<HTMLInputElement | null | undefined>(null)
 const callbackUrl = ref('')
 const error = ref<any>(false)
 
@@ -48,19 +50,19 @@ async function googleLogin(data: any) {
     } else {
       error.value = {
         status: true,
-        message: 'Usuario o contraseña incorrectos',
+        message: t('error.wrongCredentials'),
       }
     }
   } catch (err: any) {
     if (err?.response?.status === 404) {
       error.value = {
         status: true,
-        message: 'Usuario no encontrado',
+        message: t('error.userNotFound'),
       }
     } else {
       error.value = {
         status: true,
-        message: err?.response?.data?.message || 'Error de servidor',
+        message: err?.response?.data?.message || t('error.serverError'),
       }
     }
   }
@@ -71,14 +73,15 @@ async function login(event: Event) {
 
   const token = await useGetAuthToken(store)
   if (!token) {
-    error.value = { status: true, message: 'Token inválido' }
+    error.value = { status: true, message: t('error.invalidToken') }
     return
   }
+
 
   if (!(validateUserNameRegex(userNameRef.value?.value || '') || validateEmailRegex(userNameRef.value?.value || ''))) {
     error.value = {
       status: true,
-      message: 'Nombre de usuario o email no válido',
+      message: t('login.usernameLabel'),
     }
     return
   }
@@ -88,7 +91,7 @@ async function login(event: Event) {
     !validateRegex(passwordRef.value.value, () =>
       error.value = {
         status: true,
-        message: 'Contraseña no válida, debe contener al menos 8 caracteres, incluyendo números y mayúscula',
+        message: t('validation.invalidPassword'),
       },
     )
   ) {
@@ -117,13 +120,13 @@ async function login(event: Event) {
     } else {
       error.value = {
         status: true,
-        message: 'Usuario o contraseña incorrectos',
+        message: t('error.wrongCredentials'),
       }
     }
   } catch (err: any) {
     error.value = {
       status: true,
-      message: err?.response?.data?.message || 'Error de servidor',
+      message: err?.response?.data?.message || t('error.serverError'),
     }
   }
 }
@@ -131,28 +134,29 @@ async function login(event: Event) {
 
 <template>
   <div class="container">
-    <Form :action="login" :error="error" submitValue="Login" :showPassword="true" :remember="true" :fields="[
+    <Form :action="login" :error="error" :submitValue="t('login.title')" :showPassword="true" :remember="true" :fields="[
       {
         name: 'username',
-        label: 'Nombre de usuario o email',
+        label: t('login.usernameLabel'),
         type: 'text',
-        ref: userNameRef,
+        setRef: (el: any) => userNameRef = el, // Triggers the callback to bind the element
         required: true,
       },
       {
         name: 'password',
-        label: 'Contraseña',
+        label: t('login.passwordLabel'),
         id: 'passwordField',
         type: 'password',
-        ref: passwordRef,
+        setRef: (el: any) => passwordRef = el, // Triggers the callback to bind the element
         required: true,
       },
     ]" />
     <div class="subtitle">
       <p>
-        Inicia sesión o <router-link :to="'/signup' + callbackUrl">Crea una cuenta</router-link>
+        {{ t('login.subtitle') }} <router-link :to="'/signup' + callbackUrl">{{ $t('login.createAccount')
+          }}</router-link>
       </p>
-      <GoogleLogin :callback="googleLogin" :error="() => console.error('Login Failed')" />
+      <GoogleLogin :callback="googleLogin" :error="() => console.error(t('login.loginFailed'))" />
     </div>
   </div>
 </template>
