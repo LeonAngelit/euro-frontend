@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { ref, h, defineComponent, type Ref } from 'vue'
+import { ref } from 'vue'
 import { testI18n } from './i18nPlugin'
 
 // Mock FontAwesomeIcon
@@ -52,12 +52,12 @@ describe('AdminPanel — ref values — R7, R9', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
 
-    const passwordRef = ref<HTMLInputElement | null>(null) as Ref<HTMLInputElement | null>
+    const passwordRef = ref<HTMLInputElement | null>(null)
 
     const wrapper = mount(AdminPanel, {
       props: {
         action: vi.fn(),
-        refer: passwordRef,
+        refer: (el: any) => { passwordRef.value = el },
         error: {},
         close: vi.fn(),
       },
@@ -78,12 +78,12 @@ describe('AdminPanel — ref values — R7, R9', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
 
-    const passwordRef = ref<HTMLInputElement | null>(null) as Ref<HTMLInputElement | null>
+    const passwordRef = ref<HTMLInputElement | null>(null)
 
     const wrapper = mount(AdminPanel, {
       props: {
         action: vi.fn(),
-        refer: passwordRef,
+        refer: (el: any) => { passwordRef.value = el },
         error: {},
         close: vi.fn(),
       },
@@ -107,7 +107,7 @@ describe('AdminPanel — ref values — R7, R9', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
 
-    const passwordRef = ref<HTMLInputElement | null>(null) as Ref<HTMLInputElement | null>
+    const passwordRef = ref<HTMLInputElement | null>(null)
     let capturedPassword = ''
 
     const loginAction = vi.fn((event: Event) => {
@@ -118,7 +118,7 @@ describe('AdminPanel — ref values — R7, R9', () => {
     const wrapper = mount(AdminPanel, {
       props: {
         action: loginAction,
-        refer: passwordRef,
+        refer: (el: any) => { passwordRef.value = el },
         error: {},
         close: vi.fn(),
       },
@@ -146,13 +146,12 @@ describe('AdminPanel — ref values — R7, R9', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
 
-    const passwordRef = ref<HTMLInputElement | null>(null) as Ref<HTMLInputElement | null>
     const closeFn = vi.fn()
 
     const wrapper = mount(AdminPanel, {
       props: {
         action: vi.fn(),
-        refer: passwordRef,
+        refer: (el: any) => {},
         error: {},
         close: closeFn,
       },

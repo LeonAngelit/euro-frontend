@@ -325,6 +325,8 @@ describe('AdminView-like form — ref values — R1, R2, R5, R9', () => {
       setup() {
         return () => h('div', [
           h('select', { ref: modelRef }, [
+            h('option', { value: '' }, 'Select model'),
+            h('option', { value: 'image_to_video' }, 'Image to Video'),
             h('option', { value: 'model1' }, 'Model 1'),
             h('option', { value: 'model2' }, 'Model 2'),
           ]),

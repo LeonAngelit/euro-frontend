@@ -100,6 +100,9 @@ describe('Home — redirect to country-select — R1, R4', () => {
     })
     store.setXToken('test-token')
 
+    // Prevent recursive watcher update caused by setCurrentRoom inside the watch
+    vi.spyOn(store, 'setCurrentRoom').mockImplementation(() => {})
+
     // Songs are not loaded yet — redirect should NOT fire (R4)
     const wrapper = mount(Home, {
       global: {

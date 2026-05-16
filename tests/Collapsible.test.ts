@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { testI18n } from './i18nPlugin'
 import Collapsible from '../src/components/Collapsible/Collapsible.vue'
 
-// ─── T29: Collapsible collapsed default state and `+` indicator (R30) ──
+// ─── T29: Collapsible collapsed default state and indicator (R30) ──
 describe('Collapsible — R30', () => {
   it('test_Collapsible_defaultCollapsed_false_showsPlusIndicator — R30', () => {
     const pinia = createPinia()
@@ -20,9 +20,9 @@ describe('Collapsible — R30', () => {
     })
 
     // Default collapsed is false (per withDefaults), so isCollapsed starts false
-    // Content should NOT be visible, and indicator should be '+'
-    expect(wrapper.find('.collapsible-content').exists()).toBe(false)
-    expect(wrapper.find('span').text()).toBe('+')
+    // Content hidden (.collapsed class), indicator not rotated
+    expect(wrapper.find('.collapsed').exists()).toBe(true)
+    expect(wrapper.find('svg.rotated').exists()).toBe(false)
   })
 
   it('test_Collapsible_collapsed_true_showsMinusIndicator — R30', () => {
@@ -38,8 +38,9 @@ describe('Collapsible — R30', () => {
     })
 
     // collapsed=true, so isCollapsed starts true
-    expect(wrapper.find('.collapsible-content').exists()).toBe(true)
-    expect(wrapper.find('span').text()).toBe('−')
+    // Content visible (.uncollapsed class), indicator rotated
+    expect(wrapper.find('.uncollapsed').exists()).toBe(true)
+    expect(wrapper.find('svg.rotated').exists()).toBe(true)
   })
 
   it('test_Collapsible_rendersTitle — R30', () => {
@@ -51,7 +52,7 @@ describe('Collapsible — R30', () => {
       global: { plugins: [pinia, testI18n] },
     })
 
-    expect(wrapper.find('h3').text()).toBe('My Section')
+    expect(wrapper.find('.collapsible-title p').text()).toBe('My Section')
   })
 })
 
@@ -67,14 +68,15 @@ describe('Collapsible — toggle — R31', () => {
     })
 
     // Initially not collapsed (collapsed prop=false, isCollapsed=false)
-    expect(wrapper.find('.collapsible-content').exists()).toBe(false)
+    // Content hidden (.collapsed class)
+    expect(wrapper.find('.collapsed').exists()).toBe(true)
 
     // Click the button to toggle
-    await wrapper.find('button.collapsible-header').trigger('click')
+    await wrapper.find('button.collapsible-button').trigger('click')
 
-    // Now it should be collapsed (isCollapsed=true)
-    expect(wrapper.find('.collapsible-content').exists()).toBe(true)
-    expect(wrapper.find('span').text()).toBe('−')
+    // Now it should be expanded (isCollapsed=true, .uncollapsed class)
+    expect(wrapper.find('.uncollapsed').exists()).toBe(true)
+    expect(wrapper.find('svg.rotated').exists()).toBe(true)
   })
 
   it('test_Collapsible_clickEmitsToggleEvent — R31', async () => {
@@ -86,7 +88,7 @@ describe('Collapsible — toggle — R31', () => {
       global: { plugins: [pinia, testI18n] },
     })
 
-    await wrapper.find('button.collapsible-header').trigger('click')
+    await wrapper.find('button.collapsible-button').trigger('click')
 
     expect(wrapper.emitted('toggle')).toBeTruthy()
     expect(wrapper.emitted('toggle').length).toBe(1)
@@ -101,13 +103,16 @@ describe('Collapsible — toggle — R31', () => {
       global: { plugins: [pinia, testI18n] },
     })
 
-    // Click to expand
-    await wrapper.find('button.collapsible-header').trigger('click')
-    expect(wrapper.find('.collapsible-content').exists()).toBe(false)
+    // Initially expanded (collapsed=true → .uncollapsed)
+    expect(wrapper.find('.uncollapsed').exists()).toBe(true)
 
-    // Click to collapse
-    await wrapper.find('button.collapsible-header').trigger('click')
-    expect(wrapper.find('.collapsible-content').exists()).toBe(true)
+    // Click to collapse (isCollapsed flips to false → .collapsed)
+    await wrapper.find('button.collapsible-button').trigger('click')
+    expect(wrapper.find('.collapsed').exists()).toBe(true)
+
+    // Click to expand again (isCollapsed flips to true → .uncollapsed)
+    await wrapper.find('button.collapsible-button').trigger('click')
+    expect(wrapper.find('.uncollapsed').exists()).toBe(true)
 
     expect(wrapper.emitted('toggle').length).toBe(2)
   })

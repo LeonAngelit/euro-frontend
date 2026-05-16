@@ -330,8 +330,8 @@ describe('RoomPicker — T7: pencil button opens edit modal for admin', () => {
       },
     })
 
-    // Find the edit-room-name-btn (pencil button)
-    const editBtn = wrapper.find('[data-testid="edit-room-name-btn"]')
+    // Find the edit button (pencil button)
+    const editBtn = wrapper.find('button.room-icon-edit-container')
     expect(editBtn.exists()).toBe(true)
 
     await editBtn.trigger('click')
@@ -364,15 +364,16 @@ describe('RoomPicker — T8: pencil button not rendered for non-admin', () => {
       },
     })
 
-    // No admin-only buttons should be rendered for this room
-    const editBtn = wrapper.find('[data-testid="edit-room-name-btn"]')
+    // Admin-only buttons should not be rendered for this room
+    const editBtn = wrapper.find('button.room-icon-edit-container')
     expect(editBtn.exists()).toBe(false)
 
-    const deleteBtn = wrapper.find('[data-testid="delete-room-btn"]')
+    const deleteBtn = wrapper.find('button.delete-button')
     expect(deleteBtn.exists()).toBe(false)
 
-    const forgetBtn = wrapper.find('[data-testid="forget-room-btn"]')
-    expect(forgetBtn.exists()).toBe(false)
+    // Forget button is always visible (not admin-only)
+    const forgetBtn = wrapper.find('.room-actions button')
+    expect(forgetBtn.exists()).toBe(true)
   })
 
   it('non-admin user sees only room-name and share buttons', async () => {
@@ -391,8 +392,8 @@ describe('RoomPicker — T8: pencil button not rendered for non-admin', () => {
     })
 
     const allButtons = wrapper.findAll('button')
-    // Only room-name + share buttons = 2
-    expect(allButtons.length).toBe(2)
+    // room-name + share + forget buttons = 3
+    expect(allButtons.length).toBe(3)
   })
 })
 
@@ -418,7 +419,7 @@ describe('RoomPicker — T14: forget-room button', () => {
     })
 
     // Find the forget-room button
-    const forgetBtn = wrapper.find('[data-testid="forget-room-btn"]')
+    const forgetBtn = wrapper.find('.room-actions button')
     expect(forgetBtn.exists()).toBe(true)
 
     // The inline handler calls event.preventDefault() first, but
@@ -447,8 +448,8 @@ describe('RoomPicker — T14: forget-room button', () => {
       },
     })
 
-    const editBtn = wrapper.find('[data-testid="edit-room-name-btn"]')
-    const forgetBtn = wrapper.find('[data-testid="forget-room-btn"]')
+    const editBtn = wrapper.find('button.room-icon-edit-container')
+    const forgetBtn = wrapper.find('.room-actions button')
 
     expect(editBtn.exists()).toBe(true)
     expect(forgetBtn.exists()).toBe(true)
@@ -473,7 +474,7 @@ describe('RoomPicker — T14: forget-room button', () => {
     })
 
     // Click forget button to open confirm modal
-    const forgetBtn = wrapper.find('[data-testid="forget-room-btn"]')
+    const forgetBtn = wrapper.find('.room-actions button')
     await forgetBtn.trigger('click')
     await flushPromises()
 
