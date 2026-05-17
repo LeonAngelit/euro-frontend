@@ -167,7 +167,7 @@ watch(
       store.userLogged &&
       (store.userLogged as any)?.email != null &&
       (store.userLogged as any)?.countries?.length ==
-        (store.songs?.length > 5 ? 6 : 5) &&
+      (store.songs?.length > 5 ? 6 : 5) &&
       window.location.pathname == '/join-room'
     ) {
       handleJoinRoomLink()
@@ -216,29 +216,14 @@ onUnmounted(() => {
       </Suspense>
     </RouterView>
     <!-- Confirm dialog -->
-    <Modal
-      v-if="modal.visible && modal.confirm && !modal.component"
-      :message="modal.message"
-      :status="modal.status"
-      :onaccept="modal.onaccept"
-      :confirm="true"
-      :onclick="() => store.setModal({})"
-    />
+    <Modal v-if="modal.visible && modal.confirm && !modal.component" :message="modal.message" :status="modal.status"
+      :onaccept="modal.onaccept" :confirm="true" :onclick="() => store.setModal({})" />
     <!-- Custom component modal -->
-    <Modal
-      v-if="modal.visible && modal.component"
-      :onclick="modal.onclick"
-      :onaccept="modal.onaccept"
-      :message="modal.message"
-      :component="modal.component"
-    />
+    <Modal v-if="modal.visible && modal.component" :onclick="modal.onclick" :onaccept="modal.onaccept"
+      :message="modal.message" :component="modal.component" />
     <!-- Plain message modal -->
-    <Modal
-      v-if="modal.visible && !modal.confirm && !modal.component"
-      :message="modal.message"
-      :status="modal.status"
-      :onclick="() => store.setModal({})"
-    />
+    <Modal v-if="modal.visible && !modal.confirm && !modal.component" :message="modal.message" :status="modal.status"
+      :onclick="() => store.setModal({})" />
     <Footer />
   </div>
 </template>

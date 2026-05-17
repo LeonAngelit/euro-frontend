@@ -38,21 +38,12 @@ async function validateUserToken() {
 
 onMounted(() => {
   validateUserToken()
-  if (store.currentRoom?.current) {
-    router.push('/room')
-  }
-  if ((store.userLogged as any)?.countries?.length < targetCount.value) {
+  if (!store.songs || store.songs.length === 0) return
+
+  if ((store.userLogged as any)?.email == null) {
+    useNavigateWithCallback(router, '/missing-email')
+  } else if ((store.userLogged as any)?.countries?.length < targetCount.value) {
     store.setCurrentRoom(() => ({}))
-
-    store.setUserLogged({
-      ...(store.userLogged as User),
-      countries: [],
-
-    })
-    store.setSelection({
-      current: []
-    })
-
     if (
       window.location.pathname == '/join-room' ||
       window.location.href.includes(config.confirmemailLink)
@@ -61,10 +52,16 @@ onMounted(() => {
     } else {
       useNavigateWithCallback(router, '/country-select')
     }
+  } else if (store.currentRoom?.current) {
+    router.push('/room')
+  } else {
+    if (window.location.href.includes('callback_url')) {
+      window.location.href = window.location.href.split('callback_url=')[1]
+    }
   }
 })
 
-watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
+/*watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
 
   // Guard: only evaluate redirect logic once songs are loaded
   if (!store.songs || store.songs.length === 0) return
@@ -88,7 +85,7 @@ watch([targetCount, () => store.userLogged, () => store.songs, () => store.curre
       window.location.href = window.location.href.split('callback_url=')[1]
     }
   }
-})
+})*/
 
 watch(() => store.userLogged, () => {
   rooms.value = (store.userLogged as any)?.rooms
