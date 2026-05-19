@@ -192,6 +192,7 @@ async function joinRoom(event: Event) {
 }
 
 .rooms-options>p {
+  margin-bottom: 1rem;
   margin-top: 1rem;
   color: white;
 }
@@ -204,7 +205,9 @@ async function joinRoom(event: Event) {
   color: white;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--euro-pink);
 }
 </style>

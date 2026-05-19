@@ -72,7 +72,8 @@ watch(() => store.currentRoom, () => {
           animationDelay: `${Number(index) * 120}ms`,
         }">
           <article class="user-card" :style="{ backgroundColor: user.color }">
-            <div :class="['user-card-position', index === 0 ? 'pos-1' : index === 1 ? 'pos-2' : index === 2 ? 'pos-3' : '']">
+            <div
+              :class="['user-card-position', index === 0 ? 'pos-1' : index === 1 ? 'pos-2' : index === 2 ? 'pos-3' : '']">
               <p>{{ Number(index) + 1 }}</p>
             </div>
             <div class="user-card-image">
@@ -172,7 +173,6 @@ watch(() => store.currentRoom, () => {
   position: sticky;
   top: 0;
   width: 100%;
-  background: linear-gradient(135deg, var(--primary-color) 0%, rgb(1, 1, 60) 100%);
   height: 5dvh;
   margin-bottom: 1rem;
   z-index: 5;
@@ -204,6 +204,7 @@ watch(() => store.currentRoom, () => {
     transform: translateX(-100%);
     opacity: 0;
   }
+
   100% {
     transform: translateX(0);
     opacity: 1;

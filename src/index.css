@@ -136,6 +136,8 @@ span.fis.country-flag {
   padding: 0;
   margin: 0;
   transition: filter 0.2s ease;
+    -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
+      mask-image: radial-gradient(circle, black 60%, transparent 100%);
 }
 
 .profile-button:hover {
@@ -148,6 +150,8 @@ span.fis.country-flag {
   width: 100%;
   object-fit: cover;
   display: block;
+  -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
+    mask-image: radial-gradient(circle, black 60%, transparent 100%);
 }
 .google-container{
   display: flex;
