@@ -267,28 +267,31 @@ function onImageChange(event: Event) {
 
 .action-btn {
   border: none;
-  background-color: var(--primary-color);
-  color: whitesmoke;
+  background-color: var(--euro-pink);
+  color: white;
   width: 30%;
   padding: 0.5rem;
   border-radius: 0.25rem;
   cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 .action-delete-btn {
   border: none;
-  background-color: var(--error-color);
-  color: whitesmoke;
+  background-color: rgb(164, 8, 8);
+  color: white;
   width: 30%;
   padding: 0.5rem;
   border-radius: 0.25rem;
   cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 .action-btn:hover {
-  border: 1px solid var(--primary-color);
-  background-color: whitesmoke;
-  color: var(--primary-color);
+  filter: brightness(1.15);
+  box-shadow: 0 0 12px rgba(255, 0, 135, 0.4);
 }
 
 .submit-usuario-container {
@@ -301,21 +304,27 @@ function onImageChange(event: Event) {
 .submit-usuario-container input {
   width: 30%;
   padding: 0.5rem;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--euro-pink) 0%, rgb(200, 0, 105) 100%);
   color: white;
   border: none;
   border-radius: 0.5rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 0, 135, 0.3);
+  transition: all 0.2s ease;
 }
 
 .submit-usuario-container input:hover {
-  background-color: white;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  filter: brightness(1.15);
+  box-shadow: 0 0 16px rgba(255, 0, 135, 0.5);
   cursor: pointer;
 }
 
 .delete-user-button {
   display: none;
+}
+
+h1, h2, h3 {
+  color: var(--euro-pink);
 }
 
 @media (max-width: 420px) {

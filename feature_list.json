@@ -218,15 +218,15 @@
       "status": "done"
     },
     {
-      "id": 14,
-      "name": "Ensure_vercel_deploy",
-      "title": "Ensure vercel deploy",
-      "description": "The application needs to be ready to be deployed and accesible in vercel",
+      "id": 15,
+      "name": "Eurovision_contest_styling",
+      "title": "Eurovision contest styling",
+      "description": "The application styling and theming needs to be fixed to match the visual identity of the Eurovision contest",
       "acceptance": [
-        "The app build properly in vercel environment",
-        "The app doesn't crash when is opened once deployed in vercel",
-        "All the images, logos and assets should be visible and not broken",
-        "All the test should pass",
+        "The app styling is updated to match the visual identity of the Eurovision contest",
+        "The curret layout should be kept",
+        "Some items can be modified but respecting the current layout",
+        "All the tests should pass",
         "The ARCHITECTURE.md file should be updated if needed"
       ],
       "sdd": true,

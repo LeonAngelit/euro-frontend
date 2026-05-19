@@ -160,3 +160,13 @@ async function login(event: Event) {
     </div>
   </div>
 </template>
+
+<style scoped>
+h1, h2, h3 {
+  color: var(--euro-pink);
+}
+
+.subtitle p {
+  color: white;
+}
+</style>

@@ -219,6 +219,7 @@ function handleSelect(event: Event) {
 
 .countries-container > p {
   padding: 1rem;
+  color: white;
 }
 
 .country-container {
@@ -228,15 +229,24 @@ function handleSelect(event: Event) {
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  border: 1px solid var(--euro-pink-background);
+  border: 1px solid var(--euro-gold);
   padding: 0.5rem;
   border-radius: 0.5rem;
   margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.country-container:hover {
+  border-color: var(--euro-pink);
+  box-shadow: 0 0 10px rgba(255, 0, 135, 0.2);
 }
 
 .country-selected-card {
-  border: 2px solid var(--euro-yellow);
-  background-color: var(--euro-pink-background);
+  border: 2px solid var(--euro-pink);
+  background-color: rgba(255, 0, 135, 0.15);
+  box-shadow: 0 0 16px rgba(255, 0, 135, 0.3);
 }
 
 .country-container.disabled {
@@ -284,10 +294,19 @@ function handleSelect(event: Event) {
 
 .selected-countries-container {
   width: 100%;
-  background-color: rgb(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.08);
   padding: 0.2rem;
   border-radius: 0.5rem;
   padding: 1rem;
+  border: 1px solid var(--euro-gold);
+}
+
+.selected-countries-container > p {
+  color: white;
+}
+
+.selected-countries p {
+  color: white;
 }
 
 .selected-countries {
@@ -321,14 +340,20 @@ function handleSelect(event: Event) {
 
 .continue-container > button {
   width: 50%;
-  padding: 0.5rem;
-  color: whitesmoke;
+  padding: 0.75rem;
+  color: white;
   font-weight: bold;
-  background-color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  font-family: --apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  background: linear-gradient(135deg, var(--euro-pink) 0%, rgb(200, 0, 105) 100%);
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  box-shadow: 0 0 16px rgba(255, 0, 135, 0.4);
+  transition: all 0.2s ease;
+}
+
+.continue-container > button:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 24px rgba(255, 0, 135, 0.6);
 }
 
 .country-container label:hover,

@@ -166,7 +166,7 @@ async function getRoomToken(roomId: string, roomName: string): Promise<string> {
 async function shareRoom(event: Event) {
   event.preventDefault()
   const button = event.currentTarget as HTMLElement
-  const roomId = button.getAttribute('data') || ''
+  const roomId = button.getAttribute('data-room-id') || ''
   const roomName = button.getAttribute('name') || ''
   await getRoomToken(roomId, roomName)
 }
@@ -175,41 +175,28 @@ async function shareRoom(event: Event) {
 </script>
 
 <template>
-  <div>
+  <div class="room-picker">
     <template v-if="props.rooms && props.rooms.length > 0">
       <div v-for="(room, index) in props.rooms" :key="index" class="room-card">
-        <article class="room-container">
-          <button :id="room.id" @click="selectRoom" class="room-icon-container room-name">
-            <p>{{ room.name }}</p>
-            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="20px"
-              width="20px" xmlns="http://www.w3.org/2000/svg" style="color: black; stroke-width: 1;">
+        <!-- Main clickable area — selects the room -->
+        <button :id="room.id" @click="selectRoom" class="room-select-btn">
+          <div class="room-info">
+            <span class="room-icon">🎤</span>
+            <span class="room-name">{{ room.name }}</span>
+          </div>
+          <div class="room-enter">
+            <span class="enter-text">{{ $t('roomPicker.enter') }}</span>
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="18px"
+              width="18px" xmlns="http://www.w3.org/2000/svg" style="color: var(--euro-pink);">
               <path fill-rule="evenodd" clip-rule="evenodd"
                 d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"></path>
             </svg>
-          </button>
-          <button v-if="room.adminId == (store.userLogged as any)?.id" :id="room.id" @click="openEditModal(room)"
-            class="room-icon-edit-container">
-            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="20px"
-              width="20px" xmlns="http://www.w3.org/2000/svg" style="color: black; stroke-width: 1;">
-              <path
-                d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z">
-              </path>
-            </svg>
-          </button>
-          <button :id="`share-${room.id}`" :data="room.id" :name="room.name" @click="shareRoom"
-            class="room-icon-container">
-            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
-              stroke-linejoin="round" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="18" cy="5" r="3"></circle>
-              <circle cx="6" cy="12" r="3"></circle>
-              <circle cx="18" cy="19" r="3"></circle>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
-          </button>
-        </article>
+          </div>
+        </button>
+
+        <!-- Actions row -->
         <div class="room-actions">
-          <button :id="room.id" @click="(event) => {
+          <button class="action-btn forget-btn" @click="(event) => {
             event.preventDefault()
             store.setModal({
               visible: true,
@@ -219,30 +206,54 @@ async function shareRoom(event: Event) {
               onclick: () => store.setModal({}),
             })
           }">
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="16px"
+              width="16px" xmlns="http://www.w3.org/2000/svg">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path>
+            </svg>
             {{ $t('roomPicker.forget') }}
           </button>
-          <button v-if="room.adminId == (store.userLogged as any)?.id" :id="room.id" class="delete-button" @click="(event) => {
-            event.preventDefault()
-            store.setModal({
-              visible: true,
-              confirm: true,
-              message: t('roomPicker.deleteConfirm'),
-              onaccept: () => { deleteRoom(room.id); store.setModal({}) },
-              onclick: () => store.setModal({}),
-            })
-          }">
-            <div class="header-icon-container">
-              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="20px"
-                width="20px" xmlns="http://www.w3.org/2000/svg" style="color: white;">
+
+          <div class="action-group">
+            <button v-if="room.adminId == (store.userLogged as any)?.id" :id="room.id" @click="openEditModal(room)"
+              class="action-btn icon-btn edit-btn" :title="t('roomPicker.edit')">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="18px"
+                width="18px" xmlns="http://www.w3.org/2000/svg" style="color: var(--euro-pink);">
+                <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path>
+              </svg>
+            </button>
+
+            <button :data-room-id="room.id" :name="room.name" @click="shareRoom"
+              class="action-btn icon-btn share-btn" :title="t('roomPicker.share')">
+              <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                stroke-linejoin="round" height="18px" width="18px" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+            </button>
+
+            <button v-if="room.adminId == (store.userLogged as any)?.id" :id="room.id" class="action-btn icon-btn delete-btn"
+              @click="(event) => {
+                event.preventDefault()
+                store.setModal({
+                  visible: true,
+                  confirm: true,
+                  message: t('roomPicker.deleteConfirm'),
+                  onaccept: () => { deleteRoom(room.id); store.setModal({}) },
+                  onclick: () => store.setModal({}),
+                })
+              }" :title="t('roomPicker.delete')">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="18px"
+                width="18px" xmlns="http://www.w3.org/2000/svg" style="color: var(--error-color);">
                 <path fill="none" d="M0 0h24v24H0z"></path>
                 <path fill="none" d="M0 0h24v24H0V0z"></path>
-                <path
-                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z">
-                </path>
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path>
               </svg>
-              <p>{{ $t('roomPicker.delete') }}</p>
-            </div>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </template>
@@ -250,93 +261,136 @@ async function shareRoom(event: Event) {
 </template>
 
 <style scoped>
-.room-container {
-  margin-top: 1rem;
+.room-picker {
   width: 100%;
-  height: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid black;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  background-color: whitesmoke;
-}
-
-.room-icon-container {
-  display: flex;
-  background-color: whitesmoke;
-  border: none;
-  justify-content: flex-end;
-  align-items: flex-end;
-  text-decoration: none;
-  width: 90%;
-  font-weight: bold;
-}
-
-.room-icon-edit-container {
-  display: flex;
-  background-color: whitesmoke;
-  border: none;
-  justify-content: flex-start;
-  align-items: flex-end;
-  text-decoration: none;
-  width: 90%;
-  font-weight: bold;
-}
-
-.room-icon-container.room-name {
-  justify-content: flex-start;
-}
-
-.room-icon-container p {
-  font-size: 1rem;
-  text-align: center;
-
 }
 
 .room-card {
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border: 1px solid rgba(218, 183, 29, 0.3);
+  border-radius: 12px;
   margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.room-card:hover {
+  border-color: var(--euro-gold);
+  box-shadow: 0 0 20px rgba(255, 0, 135, 0.15);
+}
+
+.room-select-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.room-select-btn:hover {
+  background: rgba(255, 0, 135, 0.08);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.room-icon {
+  font-size: 1.5rem;
+}
+
+.room-name {
+  font-size: 1.15rem;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.room-enter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--euro-pink);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.enter-text {
+  color: var(--euro-pink);
 }
 
 .room-actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  border-top: 1px solid rgba(218, 183, 29, 0.15);
 }
 
-.room-actions>button {
-  width: 40%;
-  margin-top: 0.2rem;
-  border: none;
-  background-color: var(--primary-color);
-  border-radius: 0.2rem;
-  padding: 0.2rem;
-  color: whitesmoke;
-}
-
-.room-actions .delete-button {
-  background-color: var(--error-color);
-}
-
-.delete-button .header-icon-container {
+.action-group {
   display: flex;
-  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.forget-btn {
+  background: rgba(164, 8, 8, 0.15);
+  color: rgb(255, 150, 150);
+  border: 1px solid rgba(164, 8, 8, 0.3);
+}
+
+.forget-btn:hover {
+  background: rgba(164, 8, 8, 0.3);
+  border-color: rgb(164, 8, 8);
+  color: white;
+  box-shadow: 0 0 10px rgba(164, 8, 8, 0.3);
+}
+
+.icon-btn {
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  min-width: 34px;
+  min-height: 34px;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
 
+.edit-btn:hover {
+  box-shadow: 0 0 10px rgba(255, 0, 135, 0.3);
+}
 
+.share-btn:hover {
+  box-shadow: 0 0 10px rgba(218, 183, 29, 0.3);
+}
 
-@media (min-width: 1000px) {
-  .room-icon-container.room-name {
-    width: auto;
-  }
-
+.delete-btn:hover {
+  background: rgba(164, 8, 8, 0.2);
+  box-shadow: 0 0 10px rgba(164, 8, 8, 0.3);
 }
 </style>

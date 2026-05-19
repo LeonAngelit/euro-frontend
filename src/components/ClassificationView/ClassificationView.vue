@@ -72,7 +72,7 @@ watch(() => store.currentRoom, () => {
           animationDelay: `${Number(index) * 120}ms`,
         }">
           <article class="user-card" :style="{ backgroundColor: user.color }">
-            <div class="user-card-position">
+            <div :class="['user-card-position', index === 0 ? 'pos-1' : index === 1 ? 'pos-2' : index === 2 ? 'pos-3' : '']">
               <p>{{ Number(index) + 1 }}</p>
             </div>
             <div class="user-card-image">
@@ -95,7 +95,7 @@ watch(() => store.currentRoom, () => {
                         ? 'bold'
                         : '100',
                     color:
-                      user.tailOption?.[0]?.countryId === country.id ? 'blue' : 'black',
+                      user.tailOption?.[0]?.countryId === country.id ? 'blue' : 'white',
                   }">
                     <span :class="[
                       'fi',
@@ -133,31 +133,66 @@ watch(() => store.currentRoom, () => {
 .user-card-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 0.5rem;
-  height: 85px;
+  margin-bottom: 0.6rem;
+  height: 82px;
   clip-path: polygon(0% 0%, 97% 0%, 100% 100%, 3% 100%);
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+  border-top: 2px solid var(--euro-gold);
+  border-bottom: 2px solid var(--euro-gold);
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
   z-index: 1;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease;
+  position: relative;
 }
 
-.room-title-container{
+.user-card-wrapper:hover {
+  border-top-color: var(--euro-pink);
+  border-bottom-color: var(--euro-pink);
+  box-shadow: 0 4px 20px rgba(255, 0, 135, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Top 3 special styling */
+.user-card-wrapper:has(.pos-1) {
+  border-top-color: var(--euro-gold);
+  box-shadow: 0 2px 16px rgba(218, 183, 29, 0.15);
+}
+
+.user-card-wrapper:has(.pos-2) {
+  border-top-color: rgba(192, 192, 192, 0.6);
+}
+
+.user-card-wrapper:has(.pos-3) {
+  border-top-color: rgba(205, 127, 50, 0.5);
+}
+
+.room-title-container {
   position: sticky;
   top: 0;
   width: 100%;
-  background-color: white;
+  background: linear-gradient(135deg, var(--primary-color) 0%, rgb(1, 1, 60) 100%);
   height: 5dvh;
   margin-bottom: 1rem;
   z-index: 5;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid var(--euro-gold);
   padding: .5rem;
+  display: flex;
+  align-items: center;
+}
+
+.room-title-container h2 {
+  color: var(--euro-gold);
+  text-shadow: 0 0 12px rgba(218, 183, 29, 0.3);
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 .user-card {
   display: flex;
   width: 100%;
+  align-items: stretch;
 }
 
 .animate {
@@ -175,27 +210,52 @@ watch(() => store.currentRoom, () => {
   }
 }
 
-.user-card-position{
-  width: 15%;
-  background-color: rgb(255, 255, 255, .5);
+.user-card-position {
+  width: 13%;
+  background: linear-gradient(135deg, rgba(255, 0, 135, 0.2) 0%, rgba(255, 0, 135, 0.05) 100%);
   clip-path: polygon(0% 0%, 70% 0%, 100% 100%, 0% 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   margin-right: -1rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px rgba(255, 0, 135, 0.3);
+  position: relative;
+  z-index: 2;
 }
 
-.user-card-image{
-  width: 20%;
+/* Top 3 position badges */
+.pos-1 {
+  color: var(--euro-gold) !important;
+  font-size: 1.3rem !important;
+  text-shadow: 0 0 16px rgba(218, 183, 29, 0.5) !important;
+  background: linear-gradient(135deg, rgba(218, 183, 29, 0.2) 0%, rgba(218, 183, 29, 0.05) 100%) !important;
+}
+
+.pos-2 {
+  color: rgba(192, 192, 192, 0.9) !important;
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.3) !important;
+}
+
+.pos-3 {
+  color: rgba(205, 127, 50, 0.9) !important;
+  text-shadow: 0 0 10px rgba(205, 127, 50, 0.3) !important;
+}
+
+.user-card-image {
+  width: 18%;
   clip-path: polygon(0% 0%, 70% 0%, 100% 100%, 23% 100%);
-  background-color: rgb(255, 255, 255, .5);
+  background-color: rgba(255, 255, 255, 0.06);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  margin-right: -1.5rem;
-  z-index: 60;
+  margin-right: -1.2rem;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .user-card-image img {
@@ -205,63 +265,117 @@ watch(() => store.currentRoom, () => {
 }
 
 .user-card-data {
-  width: 70%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  padding-left: 0.8rem;
 }
 
 .user-card-info {
   display: flex;
   align-items: center;
   width: 100%;
-  justify-content: flex-end;
-  padding-right: 1rem;
-  background-color: rgba(245, 245, 245, 0.15);
-  margin-bottom: 0.2rem;
+  justify-content: flex-start;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  margin-bottom: 0.15rem;
+  border-radius: 2px;
+}
+
+.user-card-info p {
+  font-weight: bold;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .user-card-total {
-  width: 17%;
+  width: 15%;
+  min-width: 50px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  border-left: 1px solid black;
-  padding: 0.5rem;
+  justify-content: center;
+  border-left: 1px solid rgba(218, 183, 29, 0.2);
+  padding: 0.3rem;
   font-weight: bold;
+  color: var(--euro-pink);
+  font-size: 1.2rem;
+  text-shadow: 0 0 8px rgba(255, 0, 135, 0.3);
+  background: rgba(255, 0, 135, 0.04);
+}
+
+.user-card-total::before {
+  content: "PTS";
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+  margin-bottom: 0.1rem;
+}
+
+.user-card-data p {
+  color: white;
+  margin: 0;
 }
 
 .user-card-countries {
   display: flex;
-  justify-content: space-evenly;
   flex-wrap: wrap;
-  margin-left: 1rem;
+  gap: 0.2rem;
+  padding: 0.15rem 0;
 }
 
 .country-wrapper {
-  margin: 0.1rem;
-  margin-bottom: 0.4rem;
-  width: 30%;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.country-wrapper p {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  color: white;
 }
 
 .user-winner {
   font-weight: bold;
-  color: var(--euro-pink);
+  color: var(--euro-gold) !important;
+  text-shadow: 0 0 10px rgba(218, 183, 29, 0.6) !important;
+  font-size: 1rem;
+}
+
+/* Winner star indicator */
+.user-winner::after {
+  content: " ★";
+  color: var(--euro-gold);
+  font-size: 1.1rem;
 }
 
 @media (min-width: 1000px) {
-  .user-card-position{
+  .user-card-position {
     margin-right: -3rem;
   }
 
   .country-wrapper {
     margin: 0.1rem;
     margin-bottom: 0.4rem;
-    width: 25%;
   }
-  .user-card-image{
+
+  .user-card-image {
     margin-right: -3rem;
   }
 
+  .room-title-container h2 {
+    font-size: 1.3rem;
+  }
 }
 </style>
 <style src="flag-icons/css/flag-icons.min.css"></style>

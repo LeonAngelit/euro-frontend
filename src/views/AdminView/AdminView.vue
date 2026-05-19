@@ -384,7 +384,7 @@ async function handleCreateRequest(event: Event) {
 }
 
 .button-blue {
-  background-color: var(--primary-color-background);
+  background: linear-gradient(135deg, var(--euro-pink) 0%, rgb(200, 0, 105) 100%);
 }
 
 .requests-container {
@@ -401,12 +401,25 @@ async function handleCreateRequest(event: Event) {
 .requests-container textarea, .requests-container select {
   margin-top: 1rem;
   text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid var(--euro-gold);
+  border-radius: 4px;
+  padding: 0.5rem;
 }
 
 .requests-container textarea {
-  padding: .2rem;
+  padding: .5rem;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  border: 1px solid var(--primary-color);
   resize: both;
+}
+
+.requests-container select option {
+  background: var(--primary-color);
+  color: white;
+}
+
+h1, h2, h3 {
+  color: var(--euro-pink);
 }
 </style>

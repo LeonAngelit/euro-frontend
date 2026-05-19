@@ -52,12 +52,14 @@ defineProps<ModalProps>()
   justify-content: center;
   align-items: center;
   z-index: 80;
+  background-color: rgba(2, 2, 94, 0.85);
+  backdrop-filter: blur(4px);
 }
 
 
 .modal {
   width: 70%;
-  background-color: white;
+  background-color: var(--primary-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,6 +70,9 @@ defineProps<ModalProps>()
   top: 101px;
   right: 9px;
   animation: slideIn 0.2s ease-out forwards;
+  border: 2px solid var(--euro-pink);
+  box-shadow: 0 0 30px rgba(255, 0, 135, 0.2);
+  color: white;
 }
 
 .modal.modal-component{
@@ -103,6 +108,7 @@ defineProps<ModalProps>()
   background: none;
   border: none;
   cursor: pointer;
+  color: var(--euro-pink);
 }
 
 .modal-action-buttons {
@@ -126,30 +132,43 @@ defineProps<ModalProps>()
 }
 
 .success-modal {
-  background-color: var(--success-color);
+  background: linear-gradient(135deg, var(--euro-gold) 0%, rgb(180, 150, 20) 100%);
   font-weight: bold;
-  color: black;
+  color: var(--primary-color);
+  border-color: var(--euro-gold);
 }
 
 .error-modal {
-  background-color: var(--error-color);
+  background: linear-gradient(135deg, rgb(164, 8, 8) 0%, rgb(120, 0, 0) 100%);
   font-weight: bold;
-  color: whitesmoke;
+  color: white;
+  border-color: rgb(255, 60, 60);
 }
 
 .action-btn,
 .action-delete-btn {
   border: none;
-  padding: 0.2rem;
-  color: whitesmoke;
-  border-radius: 0.2rem;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .action-btn {
-  background-color: var(--primary-color);
+  background-color: var(--euro-pink);
+  box-shadow: 0 0 10px rgba(255, 0, 135, 0.3);
+}
+.action-btn:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 16px rgba(255, 0, 135, 0.5);
 }
 .action-delete-btn {
-  background-color: var(--error-color);
+  background-color: rgb(164, 8, 8);
+}
+.action-delete-btn:hover {
+  background-color: rgb(200, 20, 20);
 }
 .modal-container p {
   text-align: center;

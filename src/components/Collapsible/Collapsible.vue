@@ -27,7 +27,7 @@ function toggle() {
     <div :class="isCollapsed ? 'collapsible-title' : 'collapsible-title title-collapsed'">
       <button class="collapsible-button" @click="toggle">
         <svg :class="isCollapsed ? 'rotated' : ''" stroke="currentColor" fill="currentColor" stroke-width="0"
-          viewBox="0 0 16 16" height="25px" width="25px" xmlns="http://www.w3.org/2000/svg" style="color: black;">
+          viewBox="0 0 16 16" height="25px" width="25px" xmlns="http://www.w3.org/2000/svg" style="color: var(--euro-pink);">
           <path fill-rule="evenodd" clip-rule="evenodd"
             d="M10.072 8.024L5.715 3.667l.618-.62L11 7.716v.618L6.333 13l-.618-.619 4.357-4.357z"></path>
         </svg>
@@ -55,18 +55,26 @@ function toggle() {
   max-width: 100vw;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--euro-gold);
   margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.5rem;
 }
 
 .collapsible-title {
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid var(--euro-gold);
   width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
   margin: 0 auto;
+}
+
+.collapsible-title p {
+  color: white;
+  font-weight: bold;
 }
 
 .collapsible-button {

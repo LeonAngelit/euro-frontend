@@ -331,7 +331,7 @@ describe('RoomPicker — T7: pencil button opens edit modal for admin', () => {
     })
 
     // Find the edit button (pencil button)
-    const editBtn = wrapper.find('button.room-icon-edit-container')
+    const editBtn = wrapper.find('button.edit-btn')
     expect(editBtn.exists()).toBe(true)
 
     await editBtn.trigger('click')
@@ -365,10 +365,10 @@ describe('RoomPicker — T8: pencil button not rendered for non-admin', () => {
     })
 
     // Admin-only buttons should not be rendered for this room
-    const editBtn = wrapper.find('button.room-icon-edit-container')
+    const editBtn = wrapper.find('button.edit-btn')
     expect(editBtn.exists()).toBe(false)
 
-    const deleteBtn = wrapper.find('button.delete-button')
+    const deleteBtn = wrapper.find('button.delete-btn')
     expect(deleteBtn.exists()).toBe(false)
 
     // Forget button is always visible (not admin-only)
@@ -448,8 +448,8 @@ describe('RoomPicker — T14: forget-room button', () => {
       },
     })
 
-    const editBtn = wrapper.find('button.room-icon-edit-container')
-    const forgetBtn = wrapper.find('.room-actions button')
+    const editBtn = wrapper.find('button.edit-btn')
+    const forgetBtn = wrapper.find('.room-actions > .forget-btn')
 
     expect(editBtn.exists()).toBe(true)
     expect(forgetBtn.exists()).toBe(true)

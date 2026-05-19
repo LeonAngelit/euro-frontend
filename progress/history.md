@@ -307,3 +307,62 @@
   - Added `test_architecture_md_lists_env_vars` for R9
 - **Re-review:** APPROVED — all R1–R13 traceable, all tasks complete
 - **Tests:** 224/224 passing (38 test files, +8 new tests)
+
+---
+
+## Session: 2026-05-19 — Leader: Eurovision_contest_styling (full SDD cycle)
+
+- **Feature:** Eurovision_contest_styling (id: 15)
+- **Status:** done
+- **SDD phases completed:** spec → human approval (with background pattern amendment) → implementation → review → CHANGES_REQUESTED (no tests, no actual source changes) → fix → re-review → CHANGES_REQUESTED (missing implementation) → re-implement → re-review → APPROVED
+- **Spec authored in:** `specs/Eurovision_contest_styling/`
+- **Implementation (round 3 — real changes):**
+  - `src/index.css`: Body gradient background (linear-gradient + radial-gradient + fixed), `.container` semi-opaque overlay, `.btn-primary` pink, `.btn-secondary` gold, hover transitions
+  - `src/components/Navigation/Navigation.vue`: Pink border/color on active links, pink glow on profile hover
+  - `src/components/Footer/Footer.vue`: Pink border-top
+  - `src/components/Modal/Modal.vue`: Pink border, success/error styling
+  - `src/components/Form/Form.vue`: Gold input focus, pink submit button, hover transitions
+  - `src/components/Collapsible/Collapsible.vue`: Pink toggle indicator
+  - `src/components/CountryPicker/CountryPicker.vue`: Gold card borders, pink for selected
+  - `src/components/ClassificationView/ClassificationView.vue`: Gold card borders
+  - All 5 views: Pink heading colors (Home, Login, CountrySelect, AdminView, UserDetails)
+- **Tests:** `tests/Eurovision_styling.test.ts` created (30+ tests covering R1–R22)
+- **Review:** APPROVED — all R1–R22 traceable, all 33 tasks complete, 272/275 tests pass (3 pre-existing failures)
+- **Pre-existing failures:** `vercel.test.ts` (2: buildCommand/outputDirectory mismatch), `Home.test.ts` (1: redirect assertion) — known, unrelated
+
+---
+
+## Session: 2026-05-19 — Leader: Eurovision_contest_styling (bold restyling — redo)
+
+- **Feature:** Eurovision_contest_styling (id: 15)
+- **Status:** done
+- **Trigger:** User rejected initial subtle styling as "not even noticed on mobile"
+- **Bold restyling changes:**
+  - `src/index.css`: Complete dark theme — dark navy body with dramatic pink radial spotlight + white/gold star sparkle repeating pattern; semi-transparent glass container (rgba 0.06, blur 6px) so background visible; global pink/gold headings; bold pink `.btn-primary` with glow; bold gold `.btn-secondary` with glow; pink links; pink scrollbar
+  - `src/components/Navigation/Navigation.vue`: Pink gradient header (`--euro-pink`) with pink box-shadow; gold active link underline; dark mobile nav dropdown with pink border; dark user menu with pink bold text + gold hover; pink header glow
+  - `src/components/Footer/Footer.vue`: Pink gradient footer to match header; gold top border
+  - `src/components/Modal/Modal.vue`: Dark navy modal background with pink border + glow; gold gradient success modal; red gradient error modal; pink action buttons with glow
+  - `src/components/Form/Form.vue`: Dark input backgrounds with white text; pink/gold borders; focus pink glow; pink bold submit
+  - `src/components/Collapsible/Collapsible.vue`: Semi-transparent dark bg with gold border; white bold title; pink SVG toggle
+  - `src/components/CountryPicker/CountryPicker.vue`: Dark card backgrounds; gold borders; pink selected state
+  - `src/components/ClassificationView/ClassificationView.vue`: Dark card backgrounds; gold borders
+  - Global: White text on dark bg; pink links with gold hover; pink ::selection; themed scrollbar
+- **Tests:** 272/275 tests pass (3 pre-existing failures only)
+- **Round 3 — complete redesign of RoomPicker & Archive:**
+  - **RoomPicker**: VIP-style cards with gradient glass backgrounds, gold borders, pink hover glow, 🎤 icon per room, "Enter" label, integrated action row (forget/edit/share/delete with themed icons). Share button uses `data-room-id` standard HTML attribute.
+  - **Archive**: Replaced native `<select>` with custom dropdown (trigger button + dropdown list). No more layout shift — single template, selected room name shown in trigger. Pink/gold themed dropdown with outside-click overlay to close. Classification view appears below seamlessly.
+  - Tests updated for new RoomPicker CSS class names
+- **Follow-up fixes:**
+  - RoomPicker: Dark-themed cards (semi-transparent rgba bg, gold borders, white text, pink SVGs) — no more whitesmoke/black clash
+  - Avatar upload: Dark-themed file input with pink dashed border and pink file-selector-button
+  - Archive view: Centered layout, white text elements, dark-themed select with gold border
+- **Round 4 — i18n + header visibility:**
+  - Added `roomPicker.enter` key to `en.json` ("Enter") and `es.json` ("Entrar")
+  - Removed `|| 'Enter'` fallback in template — now uses proper i18n
+  - Header star icon: changed from `#FF0087` (invisible on pink bg) to **gold** (`--euro-gold`) with glow `drop-shadow`
+  - Header text: changed from `whitesmoke` to **pure white** with text shadow, bold, larger font
+  - `.home-container` width: `10%` → `auto` with `min-width: fit-content` so star+text isn't cramped on mobile
+- **Round 5 — ClassificationView cards, profile pic, forget button:**
+  - **ClassificationView**: User cards with glass bg/shadow, gradient position numbers with pink glow, gold border separator, flashy points with text-shadow, winner with emphasized pink glow, gradient room title
+  - **Profile picture**: Gold rounded border replacing clip-path polygon, white border + gold glow on hover, `min-width: 44px` for proper mobile sizing, padding/margin adjustments
+  - **Forget button**: Red-tinted background with red border, hover darkens with red glow shadow — more visible and thematic

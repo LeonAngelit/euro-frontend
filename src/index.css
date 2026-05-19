@@ -60,18 +60,26 @@ code {
 
 .subtitle a {
   text-decoration: none;
-  color: var(--primary-color);
+  color: var(--euro-pink);
   font-weight: bold;
 }
 
+.subtitle a:hover {
+  color: var(--euro-gold);
+}
+
+.subtitle p {
+  color: white;
+}
+
 .error-span {
-  background-color: var(--error-background);
+  background-color: rgba(164, 8, 8, 0.4);
   margin-top: 0.5rem;
-  padding: 0.25rem;
+  padding: 0.5rem;
   border-radius: 0.25rem;
-  border: 1px solid var(--error-color);
+  border: 1px solid rgb(255, 60, 60);
   text-align: center;
-  color: var(--error-color);
+  color: rgb(255, 150, 150);
   min-width: 50%;
 }
 
@@ -103,9 +111,10 @@ span.fis.country-flag {
 .select-css {
   margin-top: 1rem;
   border: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--euro-gold);
   background: none;
   outline: none;
+  color: white;
 }
 
 .select-css.selected {
@@ -124,17 +133,28 @@ span.fis.country-flag {
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 20% 100%);
   justify-content: center;
   align-items: center;
+  padding: 0;
+  margin: 0;
+  transition: filter 0.2s ease;
 }
-.google-container{
-  display: flex;
-  justify-content: center;
+
+.profile-button:hover {
+  filter: brightness(1.15);
+  cursor: pointer;
 }
 
 .profile-button img {
   height: 100%;
   width: 100%;
   object-fit: cover;
+  display: block;
 }
+.google-container{
+  display: flex;
+  justify-content: center;
+}
+
+
 
 
 
@@ -153,11 +173,7 @@ span.fis.country-flag {
     z-index: 50;
   }
  
-  .profile-button {
- 
-    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 20% 100%);
-  
-  }
+
   span.fis.country-flag {
     width: 20%;
     background-size: auto;
@@ -175,6 +191,128 @@ span.fis.country-flag {
     width: 30%;
   }
   
- 
+  
 
+}
+
+/* ============================================================
+   EUROVISION BOLD RESTYLING — Dramatic dark glam theme
+   ============================================================ */
+
+/* 1. Body — bold dark navy with dramatic pink spotlight + stars */
+body {
+  background-color: var(--primary-color);
+  background-image:
+    /* Dramatic pink radial spotlight in center */
+    radial-gradient(ellipse at 50% 40%, rgba(255, 0, 135, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(255, 0, 135, 0.10) 0%, transparent 40%),
+    /* Sparkle/star repeating pattern */
+    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 40% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 80% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 10% 80%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 90% 10%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+    radial-gradient(3px 3px at 50% 90%, rgba(218, 183, 29, 0.3) 0%, transparent 100%),
+    radial-gradient(3px 3px at 30% 10%, rgba(218, 183, 29, 0.25) 0%, transparent 100%),
+    /* Base deep navy gradient */
+    linear-gradient(180deg, var(--primary-color) 0%, rgb(1, 1, 60) 100%);
+  background-attachment: fixed;
+  background-size: 100% 100%, 100% 100%, 200px 200px, 200px 200px, 200px 200px, 200px 200px, 200px 200px, 200px 200px, 200px 200px, 200px 200px, 100% 100%;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, no-repeat;
+  color: white;
+}
+
+/* 2. Container — semi-transparent so background shows through on mobile */
+.container {
+  height: 89.5dvh;
+  padding: .75rem;
+  padding-bottom: 2rem;
+  padding-top: 0;
+  overflow: scroll;
+  scrollbar-width: none;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.container h2 {
+  margin-bottom: 1rem;
+  color: var(--euro-pink);
+}
+
+/* 3. Headings — global gold & pink typography */
+h1, h2, h3 {
+  color: var(--euro-pink);
+}
+
+h1 {
+  color: var(--euro-gold);
+  text-shadow: 0 0 20px rgba(218, 183, 29, 0.3);
+}
+
+/* 4. Primary button — bold pink */
+.btn-primary {
+  background-color: var(--euro-pink);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(255, 0, 135, 0.3);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 20px rgba(255, 0, 135, 0.5);
+  cursor: pointer;
+}
+
+/* 5. Secondary button — bold gold */
+.btn-secondary {
+  background-color: var(--euro-gold);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(218, 183, 29, 0.3);
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 20px rgba(218, 183, 29, 0.5);
+  cursor: pointer;
+}
+
+/* 6. Links on dark backgrounds */
+a {
+  color: var(--euro-pink);
+}
+
+a:hover {
+  color: var(--euro-gold);
+}
+
+/* 7. Text selection */
+::selection {
+  background: var(--euro-pink);
+  color: white;
+}
+
+/* 8. Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--euro-pink);
+  border-radius: 3px;
 }

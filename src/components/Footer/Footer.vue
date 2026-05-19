@@ -14,11 +14,12 @@
   display: flex;
   max-width: 100vw;
   height: 2.5vh;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--euro-pink) 0%, rgb(200, 0, 105) 100%);
   justify-content: center;
   align-items: center;
   position: sticky;
   bottom: 0;
+  border-top: 2px solid var(--euro-gold);
 }
 
 .footer p {

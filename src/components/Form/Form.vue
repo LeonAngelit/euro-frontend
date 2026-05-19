@@ -128,6 +128,12 @@ function storeLocal(event: Event) {
   margin: 1rem auto;
 }
 
+.login-form label {
+  color: var(--euro-pink);
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
 .login-form span {
   margin: 1rem auto;
 }
@@ -141,16 +147,32 @@ function storeLocal(event: Event) {
 }
 
 .input-container>input {
-  border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border: 1px solid var(--euro-gold);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   width: 50%;
   text-align: center;
   margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.input-container>input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .input-container input:focus {
   outline: none;
-  background: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid var(--euro-pink);
+  box-shadow: 0 0 12px rgba(255, 0, 135, 0.3);
+}
+
+.password-wrapper >input:focus {
+  border-bottom: 2px solid var(--euro-pink);
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 0, 135, 0.3);
 }
 
 .submit-container {
@@ -166,25 +188,26 @@ function storeLocal(event: Event) {
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+  color: white;
 }
 
 .checkbox-container>input {
   margin-right: 1rem;
+  accent-color: var(--euro-pink);
 }
 
 .submit-container input {
   min-width: 30%;
   padding: 0.5rem;
-  background-color: var(--primary-color);
+  background-color: var(--euro-pink);
   color: white;
   border: none;
   border-radius: 0.5rem;
+  transition: all 0.2s ease;
 }
 
 .submit-container input:hover {
-  background-color: white;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  opacity: 0.85;
   cursor: pointer;
 }
 .password-wrapper {
@@ -195,11 +218,19 @@ function storeLocal(event: Event) {
 }
 
 .password-wrapper >input {
-  border: none;
-  border-bottom: 1px solid var(--primary-color);
+  border: 1px solid var(--euro-gold);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   width: 100%;
   text-align: center;
   margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.password-wrapper >input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .password-wrapper button {
@@ -208,7 +239,36 @@ function storeLocal(event: Event) {
   right: 0;
   background: none;
   border: none;
+  color: var(--euro-pink);
+  cursor: pointer;
 }
+/* File input styling for dark theme */
+.input-container input[type="file"] {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed var(--euro-pink);
+  color: white;
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+  width: 70%;
+}
+
+.input-container input[type="file"]::file-selector-button {
+  background-color: var(--euro-pink);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: all 0.2s ease;
+}
+
+.input-container input[type="file"]::file-selector-button:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 10px rgba(255, 0, 135, 0.4);
+}
+
 @media (max-width: 700px) {
   .login-form {
     width: 90%;

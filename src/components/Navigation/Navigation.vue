@@ -107,7 +107,7 @@ function handleLeaveRoom() {
       <div class="home-container">
         <router-link :to="'/' + callbackUrl" class="header-text" @click="handleMenuHome">
           <div class="header-icon-container">
-            <Icon icon="mdi:star" style="color: #FF0087; font-size: 40px;" />
+            <Icon icon="mdi:star" style="color: var(--euro-gold); font-size: 40px; filter: drop-shadow(0 0 6px rgba(218, 183, 29, 0.6));" />
             <p>{{ $t('nav.euroContest') }}</p>
           </div>
         </router-link>
@@ -162,6 +162,7 @@ function handleLeaveRoom() {
   z-index: 30;
   position: sticky;
   top: 0;
+  box-shadow: 0 2px 16px rgba(255, 0, 135, 0.3);
 }
 
 .header {
@@ -169,17 +170,18 @@ function handleLeaveRoom() {
   position: relative;
   max-width: 100vw;
   height: 8vh;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--euro-pink) 0%, rgb(200, 0, 105) 100%);
   justify-content: space-between;
   z-index: 10;
 }
 
 .home-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  width: 10%;
-  margin-left: .5rem;
+  width: auto;
+  min-width: fit-content;
+  margin-left: .75rem;
 }
 
 .header-icon-container {
@@ -194,7 +196,11 @@ function handleLeaveRoom() {
 .header-text:hover,
 .header-text:active {
   text-decoration: none;
-  color: whitesmoke;
+  color: white;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
 }
 
 .home-container a {
@@ -245,6 +251,9 @@ function handleLeaveRoom() {
   justify-content: center;
   align-items: center;
   width: 15%;
+  min-width: 48px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .profile-button:hover {
@@ -271,7 +280,8 @@ function handleLeaveRoom() {
 
 .mobile-links {
   width: 60vw;
-  background-color: rgba(245, 245, 245, 0.8);
+  background-color: var(--primary-color);
+  border: 1px solid var(--euro-pink);
   border-radius: 0.25rem;
   position: absolute;
   top: 10vh;
@@ -294,13 +304,14 @@ function handleLeaveRoom() {
 
 .mobile-links a {
   text-decoration: none;
-  color: var(--primary-color);
+  color: white;
   padding: 0.2rem;
   width: 100%;
+  font-weight: bold;
 }
 
 .mobile-links li:hover a {
-  color: whitesmoke;
+  color: var(--euro-gold);
 }
 
 .links-visible {
@@ -315,10 +326,12 @@ function handleLeaveRoom() {
   position: absolute;
   top: -100%;
   right: 0;
-  background-color: rgba(245, 245, 245, 0.8);
+  background-color: var(--primary-color);
+  border: 1px solid var(--euro-pink);
   border-radius: 0.25rem;
   transition: all 0.10s;
   visibility: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .user-menu ul {
@@ -338,10 +351,11 @@ function handleLeaveRoom() {
 
 .user-menu a {
   text-decoration: none;
-  color: var(--primary-color);
+  color: var(--euro-pink);
   padding: 0.2rem;
   text-align: right;
   width: 100%;
+  font-weight: bold;
 }
 
 .user-menu button {
@@ -363,6 +377,17 @@ function handleLeaveRoom() {
 .user-menu li:hover button {
   color: whitesmoke;
   cursor: pointer;
+}
+
+/* Active link gold bottom border */
+.router-link-exact-active {
+  border-bottom: 2px solid var(--euro-gold);
+}
+
+
+
+.router-link-exact-active {
+  color: var(--euro-gold) !important;
 }
 
 @media (max-width: 600px) {

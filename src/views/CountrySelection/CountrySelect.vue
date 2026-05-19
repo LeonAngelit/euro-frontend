@@ -41,3 +41,9 @@ watch([() => store.userLogged, targetCount], () => {
     </template>
   </div>
 </template>
+
+<style scoped>
+h1, h2, h3 {
+  color: var(--euro-pink);
+}
+</style>

@@ -93,6 +93,7 @@
   "countryPicker.continue": "Continue",
   "countryPicker.mustChoose": "You must choose {count} countries",
   "countryPicker.cantChooseMore": "You cannot choose more than {count} countries",
+  "roomPicker.enter": "Enter",
   "roomPicker.linkCopied": "Link copied to clipboard",
   "roomPicker.forget": "Forget",
   "roomPicker.delete": "Delete",
