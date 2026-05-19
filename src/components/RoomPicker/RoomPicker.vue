@@ -277,7 +277,7 @@ async function shareRoom(event: Event) {
   font-weight: bold;
 }
 
-.room-icon-edit-container{
+.room-icon-edit-container {
   display: flex;
   background-color: whitesmoke;
   border: none;
@@ -288,7 +288,7 @@ async function shareRoom(event: Event) {
   font-weight: bold;
 }
 
-.room-icon-container.room-name{
+.room-icon-container.room-name {
   justify-content: flex-start;
 }
 
@@ -308,7 +308,8 @@ async function shareRoom(event: Event) {
   display: flex;
   justify-content: space-between;
 }
-.room-actions > button {
+
+.room-actions>button {
   width: 40%;
   margin-top: 0.2rem;
   border: none;
@@ -322,13 +323,20 @@ async function shareRoom(event: Event) {
   background-color: var(--error-color);
 }
 
+.delete-button .header-icon-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 
 
 
 @media (min-width: 1000px) {
-  .room-icon-container.room-name{
+  .room-icon-container.room-name {
     width: auto;
   }
-  
- }
+
+}
 </style>

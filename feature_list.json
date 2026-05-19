@@ -5,13 +5,7 @@
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
     "require_approved_spec_to_implement": true,
-    "valid_status": [
-      "pending",
-      "spec_ready",
-      "in_progress",
-      "done",
-      "blocked"
-    ],
+    "valid_status": ["pending", "spec_ready", "in_progress", "done", "blocked"],
     "sdd_required_when": "feature has \"sdd\": true"
   },
   "features": [
@@ -202,6 +196,21 @@
       "description": "When the user opens the room name edit modal and refresh the page, the modal content is empty, but the modal is still visible and cannot be closed",
       "acceptance": [
         "When the page is refreshed with the modal opened, it should either dissapear or still being able to be closed",
+        "All the test should pass",
+        "The ARCHITECTURE.md file should be updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "Ensure_vercel_deploy",
+      "title": "Ensure vercel deploy",
+      "description": "The application needs to be ready to be deployed and accesible in vercel",
+      "acceptance": [
+        "The app build properly in vercel environment",
+        "The app doesn't crash when is opened once deployed in vercel",
+        "All the images, logos and assets should be visible and not broken",
         "All the test should pass",
         "The ARCHITECTURE.md file should be updated if needed"
       ],
