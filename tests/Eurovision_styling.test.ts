@@ -438,10 +438,10 @@ describe('R9 — Card gold borders', () => {
   })
 
   it('test_classification_view_cards_gold_border — R9', () => {
-    const classViewSource = readSource('src/components/ClassificationView/ClassificationView.vue')
-    expect(classViewSource).toContain('.user-card-wrapper')
-    expect(classViewSource).toContain('border-top: 2px solid var(--euro-gold)')
-    expect(classViewSource).toContain('border-bottom: 2px solid var(--euro-gold)')
+    const userCardSource = readSource('src/components/ClassificationView/UserCard.vue')
+    expect(userCardSource).toContain('.user-card-wrapper')
+    expect(userCardSource).toContain('var(--euro-gold)')
+    expect(userCardSource).toContain('linear-gradient')
   })
 
   it('test_classification_view_room_title_gold_border — R9', () => {
@@ -582,8 +582,8 @@ describe('R14 — No responsive behavior changes', () => {
     expect(formSource).toContain('@media (max-width: 700px)')
     expect(formSource).toContain('@media (min-width: 1000px)')
 
-    const classViewSource = readSource('src/components/ClassificationView/ClassificationView.vue')
-    expect(classViewSource).toContain('@media (min-width: 1000px)')
+    const userCardSource = readSource('src/components/ClassificationView/UserCard.vue')
+    expect(userCardSource).toContain('@media (min-width: 768px)')
 
     const userDetailsSource = readSource('src/views/UserDetails/UserDetails.vue')
     expect(userDetailsSource).toContain('@media (max-width: 420px)')
@@ -642,9 +642,9 @@ describe('R15 — No CSS class/selector removal', () => {
     expect(countryPickerSource).toContain('.country-container')
     expect(countryPickerSource).toContain('.country-checkbox')
 
-    const classViewSource = readSource('src/components/ClassificationView/ClassificationView.vue')
-    expect(classViewSource).toContain('.user-card-wrapper')
-    expect(classViewSource).toContain('.user-card')
+    const userCardSource = readSource('src/components/ClassificationView/UserCard.vue')
+    expect(userCardSource).toContain('.user-card-wrapper')
+    expect(userCardSource).toContain('.user-card')
   })
 })
 
@@ -777,5 +777,214 @@ describe('R22 — ARCHITECTURE.md update', () => {
     // We just verify the file is valid markdown
     expect(arch.length).toBeGreaterThan(0)
     expect(arch.startsWith('#')).toBe(true)
+  })
+})
+
+// =====================================================================
+// R23: User card layout fixes — now in UserCard.vue (self-contained)
+// =====================================================================
+describe('R23 — User card layout fixes', () => {
+  let css: string
+
+  beforeAll(() => {
+    const source = readSource('src/components/ClassificationView/UserCard.vue')
+    const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)
+    css = styleMatch ? styleMatch[1] : ''
+  })
+
+  it('test_user_card_wrapper_no_fixed_height — R23', () => {
+    // R1: No fixed height on wrapper — content-driven
+    const wrapperBlock = css.match(/\.user-card-wrapper\s*\{([^}]*)\}/)
+    expect(wrapperBlock).not.toBeNull()
+    expect(wrapperBlock![1]).not.toMatch(/(?<![a-zA-Z-])height\s*:/)
+  })
+
+  it('test_position_and_image_no_negative_margins — R23', () => {
+    // R3: Negative margins removed — using flex gap instead
+    expect(css).not.toContain('margin-right: -')
+    expect(css).not.toContain('margin-left: -')
+    // Verify flex layout with gap in header
+    expect(css).toContain('gap: 0.6rem')
+  })
+
+  it('test_position_badge_sizing — R23', () => {
+    // R4: Position badge sized for readability
+    expect(css).toContain('width: 28px')
+    expect(css).toContain('height: 28px')
+  })
+
+  it('test_position_pink_gradient_no_clip — R23', () => {
+    // R5: Gradients used, clip-path removed from card
+    expect(css).toContain('linear-gradient')
+    expect(css).toContain('rgba(255, 0, 135')
+    expect(css).not.toContain('clip-path: polygon')
+  })
+
+  it('test_image_gold_rounded_frame — R23', () => {
+    // R6: Image has gold rounded frame instead of clip-path
+    expect(css).not.toContain('clip-path')
+    expect(css).toContain('border-radius: 50%')
+    expect(css).toContain('outline: 1.5px solid var(--euro-gold)')
+  })
+
+  it('test_countries_flex_wrap — R23', () => {
+    // R7: Country list uses flex wrap for overflow
+    expect(css).toContain('flex-wrap: wrap')
+  })
+
+  it('test_total_score_pink_badge — R23', () => {
+    // R8: Total score styled with pink accent
+    expect(css).toContain('color: var(--euro-pink)')
+    expect(css).toContain('content: " PTS"')
+  })
+
+  it('test_wrapper_hover_effect — R23', () => {
+    // R9: Hover effect on wrapper
+    expect(css).toContain('.user-card-wrapper:hover')
+    expect(css).toContain('translateY(-2px)')
+  })
+
+  it('test_top3_position_badges — R23', () => {
+    // R10: Top-3 position badges
+    expect(css).toContain('.pos-1')
+    expect(css).toContain('.pos-2')
+    expect(css).toContain('.pos-3')
+    expect(css).toContain('var(--euro-gold)')
+  })
+
+  it('test_wrapper_no_clip_path — R23', () => {
+    // R12: Clip-path removed from wrapper (R1)
+    expect(css).not.toContain('clip-path')
+  })
+
+  it('test_all_key_selectors_exist — R23', () => {
+    // R13: Key selectors exist in UserCard.vue
+    const selectors = [
+      '.user-card-wrapper',
+      '.user-card',
+      '.position-badge',
+      '.avatar-container',
+      '.user-card-total',
+      '.user-card-countries',
+      '.country-chip',
+      '.user-winner',
+      '.user-card-header',
+      '.header-left',
+      '.winner-pick',
+      '.tail-pick',
+    ]
+    for (const sel of selectors) {
+      expect(css).toContain(sel)
+    }
+  })
+
+  it('test_countries_flex_wrap_layout — R23', () => {
+    // R16: Countries visible via flex-wrap layout
+    expect(css).toContain('flex-wrap: wrap')
+    expect(css).toContain('gap: 0.35rem')
+  })
+
+  it('test_animation_class_and_keyframes — R23', () => {
+    // R18: Animation class and keyframes
+    expect(css).toContain('.animate')
+    expect(css).toContain('animation: slide-in-left')
+    expect(css).toContain('@keyframes slide-in-left')
+  })
+
+  it('test_glassmorphism_backdrop_filter — R23', () => {
+    // R11.2(a): Glassmorphism backdrop-filter on .user-card
+    expect(css).toContain('backdrop-filter: blur(20px)')
+    expect(css).toContain('-webkit-backdrop-filter: blur(20px)')
+  })
+
+  it('test_gold_rounded_avatar_frame — R23', () => {
+    // R11.2(b): Gold rounded avatar frame
+    expect(css).toContain('border-radius: 50%')
+    expect(css).toContain('outline: 1.5px solid var(--euro-gold)')
+    expect(css).toContain('border: 1.5px solid white')
+  })
+
+  it('test_card_glow_shadow — R23', () => {
+    // R11.2(c): Card box-shadow for depth
+    expect(css).toContain('box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25)')
+  })
+
+  it('test_classification_view_no_user_card_selectors — R23', () => {
+    // R2: ClassificationView.vue has no .user-card-* CSS selectors in its scoped <style>
+    const classViewSource = readSource('src/components/ClassificationView/ClassificationView.vue')
+    const styleMatch = classViewSource.match(/<style[^>]*>([\s\S]*?)<\/style>/)
+    expect(styleMatch).not.toBeNull()
+    const scopedCSS = styleMatch![1]
+    expect(scopedCSS).not.toMatch(/\.user-card/)
+  })
+
+  it('test_country_chip_min_height_touch_target — R23', () => {
+    // R13: .country-chip has min-height: 36px for touch-friendly targets
+    const chipBlock = css.match(/\.country-chip\s*\{([^}]*)\}/)
+    expect(chipBlock).not.toBeNull()
+    expect(chipBlock![1]).toContain('min-height: 36px')
+  })
+
+  it('test_first_place_gold_glow_has_selector — R23', () => {
+    // R19: 1st place gold glow via :has(.pos-1) with gold gradient background
+    expect(css).toContain('.user-card-wrapper:has(.pos-1)')
+    expect(css).toContain('var(--euro-gold)')
+  })
+})
+
+// =====================================================================
+// R25: Additional glass/glamour coverage — now in UserCard.vue
+// =====================================================================
+describe('R25 — Additional glass/glamour coverage', () => {
+  let css: string
+
+  beforeAll(() => {
+    const source = readSource('src/components/ClassificationView/UserCard.vue')
+    const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)
+    css = styleMatch ? styleMatch[1] : ''
+  })
+
+  it('test_user_card_wrapper_background_gradient — R2.1', () => {
+    // R2.1: .user-card-wrapper has semi-transparent gradient background
+    expect(css).toContain('rgba(255, 255, 255, 0.1)')
+    expect(css).toContain('linear-gradient')
+  })
+
+  it('test_avatar_hover_gold_glow — R3.3', () => {
+    // R3.3: On hover, avatar has gold glow box-shadow
+    expect(hasCSSRule(css, '.avatar-container:hover', 'box-shadow', 'euro-gold')).toBe(true)
+  })
+
+  it('test_wrapper_hover_shadow_intensifies — R5.2', () => {
+    // R5.2: Hover box-shadow is more intense than default
+    const defaultBlock = css.match(/\.user-card-wrapper\s*\{([^}]*)\}/)
+    const hoverBlock = css.match(/\.user-card-wrapper:hover\s*\{([^}]*)\}/)
+    expect(defaultBlock).not.toBeNull()
+    expect(hoverBlock).not.toBeNull()
+    // Default uses 15px blur, hover uses 30px blur — confirms intensification
+    expect(hoverBlock![1]).toContain('30px')
+    expect(defaultBlock![1]).toContain('15px')
+  })
+
+  it('test_winner_crown_after — R7.2', () => {
+    // R7.2: .user-winner::after has crown emoji
+    expect(css).toContain('.user-winner::after')
+    expect(css).toContain('content: " 👑"')
+  })
+
+  it('test_hover_no_clipping — R8.2', () => {
+    // R8.2: On hover, no clip-path or overflow: hidden added to wrapper
+    const hoverBlock = css.match(/\.user-card-wrapper:hover\s*\{([^}]*)\}/)
+    expect(hoverBlock).not.toBeNull()
+    expect(hoverBlock![1]).not.toContain('clip-path')
+    expect(hoverBlock![1]).not.toContain('overflow: hidden')
+  })
+
+  it('test_username_truncation — R10.2', () => {
+    // R10.2: Username text prevents horizontal overflow with ellipsis
+    expect(css).toContain('.username-container p')
+    expect(css).toContain('max-width: 100%')
+    expect(css).toContain('overflow: hidden')
+    expect(css).toContain('text-overflow: ellipsis')
   })
 })

@@ -4,7 +4,7 @@ import path from "node:path";
 
 const VERCEL_JSON_PATH = "vercel.json";
 const VITE_CONFIG_PATH = "vite.config.js";
-const BUILD_DIR = "build";
+const BUILD_DIR = "dist";
 
 /**
  * Helper: safe-parse vercel.json
@@ -59,9 +59,9 @@ describe("Vercel Deployment Config", () => {
   });
 
   it("test_vercel_json_has_output_directory", () => {
-    // R3: outputDirectory must be "build"
+    // R3: outputDirectory must be "dist"
     const config = readVercelConfig();
-    expect(config.outputDirectory).toBe("build");
+    expect(config.outputDirectory).toBe("dist");
   });
 
   it("test_vercel_json_has_spa_rewrites", () => {

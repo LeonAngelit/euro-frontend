@@ -61,7 +61,7 @@ onMounted(() => {
   }
 })
 
-/*watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
+watch([targetCount, () => store.userLogged, () => store.songs, () => store.currentRoom], () => {
 
   // Guard: only evaluate redirect logic once songs are loaded
   if (!store.songs || store.songs.length === 0) return
@@ -85,7 +85,7 @@ onMounted(() => {
       window.location.href = window.location.href.split('callback_url=')[1]
     }
   }
-})*/
+})
 
 watch(() => store.userLogged, () => {
   rooms.value = (store.userLogged as any)?.rooms
@@ -205,9 +205,7 @@ async function joinRoom(event: Event) {
   color: white;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
   color: var(--euro-pink);
 }
 </style>

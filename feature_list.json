@@ -5,7 +5,13 @@
     "one_feature_at_a_time": true,
     "require_tests_to_close": true,
     "require_approved_spec_to_implement": true,
-    "valid_status": ["pending", "spec_ready", "in_progress", "done", "blocked"],
+    "valid_status": [
+      "pending",
+      "spec_ready",
+      "in_progress",
+      "done",
+      "blocked"
+    ],
     "sdd_required_when": "feature has \"sdd\": true"
   },
   "features": [
@@ -228,6 +234,69 @@
         "Some items can be modified but respecting the current layout",
         "All the tests should pass",
         "The ARCHITECTURE.md file should be updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 16,
+      "name": "styling_analysis_and_improvements",
+      "title": "Styling analysis and improvements",
+      "description": "Analyze the current Eurovision contest styling applied across all views and components, identify gaps, inconsistencies, and failing tests (R16 heading pink, etc.), and fix remaining styling issues to achieve full consistency with the Eurovision visual identity",
+      "acceptance": [
+        "All Eurovision styling tests (R1-R22) pass 100%",
+        "All pre-existing test failures are resolved or documented",
+        "The styling is visually consistent across all views (Home, Login, CountrySelect, AdminView, UserDetails, etc.)",
+        "ARCHITECTURE.md is updated if needed",
+        "All tests pass when running ./init.sh"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 17,
+      "name": "restyle_user_cards",
+      "title": "Restyle user cards",
+      "description": "Re-style the user cards in the ClassificationView component (and any other card-like components) to ensure all content (username, countries, points, position, profile image) is displayed properly, well-positioned, and visually appealing. Fix any overflow, clipping, or misalignment issues in the card layout while preserving the Eurovision contest visual identity.",
+      "acceptance": [
+        "User cards display all content (position, profile image, username, countries with flags, points) without overflow or clipping",
+        "Card layout is responsive and adapts properly to different screen sizes",
+        "The Eurovision visual identity (pink, gold, navy theme) is preserved",
+        "All existing tests pass when running ./init.sh",
+        "ARCHITECTURE.md is updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 18,
+      "name": "redesign_user_cards_glass_glamour",
+      "title": "Redesign user cards with glassmorphism and glamour",
+      "description": "Fundamentally redesign the user cards in ClassificationView. Previous feature 17 attempted incremental CSS tweaks but cards remain broken \u2014 points/flags not visible, no glass effect, no glamour. This feature must fix the root causes: remove nested clip-paths that clip content, replace with proper glassmorphism (backdrop-filter blur), use gold rounded avatar frames, add glamorous glow effects, and ensure all content (position, avatar, username, country flags with points, total score) is clearly visible and well-spaced.",
+      "acceptance": [
+        "All content is visible: position number, profile picture, username, country flags with points, total score",
+        "Cards have a proper glassmorphism effect (semi-transparent background with backdrop-filter blur)",
+        "Glamorous look: glow shadows, pink/gold accents, shiny gradients",
+        "Profile picture has gold rounded frame (not clip-path polygon)",
+        "All existing tests pass when running ./init.sh",
+        "ARCHITECTURE.md is updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 19,
+      "name": "redesign_user_cards_elegant_mobile",
+      "title": "Redesign user cards with elegant mobile-first layout",
+      "description": "Redesign the UserCard.vue component and its parent ClassificationView.vue to remove the clip-path polygon that clips content, implement an elegant and classy design optimized for mobile, and ensure country flags with their points are displayed clearly and beautifully. The card must be self-contained without relying on parent styles for core layout.",
+      "acceptance": [
+        "clip-path polygon is removed from ClassificationView.vue's .user-card-wrapper",
+        "UserCard.vue is fully self-contained with its own elegant styling",
+        "Country flags are displayed clearly alongside their points in a readable layout",
+        "Design is elegant, classy, and optimized for mobile (primary use case)",
+        "Position badge, avatar, username, countries, and total score are all visible and well-spaced",
+        "Eurovision visual identity (gold, pink, navy accents) is preserved",
+        "All existing tests pass when running ./init.sh"
       ],
       "sdd": true,
       "status": "done"

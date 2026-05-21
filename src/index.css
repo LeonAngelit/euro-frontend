@@ -19,6 +19,7 @@
 button {
   cursor: pointer;
 }
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -104,7 +105,6 @@ span.fis.country-flag-select {
 }
 
 span.fis.country-flag {
-  width: 30%;
   background-size: cover
 }
 
@@ -136,8 +136,8 @@ span.fis.country-flag {
   padding: 0;
   margin: 0;
   transition: filter 0.2s ease;
-    -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
-      mask-image: radial-gradient(circle, black 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
+  mask-image: radial-gradient(circle, black 60%, transparent 100%);
 }
 
 .profile-button:hover {
@@ -151,9 +151,10 @@ span.fis.country-flag {
   object-fit: cover;
   display: block;
   -webkit-mask-image: radial-gradient(circle, black 50%, transparent 100%);
-    mask-image: radial-gradient(circle, black 60%, transparent 100%);
+  mask-image: radial-gradient(circle, black 60%, transparent 100%);
 }
-.google-container{
+
+.google-container {
   display: flex;
   justify-content: center;
 }
@@ -176,26 +177,26 @@ span.fis.country-flag {
     right: 30vw;
     z-index: 50;
   }
- 
+
 
   span.fis.country-flag {
     width: 20%;
     background-size: auto;
   }
-  
-  .uncollapsed .login-form{
+
+  .uncollapsed .login-form {
     border: none;
   }
 
-  .details-container{
+  .details-container {
     margin-top: 5rem;
   }
 
   .modal {
     width: 30%;
   }
-  
-  
+
+
 
 }
 
@@ -247,7 +248,9 @@ body {
 }
 
 /* 3. Headings — global gold & pink typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--euro-pink);
 }
 
@@ -313,9 +316,11 @@ a:hover {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--euro-pink);
   border-radius: 3px;
