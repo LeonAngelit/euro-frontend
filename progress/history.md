@@ -453,3 +453,22 @@
 - **Review:** CHANGES_REQUESTED — T28/T29 visual checks not documented, R2/R13/R18/R19 partial test coverage. Fixed with justification note in tasks.md and 3 new tests.
 - **Tests:** 300/300 passing (39 test files, +3 new tests)
 - **Key design decision:** The parent's scoped CSS was leaking onto UserCard.vue's root element via Vue 3's default root-element penetration. By removing ALL `.user-card-*` styles from the parent, the card is now fully self-contained with no clipping, no conflicting overrides, and no `!important` flags.
+
+---
+
+## Session: 2026-05-21 — Leader: comprehensive_architecture_and_styling_analysis (full SDD cycle)
+
+- **Feature:** comprehensive_architecture_and_styling_analysis (id: 20)
+- **Status:** done
+- **SDD phases completed:** spec → human approval → implementation → review → APPROVED
+- **Spec authored in:** `specs/comprehensive_architecture_and_styling_analysis/`
+- **Implementation:**
+  - ARCHITECTURE.md rewritten from scratch: ~920 lines across 16 sections
+  - New sections: Styling Theme (14 sub-items), Component Catalog (12 components), View Catalog (10 views), Architectural Patterns
+  - All file paths and dependency versions verified against actual source
+  - Documented: callback ref pattern, polling (40s/60s), direct API calls, 6 known issues
+  - Added section 16 (Vercel Deployment) for backwards compat with `vercel.test.ts`
+  - Dockerfile build path inconsistency documented as known issue
+- **Revisions:** 0 (no changes requested)
+- **Tests:** 300/300 passing (39 test files)
+- **No source code or test files modified**

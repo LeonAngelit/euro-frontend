@@ -256,10 +256,6 @@ function handleLeaveRoom() {
   overflow: hidden;
 }
 
-.profile-button:hover {
-  cursor: pointer;
-}
-
 .mobile-nav-container {
   display: none;
   width: 10%;

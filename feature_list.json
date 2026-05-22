@@ -300,6 +300,55 @@
       ],
       "sdd": true,
       "status": "done"
+    },
+    {
+      "id": 20,
+      "name": "comprehensive_architecture_and_styling_analysis",
+      "title": "Comprehensive architecture and styling analysis",
+      "description": "Perform a holistic analysis of the entire project — including all components, views, stores, composables, routing, i18n, styling (Eurovision pink/gold/navy theme, glassmorphism, glamour effects), testing strategy, and build/deployment — and produce a definitive, up-to-date ARCHITECTURE.md that reflects every change from features 1–19. This document will serve as the single source of truth reference for all future modifications.",
+      "acceptance": [
+        "ARCHITECTURE.md is comprehensively updated to reflect ALL current project structure, components, views, styling, state management, routing, i18n, API integration, testing strategy, and deployment",
+        "ARCHITECTURE.md includes a dedicated Styling Theme section documenting the Eurovision visual identity (pink/gold/navy colors, glassmorphism, glamour effects, responsive design patterns)",
+        "ARCHITECTURE.md includes a detailed Component Catalog with props, slots, and scoped styling for every component",
+        "ARCHITECTURE.md includes an up-to-date Tech Stack table matching package.json",
+        "ARCHITECTURE.md documents the complete project file tree as it exists today",
+        "All architectural concerns, patterns (callback refs, polling, direct API calls), and known issues are documented",
+        "All existing tests pass when running ./init.sh",
+        "progress/current.md is updated throughout the session"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 21,
+      "name": "restyle_profile_picture",
+      "title": "Restyle profile picture — glass square with rounded borders",
+      "description": "Restyle the profile picture in Navigation.vue and any other components where it appears. Remove the clip-path polygon that clips the image, and replace it with a glassmorphism square with rounded borders (border-radius) that fits the Eurovision visual identity (pink/gold/navy theme).",
+      "acceptance": [
+        "The profile picture no longer uses clip-path polygon for clipping",
+        "The profile picture is displayed as a glass square with rounded borders (border-radius)",
+        "The styling matches the Eurovision visual identity (glassmorphism effect, pink/gold accents)",
+        "The profile picture is responsive and works on mobile and desktop",
+        "All existing tests pass when running ./init.sh",
+        "ARCHITECTURE.md is updated if needed"
+      ],
+      "sdd": true,
+      "status": "done"
+    },
+    {
+      "id": 22,
+      "name": "fix_classification_view_scroll",
+      "title": "Fix classification view scroll — scroll only in users-container",
+      "description": "Fix the classification view so that the scroll happens only within the .users-container element, not under the room-title-container. Currently the .room-title-container is transparent and content is visible under it when scrolling. Instead of adding a background to the title, make .users-container the scrollable container so content never passes under the title.",
+      "acceptance": [
+        "Scroll only happens within the .users-container, not the outer .container",
+        "Content is NOT visible under the .room-title-container (no transparency issue)",
+        "No background added to .room-title-container to hide content",
+        "The .room-title-container stays at the top and does not scroll away",
+        "All existing tests pass when running ./init.sh"
+      ],
+      "sdd": true,
+      "status": "done"
     }
   ]
 }

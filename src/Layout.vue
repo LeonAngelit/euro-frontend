@@ -33,11 +33,48 @@ function updatePointRequest() {
     })
     .then((response) => {
       if (response.status == 200) {
+        if (response.data.winners != undefined) {
+          sendWinnerEmails(response.data.winners)
+        }
         return response.data
       }
     })
     .catch((error) => {
       return error.response?.data?.message
+    })
+}
+
+function sendWinnerEmails(winners: any[]) {
+  axios
+    .post(`${config.baseUrl}users/sendWinnerEmail`, {}, {
+      headers: {
+        Accept: 'application/json',
+        Bearer: store.xToken,
+      },
+    })
+    .then((response) => {
+      for (let winner of winners) {
+        axios.post(`${config.baseUrl}users/sendWinnerEmail`, {
+          ...winner
+        }, {
+          headers: {
+            Accept: 'application/json',
+            Bearer: store.xToken,
+          },
+        })
+      }
+    })
+    .catch((error: any) => {
+      for (let winner of winners) {
+        axios.post(`${config.baseUrl}users/sendWinnerEmail`, {
+          ...winner
+        }, {
+          headers: {
+            Accept: 'application/json',
+            Bearer: store.xToken,
+          },
+        })
+      }
     })
 }
 

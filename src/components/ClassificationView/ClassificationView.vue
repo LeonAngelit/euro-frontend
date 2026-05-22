@@ -80,9 +80,15 @@ watch(() => store.currentRoom, () => {
 </template>
 
 <style scoped>
+.classification-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 .room-title-container {
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   width: 100%;
   height: 5dvh;
   margin-bottom: 1rem;
@@ -93,6 +99,13 @@ watch(() => store.currentRoom, () => {
   align-items: center;
 }
 
+.users-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
 .room-title-container h2 {
   color: var(--euro-gold);
   text-shadow: 0 0 12px rgba(218, 183, 29, 0.3);
@@ -101,3 +114,9 @@ watch(() => store.currentRoom, () => {
 }
 </style>
 <style src="flag-icons/css/flag-icons.min.css"></style>
+<!-- Non-scoped: hide webkit scrollbar (scoped attr selector breaks ::-webkit-scrollbar) -->
+<style>
+.users-container::-webkit-scrollbar {
+  display: none;
+}
+</style>

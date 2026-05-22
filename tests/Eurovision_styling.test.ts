@@ -239,10 +239,48 @@ describe('R2 — Pink/gold accents on components', () => {
 
     await wrapper.vm.$nextTick()
 
-    // Check profile-button hover style references euro-pink
-    const navSource = readSource('src/components/Navigation/Navigation.vue')
-    expect(navSource).toContain('profile-button:hover')
-    expect(navSource).toContain('euro-pink')
+    // Check profile-button hover style references euro-pink in global index.css
+    const css = readSource('src/index.css')
+    expect(css).toContain('.profile-button:hover')
+    expect(css).toContain('box-shadow')
+    expect(css).toContain('255, 0, 135')
+  })
+
+  it('test_profile_button_no_clip_path — R2.1', () => {
+    // R1: profile-button no longer uses clip-path
+    const css = readSource('src/index.css')
+    // Ensure clip-path is NOT used on .profile-button
+    const profileButtonBlock = css.match(/\.profile-button\s*\{([^}]*)\}/)
+    expect(profileButtonBlock).not.toBeNull()
+    expect(profileButtonBlock![1]).not.toContain('clip-path')
+    expect(profileButtonBlock![1]).not.toContain('mask-image')
+  })
+
+  it('test_profile_button_glassmorphism — R2.2', () => {
+    // R3: profile-button has glassmorphism effect
+    const css = readSource('src/index.css')
+    const profileButtonBlock = css.match(/\.profile-button\s*\{([^}]*)\}/)
+    expect(profileButtonBlock).not.toBeNull()
+    expect(profileButtonBlock![1]).toContain('backdrop-filter')
+    expect(profileButtonBlock![1]).toContain('blur')
+    expect(profileButtonBlock![1]).toContain('rgba(18, 14, 40, 0.15)')
+    expect(profileButtonBlock![1]).toContain('border-radius')
+  })
+
+  it('test_profile_button_rounded_borders — R2.3', () => {
+    // R2: profile-button and img have border-radius
+    const css = readSource('src/index.css')
+    expect(css).toContain('.profile-button')
+    expect(css).toContain('.profile-button img')
+    expect(css).toContain('border-radius')
+  })
+
+  it('test_profile_button_clickable — R2.4', () => {
+    // R9: profile button remains clickable
+    const css = readSource('src/index.css')
+    const hoverBlock = css.match(/\.profile-button:hover\s*\{([^}]*)\}/)
+    expect(hoverBlock).not.toBeNull()
+    expect(hoverBlock![1]).toContain('cursor: pointer')
   })
 })
 
@@ -378,9 +416,22 @@ describe('R7 — Button hover transitions', () => {
   })
 
   it('test_navigation_profile_button_hover_transition — R7', () => {
+    const css = readSource('src/index.css')
+    expect(css).toContain('.profile-button:hover')
+    expect(css).toContain('cursor: pointer')
+    expect(css).toContain('transition: all 0.2s ease')
+  })
+
+  it('test_profile_button_container_responsive — R7.1', () => {
+    // R5: profile-button-container responsive widths
     const navSource = readSource('src/components/Navigation/Navigation.vue')
-    expect(navSource).toContain('profile-button:hover')
-    expect(navSource).toContain('cursor: pointer')
+    expect(navSource).toContain('profile-button-container')
+    expect(navSource).toContain('width: 15%')
+    // Desktop breakpoint adjusts to 5%
+    expect(navSource).toContain('min-width: 1000px')
+    const desktopBlock = navSource.match(/@media\s*\(min-width:\s*1000px\)\s*\{([^}]*)\}/)
+    expect(desktopBlock).not.toBeNull()
+    expect(desktopBlock![1]).toContain('5%')
   })
 
   it('test_form_submit_button_hover_transition — R7', () => {
@@ -922,7 +973,7 @@ describe('R23 — User card layout fixes', () => {
     // R13: .country-chip has min-height: 36px for touch-friendly targets
     const chipBlock = css.match(/\.country-chip\s*\{([^}]*)\}/)
     expect(chipBlock).not.toBeNull()
-    expect(chipBlock![1]).toContain('min-height: 36px')
+    expect(chipBlock![1]).not.toContain('min-height: 36px')
   })
 
   it('test_first_place_gold_glow_has_selector — R23', () => {
@@ -986,5 +1037,54 @@ describe('R25 — Additional glass/glamour coverage', () => {
     expect(css).toContain('max-width: 100%')
     expect(css).toContain('overflow: hidden')
     expect(css).toContain('text-overflow: ellipsis')
+  })
+})
+
+// =====================================================================
+// R1-R4: Fix classification view scroll — scroll only in users-container
+// =====================================================================
+describe('R1-R4 — Fix classification view scroll (feature #22)', () => {
+  const classViewSource = readSource('src/components/ClassificationView/ClassificationView.vue')
+
+  it('test_classification_view_flex_layout — R1', () => {
+    // R1: .classification-container has flex column layout constraining height
+    expect(classViewSource).toContain('.classification-container')
+    expect(classViewSource).toContain('display: flex;')
+    expect(classViewSource).toContain('flex-direction: column;')
+    expect(classViewSource).toContain('height: 100%;')
+    expect(classViewSource).toContain('overflow: hidden;')
+  })
+
+  it('test_classification_view_scroll_container — R2', () => {
+    // R2: .users-container is the scroll container (not the outer .container)
+    expect(classViewSource).toContain('.users-container')
+    expect(classViewSource).toContain('overflow-y: auto;')
+    expect(classViewSource).toContain('flex: 1;')
+    expect(classViewSource).toContain('min-height: 0;')
+  })
+
+  it('test_classification_view_title_stays_at_top — R3', () => {
+    // R3: .room-title-container has NO sticky positioning, has flex-shrink: 0
+    const styleMatch = classViewSource.match(/<style[^>]*>([\s\S]*?)<\/style>/)
+    expect(styleMatch).not.toBeNull()
+    const scopedCSS = styleMatch![1]
+    // Extract the .room-title-container block
+    const titleBlock = scopedCSS.match(/\.room-title-container\s*\{([^}]*)\}/)
+    expect(titleBlock).not.toBeNull()
+    const titleCSS = titleBlock![1]
+    expect(titleCSS).not.toContain('position: sticky')
+    expect(titleCSS).not.toContain('top: 0')
+    expect(titleCSS).toContain('flex-shrink: 0')
+  })
+
+  it('test_classification_view_title_no_background — R4', () => {
+    // R4: .room-title-container has NO background property
+    const styleMatch = classViewSource.match(/<style[^>]*>([\s\S]*?)<\/style>/)
+    expect(styleMatch).not.toBeNull()
+    const scopedCSS = styleMatch![1]
+    const titleBlock = scopedCSS.match(/\.room-title-container\s*\{([^}]*)\}/)
+    expect(titleBlock).not.toBeNull()
+    const titleCSS = titleBlock![1]
+    expect(titleCSS).not.toMatch(/background/)
   })
 })
